@@ -13,7 +13,7 @@ services:
     eastern_sea:
         container_name: 'eastern_sea'
         build:
-          context: './ui'
+          context: './DOS/office-ui'
           args:
             NODE_ENV: 'production'
             REACT_APP_HOST_API: 'http://localhost:8080/api/v1'

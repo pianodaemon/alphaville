@@ -9,7 +9,7 @@ CREATE FUNCTION public.alter_user(_user_id integer, _username character varying,
 DECLARE
     -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     -- >> Description: Create/Edit user                                             >>
-    -- >> Version:     nina_fresa                                                   >>
+    -- >> Version:     big in japan                                                 >>
     -- >> Date:        04/ago/2021                                                  >>
     -- >> Developer:   Omar Montes                                                  >>
     -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

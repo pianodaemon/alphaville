@@ -5,7 +5,7 @@ LABEL MAINTAINER="Edwin Plauchu <j4nusx@yahoo.com>"
 
 WORKDIR /go/src/immortalcrab.com/sso
 
-COPY Makefile go.sum go.mod ./
+COPY Makefile go.mod ./
 
 RUN go mod download
 

@@ -40,8 +40,8 @@ func getExpDelta() int {
 func getKeys() (*rsa.PrivateKey, *rsa.PublicKey, error) {
 
 	ref := struct {
-		Private string `default:"/pem/sso_key"`
-		Public  string `default:"/pem/sso_key.pub"`
+		Private string `default:"/pem/private_key"`
+		Public  string `default:"/pem/public_key.pub"`
 	}{"", ""}
 
 	/* It stands for

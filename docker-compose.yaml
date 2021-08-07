@@ -40,7 +40,14 @@ services:
           - serv_vales_pg_data:/var/lib/postgresql/data
         networks:
           - operational_network
-
+    cache_redis:
+        container_name: 'cache_redis'
+        image: redis:alpine
+        ports:
+          - "6379:6379"
+        environment: *commonEnv
+        networks:
+          - operational_network
 
 networks:
     operational_network:

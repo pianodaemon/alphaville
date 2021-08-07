@@ -20,6 +20,8 @@ services:
             REACT_APP_HOST_AUTH: 'http://localhost:10090/v1'
         ports:
           - '8080:8080'
+        volumes:
+          - ./DOS/keys:/pem
         networks:
           - operational_network
     neon_nights:

@@ -6,6 +6,8 @@ package dylk;
 // The Vales service definition.
 service Vales {
   rpc AlterUser (UserDataRequest) returns (AlterUserResponse) {}
+
+  rpc AuthUser (UserCredentialsRequest) returns (AuthUserResponse) {}
 }
 
 
@@ -21,8 +23,19 @@ message UserDataRequest {
   string lastName  = 7;
 }
 
-// The response message containing the quotation's create/edit operation results
+// The response message containing the User's create/edit operation results
 message AlterUserResponse {
+  int32 returnCode     = 1;
+  string returnMessage = 2;
+}
+
+// -------------------------------------------------------------------------
+message UserCredentialsRequest {
+  string username  = 1;
+  string passwd    = 2;
+}
+
+message AuthUserResponse {
   int32 returnCode     = 1;
   string returnMessage = 2;
 }

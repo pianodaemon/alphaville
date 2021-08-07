@@ -40,6 +40,8 @@ services:
         ports:
           - '10080:10080'
         environment: *commonEnv
+        depends_on:
+          - 'rdbms_vales'
         networks:
           - operational_network
     rdbms_vales:
@@ -58,6 +60,13 @@ services:
         ports:
           - "6379:6379"
         environment: *commonEnv
+        networks:
+          - operational_network
+    nosql_mongo:
+        container_name: 'nosql_mongo'
+        image: 'mongo:latest'
+        ports:
+          - '27100:27017'
         networks:
           - operational_network
 

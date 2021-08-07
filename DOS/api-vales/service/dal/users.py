@@ -1,4 +1,4 @@
-from misc.helperpg import run_stored_procedure
+from misc.helperpg import run_stored_procedure, exec_steady, EmptySetError
 
 def alter_user(user_id, username, passwd, role_id, disabled, first_name, last_name):
 
@@ -24,3 +24,30 @@ def alter_user(user_id, username, passwd, role_id, disabled, first_name, last_na
             )
 
     return run_stored_procedure(sql)
+
+
+def auth_user(username, passwd):
+
+    """Check user credentials"""
+    sql = """
+        SELECT id
+          FROM users
+         WHERE username = '{}'
+           AND passwd = '{}';
+    """.format(
+        username.replace("'", "''"),
+        passwd.replace("'", "''")
+    )
+
+    try:
+        rows = exec_steady(sql)
+        rc = rows[0][0]
+        msg = ''
+    except EmptySetError as err:
+        rc = -1
+        msg = err.args[0]
+    except Exception as err:
+        rc = -1
+        msg = repr(err)
+
+    return rc, msg

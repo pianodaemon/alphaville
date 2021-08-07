@@ -71,7 +71,7 @@ func (self *TokenClerk) IssueToken(username, password string) ([]byte, error) {
 		return nil, err
 	}
 
-	token, err := ton.Generate(self.config.PrivateKey, self.config.ExpirationDelta, user.UID)
+	token, err := ton.Generate(self.config.PrivateKey, self.config.ExpirationDelta, user)
 
 	if err != nil {
 

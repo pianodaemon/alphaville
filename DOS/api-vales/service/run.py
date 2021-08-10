@@ -28,6 +28,20 @@ class Vales(vales_pb2_grpc.ValesServicer):
         )
 
 
+    def AuthUser(self, request, context):
+        print(request)
+
+        ret_code, ret_message = users.auth_user(
+            request.username,
+            request.passwd
+        )
+
+        return vales_pb2.AuthUserResponse(
+            returnCode=ret_code,
+            returnMessage=ret_message
+        )
+
+
 def _engage():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     vales_pb2_grpc.add_ValesServicer_to_server(Vales(), server)

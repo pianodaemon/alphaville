@@ -12,4 +12,6 @@ require (
 	github.com/meatballhat/negroni-logrus v1.1.1
 	github.com/sirupsen/logrus v1.8.1
 	github.com/urfave/negroni v1.0.0
+	google.golang.org/grpc v1.39.1
+	google.golang.org/protobuf v1.25.0
 )

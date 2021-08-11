@@ -18,10 +18,7 @@ RUN go get google.golang.org/grpc/cmd/protoc-gen-go-grpc
 WORKDIR /go/src/immortalcrab.com/sso
 COPY protos protos
 
-WORKDIR /go/src/immortalcrab.com/sso/protos
-RUN protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative vales.proto
-
-WORKDIR /go/src/immortalcrab.com/sso
+RUN protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative protos/vales.proto
 
 COPY Makefile go.mod ./
 

@@ -13,7 +13,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import { Link, Router } from 'react-router-dom';
+import { Link, BrowserRouter } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import { AppRoutesContainer } from './app-routes.container';
 //Icons
@@ -377,13 +377,13 @@ export function AppBarComponent(props: Props) {
             */}
         </Toolbar>
       </AppBar>
-      <ScrollableTabsButtonAuto />
-      <Router history={customHistory}>
+      <BrowserRouter>
+        <ScrollableTabsButtonAuto />
+        <AppRoutesContainer />
         {/*
         {(isLoggedIn && checked) && <BreadcrumbsBar />}
-        <AppRoutesContainer history={customHistory} />
         */}
-      </Router>
+      </BrowserRouter>
     </div>
   );
 }

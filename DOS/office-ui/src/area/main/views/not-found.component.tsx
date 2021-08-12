@@ -8,6 +8,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       flexGrow: 1,
+      marginTop: '2em'
     },
     paper: {
       padding: theme.spacing(2),
@@ -20,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
 export const NotFound = () => {
   const classes = useStyles();
   return (
-    <>
+    <div className={classes.root}>
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <Paper className={classes.paper}>
@@ -33,6 +34,6 @@ export const NotFound = () => {
           </Paper>
         </Grid>
       </Grid>
-    </>
+    </div>
   );
 };

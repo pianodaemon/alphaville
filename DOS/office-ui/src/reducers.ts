@@ -5,11 +5,11 @@
  */
 
 import { combineReducers } from 'redux';
-// import { connectRouter } from 'connected-react-router';
+import { connectRouter } from 'connected-react-router';
 
 export function createRootReducer(asyncReducers: any): any {
   return combineReducers({
-    // router: connectRouter(asyncReducers),
+    router: connectRouter(asyncReducers),
     ...asyncReducers,
   });
 }

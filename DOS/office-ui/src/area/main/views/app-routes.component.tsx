@@ -1,17 +1,25 @@
 import React, { useEffect } from 'react';
-import { History } from 'history';
+// import { History } from 'history';
 import { Switch, Route, Redirect, useRouteMatch } from 'react-router-dom';
+import {
+  makeStyles,
+  Theme,
+  createStyles,
+} from '@material-ui/core/styles';
 import { NotFound } from './not-found.component';
 import { Unauthorized } from './unauthorized.component';
 import { TabPanelMenu } from './home-screen.component';
+import { CatalogsContainer } from 'src/area/catalogs/views/catalogs.container';
+import DataGridDemo from 'src/area/users/views/users-table.component';
+
 // import { PERMISSIONS } from 'src/shared/constants/permissions.contants';
 
 type Props = {
-  history: History,
-  checkAuthAction: Function,
-  isLoggedIn: boolean,
-  checked: boolean,
-  isAllowed: Function,
+  // history: History,
+  // checkAuthAction: Function,
+  // isLoggedIn: boolean,
+  // checked: boolean,
+  // isAllowed: Function,
 };
 
 type CustomRoute = {
@@ -19,24 +27,31 @@ type CustomRoute = {
     path: Array<string> | string,
     exact?: boolean,
   },
-  component: JSX.Element,
+  component: JSX.Element | null,
   app?: string,
 };
 
 const routes: Array<CustomRoute> = [
   {
     props: {
-      path: ['/', '/users', '/users/:category'],
+      path: ['/', ],
       exact: true,
     },
-    component: <TabPanelMenu />,
+    component: <Redirect to='/users' />,
   },
   {
     props: {
-      path: ['/catalogs/list', '/catalogs/:id/edit'],
+      path: ['/users', '/users/:category'],
       exact: true,
     },
-    component: <NotFound />,
+    component: <DataGridDemo />,
+  },
+  {
+    props: {
+      path: ['/catalogs'],
+      exact: true,
+    },
+    component: <CatalogsContainer />,
   },
   {
     props: {
@@ -61,12 +76,24 @@ const routes: Array<CustomRoute> = [
   },
 ];
 
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    content: {
+      top: 156,
+      position: 'relative',
+      display: 'flex',
+      width: '100%',
+    },
+  }),
+);
+
 export const AppRoutes = (props: Props) => {
+  const classes = useStyles();
   useEffect(() => {
     // props.checkAuthAction();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const { isAllowed } = props;
+  // const { isAllowed } = props;
   const match: any | null = useRouteMatch([
     '/:module/:view(list|create)',
     '/:module/:id/:action(edit|view)',
@@ -98,25 +125,27 @@ export const AppRoutes = (props: Props) => {
   */
   return (
     <>
-    {props.checked && (
-      !props.isLoggedIn ? (
+    {/* props.checked true && (
+      props.isLoggedIn true ? (
       <>
         <Route path="*">
-          {/* <LoginFormContainer /> */}
+          <LoginFormContainer />
         </Route>
       </>
-      ) : (
+      ) : ( 
+      */}
       <Switch>
         {routes.map((route: CustomRoute, index: number) => {
           return (
             <Route {...route.props} key={`${index}-${route.app}`}>
               {/* hasAccess(route.app) ? route.component : <Unauthorized /> */}
+              <div className={classes.content}>
+                {route.component}
+              </div>
             </Route>
           );
         })}
       </Switch>
-      )
-    )}
     </>
   );
 };

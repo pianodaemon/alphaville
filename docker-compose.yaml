@@ -10,6 +10,17 @@ x-shared-environment: &commonEnv
     POSTGRES_DB: "vales_dylk"
 
 services:
+    mannequins:
+        container_name: 'mannequins'
+        build: './DOS/road'
+        environment: *commonEnv
+        ports:
+          - '8889:8889'
+          - '8888:8888'
+        volumes:
+          - ./DOS/keys:/pem
+        networks:
+          - operational_network
     crystal_bits:
         container_name: 'crystal_bits'
         build: './DOS/sso'

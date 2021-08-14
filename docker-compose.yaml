@@ -10,8 +10,8 @@ x-shared-environment: &commonEnv
     POSTGRES_DB: "vales_dylk"
 
 services:
-    mannequins:
-        container_name: 'mannequins'
+    illuminated_mannequin:
+        container_name: 'illuminated_mannequin'
         build: './DOS/road'
         environment: *commonEnv
         ports:

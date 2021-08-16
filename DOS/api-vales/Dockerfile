@@ -15,7 +15,7 @@ WORKDIR /service
 RUN python -m pip install --upgrade pip
 RUN python -m pip install -r requirements.txt
 
-RUN python -m grpc_tools.protoc -I../protos --python_out=. --grpc_python_out=. ../protos/vales.proto
+RUN python -m grpc_tools.protoc -I../protos --python_out=. --grpc_python_out=. ../protos/users.proto
 
 EXPOSE 10080
 

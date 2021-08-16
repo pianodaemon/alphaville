@@ -2,12 +2,12 @@ import sys
 import grpc
 from concurrent import futures
 
-import vales_pb2
-import vales_pb2_grpc
+import users_pb2
+import users_pb2_grpc
 
 from dal import users
 
-class Vales(vales_pb2_grpc.ValesServicer):
+class Users(users_pb2_grpc.UsersServicer):
 
     def AlterUser(self, request, context):
         print(request)
@@ -19,12 +19,27 @@ class Vales(vales_pb2_grpc.ValesServicer):
             request.roleId,
             request.disabled,
             request.firstName,
-            request.lastName
+            request.lastName,
+            list(request.authorities)
         )
 
-        return vales_pb2.AlterUserResponse(
+        return users_pb2.GeneralResponse(
             returnCode=ret_code,
             returnMessage=ret_message
+        )
+
+
+    def ListUsers(self, request, context):
+        print(request)
+
+        ret_code, ret_message, user_list = users.list_users(
+            list(request.paramList)
+        )
+
+        return users_pb2.UserListResponse(
+            returnCode=ret_code,
+            returnMessage=ret_message,
+            userList=user_list
         )
 
 
@@ -36,15 +51,43 @@ class Vales(vales_pb2_grpc.ValesServicer):
             request.passwd
         )
 
-        return vales_pb2.AuthUserResponse(
+        return users_pb2.GeneralResponse(
             returnCode=ret_code,
             returnMessage=ret_message
         )
 
 
+    def GetUser(self, request, context):
+        print(request)
+
+        ret_code, ret_message, user_data = users.get_user(
+            request.id
+        )
+
+        return users_pb2.UserResponse(
+            returnCode=ret_code,
+            returnMessage=ret_message,
+            user=user_data
+        )
+
+
+    def GetCatalogs(self, request, context):
+        print(request)
+
+        ret_code, ret_message, role_list, app_list, authority_list = users.get_catalogs()
+
+        return users_pb2.CatalogsResponse(
+            returnCode=ret_code,
+            returnMessage=ret_message,
+            roleList=role_list,
+            appList=app_list,
+            authorityList=authority_list
+        )
+
+
 def _engage():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    vales_pb2_grpc.add_ValesServicer_to_server(Vales(), server)
+    users_pb2_grpc.add_UsersServicer_to_server(Users(), server)
     server.add_insecure_port('[::]:10080')
     server.start()
     server.wait_for_termination()

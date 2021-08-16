@@ -18,13 +18,13 @@ func Authenticate(username, password string) (string, error) {
 	}
 
 	defer conn.Close()
-	c := pb.NewValesClient(conn)
+	c := pb.NewUsersClient(conn)
 
 	// Contact the server and print out its response.
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	r, err := c.AuthUser(ctx, &pb.UserCredentialsRequest{Username: username, Passwd: password})
+	r, err := c.AuthUser(ctx, &pb.UserCredentials{Username: username, Passwd: password})
 	if err != nil {
 		return "", fmt.Errorf("could not Auth User: %v", err)
 	}

@@ -1,4 +1,7 @@
+import math
+
 from misc.helperpg import run_stored_procedure, exec_steady, EmptySetError
+from .entity import count_entities
 
 def alter_user(user_id, username, passwd, role_id, disabled, first_name, last_name, authorities):
     """Calls database function in order to create/update a user"""
@@ -28,16 +31,56 @@ def alter_user(user_id, username, passwd, role_id, disabled, first_name, last_na
     return run_stored_procedure(sql)
 
 
-def list_users(param_list):
+def list_users(param_list, page_param_list):
     """Retrieve a list of users"""
 
+    # Processing of Search params
     l = []
     for i in param_list:
         l.append(i.name + '=' + i.value)
 
     condition_str = ' AND '.join(l)
     if condition_str:
-        condition_str = ' AND ' + condition_str
+        condition_str = 'AND ' + condition_str
+
+    # Count items
+    total_items = count_entities('users', condition_str, True)
+
+    # Processing of Pagination params
+    d = {}
+    for i in page_param_list:
+        d[i.name] = i.value
+
+    try:
+        per_page = int(d['per_page'])
+    except Exception:
+        per_page = 10
+
+    try:
+        page = int(d['page'])
+    except Exception:
+        page = 1
+
+    try:
+        order_by = d['order_by']
+    except Exception:
+        order_by = 'id'
+
+    try:
+        order = d['order']
+    except Exception:
+        order = 'asc'
+
+    # Some calculations
+    total_pages = math.ceil(total_items / per_page)
+
+    whole_pages_offset = per_page * (page - 1)
+    if whole_pages_offset >= total_items:
+        return -1, "Page {} does not exist".format(page), [], total_items, total_pages
+
+    target_items = total_items - whole_pages_offset
+    if target_items > per_page:
+        target_items = per_page
 
     sql = """
         SELECT id         AS "userId",
@@ -50,8 +93,14 @@ def list_users(param_list):
           FROM users
          WHERE NOT blocked
            {}
-         ORDER BY id;
-    """.format(condition_str)
+         ORDER BY {} {} LIMIT {} OFFSET {};
+    """.format(
+        condition_str,
+        order_by,
+        order,
+        target_items,
+        whole_pages_offset
+    )
 
     results = []
     try:
@@ -73,7 +122,7 @@ def list_users(param_list):
         rc = -1
         msg = repr(err)
 
-    return rc, msg, results
+    return rc, msg, results, total_items, total_pages
 
 
 def auth_user(username, passwd):

@@ -32,14 +32,17 @@ class Users(users_pb2_grpc.UsersServicer):
     def ListUsers(self, request, context):
         print(request)
 
-        ret_code, ret_message, user_list = users.list_users(
-            list(request.paramList)
+        ret_code, ret_message, user_list, total_items, total_pages = users.list_users(
+            request.paramList,
+            request.pageParamList
         )
 
         return users_pb2.UserListResponse(
             returnCode=ret_code,
             returnMessage=ret_message,
-            userList=user_list
+            userList=user_list,
+            totalItems=total_items,
+            totalPages=total_pages
         )
 
 

@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.6.17
--- Dumped by pg_dump version 12.8 (Ubuntu 12.8-1.pgdg18.04+1)
+-- Dumped from database version 13.3
+-- Dumped by pg_dump version 13.3
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -16,9 +16,11 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
-
-
 SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+alter database vales_dylk SET TIME ZONE 'America/Mexico_City';
 
 --
 -- Name: apps; Type: TABLE; Schema: public; Owner: postgres
@@ -86,6 +88,83 @@ ALTER TABLE public.authorities_id_seq OWNER TO postgres;
 --
 
 ALTER SEQUENCE public.authorities_id_seq OWNED BY public.authorities.id;
+
+
+--
+-- Name: carriers; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.carriers (
+    id integer NOT NULL,
+    code character varying NOT NULL,
+    title character varying NOT NULL,
+    disabled boolean DEFAULT false NOT NULL,
+    last_touch_time timestamp with time zone NOT NULL,
+    creation_time timestamp with time zone NOT NULL,
+    blocked boolean DEFAULT false NOT NULL
+);
+
+
+ALTER TABLE public.carriers OWNER TO postgres;
+
+--
+-- Name: carriers_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.carriers_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.carriers_id_seq OWNER TO postgres;
+
+--
+-- Name: carriers_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.carriers_id_seq OWNED BY public.carriers.id;
+
+
+--
+-- Name: patios; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.patios (
+    id integer NOT NULL,
+    code character varying NOT NULL,
+    title character varying NOT NULL,
+    last_touch_time timestamp with time zone NOT NULL,
+    creation_time timestamp with time zone NOT NULL,
+    blocked boolean DEFAULT false NOT NULL
+);
+
+
+ALTER TABLE public.patios OWNER TO postgres;
+
+--
+-- Name: patios_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.patios_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.patios_id_seq OWNER TO postgres;
+
+--
+-- Name: patios_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.patios_id_seq OWNED BY public.patios.id;
 
 
 --
@@ -189,6 +268,20 @@ ALTER TABLE ONLY public.authorities ALTER COLUMN id SET DEFAULT nextval('public.
 
 
 --
+-- Name: carriers id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.carriers ALTER COLUMN id SET DEFAULT nextval('public.carriers_id_seq'::regclass);
+
+
+--
+-- Name: patios id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.patios ALTER COLUMN id SET DEFAULT nextval('public.patios_id_seq'::regclass);
+
+
+--
 -- Name: roles id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -200,27 +293,6 @@ ALTER TABLE ONLY public.roles ALTER COLUMN id SET DEFAULT nextval('public.roles_
 --
 
 ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
-
-
---
--- Name: apps_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.apps_id_seq', 3, true);
-
-
---
--- Name: authorities_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.authorities_id_seq', 7, true);
-
-
---
--- Name: roles_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.roles_id_seq', 6, true);
 
 
 --
@@ -253,6 +325,38 @@ ALTER TABLE ONLY public.authorities
 
 ALTER TABLE ONLY public.authorities
     ADD CONSTRAINT authorities_unique UNIQUE (code);
+
+
+--
+-- Name: carriers carriers_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.carriers
+    ADD CONSTRAINT carriers_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: carriers carriers_unique_code; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.carriers
+    ADD CONSTRAINT carriers_unique_code UNIQUE (code);
+
+
+--
+-- Name: patios patios_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.patios
+    ADD CONSTRAINT patios_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: patios patios_unique_code; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.patios
+    ADD CONSTRAINT patios_unique_code UNIQUE (code);
 
 
 --
@@ -330,3 +434,4 @@ ALTER TABLE ONLY public.users
 --
 -- PostgreSQL database dump complete
 --
+

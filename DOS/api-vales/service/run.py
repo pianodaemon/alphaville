@@ -74,6 +74,19 @@ class Users(users_pb2_grpc.UsersServicer):
         )
 
 
+    def DeleteUser(self, request, context):
+        print(request)
+
+        ret_code, ret_message = users.delete_user(
+            request.id
+        )
+
+        return users_pb2.GeneralResponse(
+            returnCode=ret_code,
+            returnMessage=ret_message
+        )
+
+
     def GetCatalogs(self, request, context):
         print(request)
 

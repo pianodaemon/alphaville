@@ -1,6 +1,6 @@
 import math
 
-from misc.helperpg import run_stored_procedure, exec_steady, EmptySetError
+from misc.helperpg import run_stored_procedure, exec_steady, update_steady, EmptySetError
 from .entity import count_entities
 
 def alter_user(user_id, username, passwd, role_id, disabled, first_name, last_name, authorities):
@@ -208,6 +208,30 @@ def get_user(id):
         msg = repr(err)
 
     return rc, msg, user
+
+
+def delete_user(id):
+    """Delete user data"""
+
+    sql = """
+        UPDATE users
+           SET blocked         = true,
+               last_touch_time = now()
+         WHERE NOT blocked
+           AND id = {};
+    """.format(id)
+
+    try:
+        rc = update_steady(sql)
+        msg = ''
+    except EmptySetError as err:
+        rc = -1
+        msg = 'User with id {} does not exist.'.format(id)
+    except Exception as err:
+        rc = -1
+        msg = repr(err)
+
+    return rc, msg
 
 
 def get_catalogs():

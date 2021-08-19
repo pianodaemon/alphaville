@@ -31,8 +31,8 @@ export function configureStore(initialState: any, history: any) {
     store.sagaMiddleware = sagaMiddleware;
 
     // Make reducers hot reloadable see http://mxs.is/googmo
-    if (module.hot) {
-        module.hot.accept('./reducers', () => {
+    if (module['hot']) {
+        module['hot'].accept('./reducers', () => {
             import('./reducers').then((reducerModule) => {
                 const newCreateRootReducer = reducerModule.createRootReducer;
                 const newRootReducer = newCreateRootReducer(store.asyncReducers);

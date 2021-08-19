@@ -2,7 +2,7 @@ import React from 'react';
 import clsx from 'clsx';
 import {
   makeStyles,
-  useTheme,
+  // useTheme,
   Theme,
   createStyles,
 } from '@material-ui/core/styles';
@@ -10,23 +10,23 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
-import Button from '@material-ui/core/Button';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import { Link, BrowserRouter } from 'react-router-dom';
-import { createBrowserHistory } from 'history';
+// import Button from '@material-ui/core/Button';
+// import Menu from '@material-ui/core/Menu';
+// import MenuItem from '@material-ui/core/MenuItem';
+import { /*Link,*/ BrowserRouter } from 'react-router-dom';
+// import { createBrowserHistory } from 'history';
 import { AppRoutesContainer } from './app-routes.container';
 //Icons
-import AccountCircle from '@material-ui/icons/AccountCircle';
+// import AccountCircle from '@material-ui/icons/AccountCircle';
 import MenuIcon from '@material-ui/icons/Menu';
-import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
-import GridOnIcon from '@material-ui/icons/GridOn';
-import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
-import PersonIcon from '@material-ui/icons/Person';
-import ImageSearchIcon from '@material-ui/icons/ImageSearch';
-import ImportContactsIcon from '@material-ui/icons/ImportContacts';
-import DeveloperBoardIcon from '@material-ui/icons/DeveloperBoard';
-import Chip from '@material-ui/core/Chip';
+// import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
+// import GridOnIcon from '@material-ui/icons/GridOn';
+// import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
+// import PersonIcon from '@material-ui/icons/Person';
+// import ImageSearchIcon from '@material-ui/icons/ImageSearch';
+// import ImportContactsIcon from '@material-ui/icons/ImportContacts';
+// import DeveloperBoardIcon from '@material-ui/icons/DeveloperBoard';
+// import Chip from '@material-ui/core/Chip';
 import { useRefreshToken } from 'src/shared/hooks/use-refresh-token.hook';
 // import { BreadcrumbsBar } from 'src/area/main/views/breadcrumbs.component';
 import ScrollableTabsButtonAuto from 'src/area/main/views/menu.component';
@@ -40,7 +40,7 @@ type Props = {
   // username: string,
 };
 
-const customHistory = createBrowserHistory();
+// const customHistory = createBrowserHistory();
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -142,10 +142,10 @@ const useStyles = makeStyles((theme: Theme) =>
 export function AppBarComponent(props: Props) {
   // const { checked, isLoggedIn, logoutAction, refreshing, refreshTokenAuthAction, username } = props;
   const classes = useStyles();
-  const theme = useTheme();
+  // const theme = useTheme();
   const [open, setOpen] = React.useState(false);
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const openProfileMenu = Boolean(anchorEl);
+  // const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  // const openProfileMenu = Boolean(anchorEl);
 
   
   useRefreshToken((isAuthenticated: boolean, canRefresh: boolean) => {
@@ -162,7 +162,7 @@ export function AppBarComponent(props: Props) {
     }
     */
   }, []);
-
+  /*
   const breadcrumbNameMap: { [key: string]: { [key: string]: any } } = {
     audit: {
       url: '/audit/list',
@@ -289,21 +289,23 @@ export function AppBarComponent(props: Props) {
       open: false,
     },
   };
-
+  */
+  /*
   const [menuItems, setMenuItemOpen] = React.useState<{[key: string]: boolean}>(
     Object.keys(breadcrumbNameMap).reduce((acc, next) => {
       return { ...acc, [next]: !!breadcrumbNameMap[next].open }
     }, {})
   );
-
+  */
   const handleDrawerOpen = () => {
     setOpen(true);
   };
-
+  /*
   const handleDrawerClose = () => {
     setOpen(false);
   };
-
+  */
+ /*
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -311,7 +313,7 @@ export function AppBarComponent(props: Props) {
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
-
+  */
   return (
     <div className={classes.root}>
       <CssBaseline />

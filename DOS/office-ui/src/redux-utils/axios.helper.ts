@@ -1,7 +1,6 @@
-import axios, { AxiosRequestConfig } from 'axios';
+import axios/*, { AxiosRequestConfig }*/ from 'axios';
 // import { TokenStorage } from 'src/shared/utils/token-storage.util';
 
-/*
 export function axiosApi(url: string, options: any, onlyData: boolean = true) {
   const modifiedOptions = options || {};
   const headers = modifiedOptions.headers || {};
@@ -9,7 +8,7 @@ export function axiosApi(url: string, options: any, onlyData: boolean = true) {
   modifiedOptions.headers = headers;
   modifiedOptions.url = url;
 
-  setRequestInterceptors();
+  // setRequestInterceptors();
   // setResponseInterceptors();
 
   return axios
@@ -18,7 +17,6 @@ export function axiosApi(url: string, options: any, onlyData: boolean = true) {
     .then((data) => data)
     .catch((reason) => Promise.reject(reason));
 }
-*/
 
 /*
 function setRequestInterceptors(): void {
@@ -35,9 +33,7 @@ function setRequestInterceptors(): void {
     (error: any) => { Promise.reject(error) }
   );
 }
-*/
 
-/*
 function setResponseInterceptors(): void {
   axios.interceptors.response.use((response) => {
     // Return a successful response back to the calling service

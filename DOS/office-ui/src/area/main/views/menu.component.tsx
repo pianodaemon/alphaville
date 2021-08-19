@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory, /*useParams,*/ useRouteMatch } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -74,8 +74,13 @@ export default function ScrollableTabsButtonAuto() {
     history.push(`/${menu[newValue]}`);
   };
 
+  /** delete me */
+  const match: any | null = useRouteMatch([
+    '/:module',
+  ]);
+
   return (
-    <div className={classes.root}>
+    <div className={classes.root} style={{display: match ? 'block' : 'none'}}>
       <AppBar position="static" color="default">
         <Tabs
           value={value}

@@ -1,16 +1,17 @@
 import React, { useEffect } from 'react';
 // import { History } from 'history';
-import { Switch, Route, Redirect, useRouteMatch } from 'react-router-dom';
+import { Switch, Route, Redirect, /*useRouteMatch*/ } from 'react-router-dom';
 import {
   makeStyles,
   Theme,
   createStyles,
 } from '@material-ui/core/styles';
 import { NotFound } from './not-found.component';
-import { Unauthorized } from './unauthorized.component';
-import { TabPanelMenu } from './home-screen.component';
+// import { Unauthorized } from './unauthorized.component';
+// import { TabPanelMenu } from './home-screen.component';
 import { CatalogsContainer } from 'src/area/catalogs/views/catalogs.container';
-import DataGridDemo from 'src/area/users/views/users-table.component';
+import { LoginFormContainer } from 'src/area/auth/views/login-form.container';
+import { UsersTableContainer } from 'src/area/users/views/users-table.container';
 
 // import { PERMISSIONS } from 'src/shared/constants/permissions.contants';
 
@@ -37,14 +38,14 @@ const routes: Array<CustomRoute> = [
       path: ['/', ],
       exact: true,
     },
-    component: <Redirect to='/users' />,
+    component: <LoginFormContainer />,
   },
   {
     props: {
       path: ['/users', '/users/:category'],
       exact: true,
     },
-    component: <DataGridDemo />,
+    component: <UsersTableContainer />,
   },
   {
     props: {
@@ -83,6 +84,7 @@ const useStyles = makeStyles((theme: Theme) =>
       position: 'relative',
       display: 'flex',
       width: '100%',
+      justifyContent: 'center',
     },
   }),
 );
@@ -94,10 +96,12 @@ export const AppRoutes = (props: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   // const { isAllowed } = props;
+  /*
   const match: any | null = useRouteMatch([
     '/:module/:view(list|create)',
     '/:module/:id/:action(edit|view)',
   ]);
+  */
   /*
   const hasAccess = (app: string | undefined) => {
     if (!app) {

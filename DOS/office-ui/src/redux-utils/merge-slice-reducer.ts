@@ -19,7 +19,7 @@ function merge(): any {
       const reducer = reducersToAdd[sliceName];
 
       if (sliceName in store.asyncReducers) {
-        if (process.env.NODE_ENV === 'development' && module.hot) {
+        if (process.env.NODE_ENV === 'development' && (module as any).hot) {
           store.asyncReducers[sliceName] = reducer;
         } else {
         }

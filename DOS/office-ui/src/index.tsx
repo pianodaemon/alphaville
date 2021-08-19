@@ -19,7 +19,7 @@ const appSettings = {
   baseUrl:
     process.env.NODE_ENV === 'production'
       ? `${process.env.REACT_APP_HOST_API}`
-      : 'http://localhost:8080/api/v1', // @todo this should be fetch from docker image container env vars
+      : 'http://localhost:8081', // @todo this should be fetch from docker image container env vars
 };
 
 if (process.env.NODE_ENV !== 'production') {

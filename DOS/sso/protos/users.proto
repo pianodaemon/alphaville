@@ -43,7 +43,8 @@ message Param {
 }
 
 message SearchParams {
-  repeated Param paramList = 1;
+  repeated Param paramList     = 1;
+  repeated Param pageParamList = 2;
 }
 
 message UserCredentials {
@@ -68,6 +69,8 @@ message UserListResponse {
   int32 returnCode       = 1;
   string returnMessage   = 2;
   repeated User userList = 3;
+  int32 totalItems       = 4;
+  int32 totalPages       = 5;
 }
 
 message CatalogsResponse {

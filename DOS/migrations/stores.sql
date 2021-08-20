@@ -181,7 +181,7 @@ BEGIN
 
     END CASE;
 
-    return ( patio_id::integer, ''::text );
+    return ( _patio_id::integer, ''::text );
 
     EXCEPTION
         WHEN OTHERS THEN

@@ -137,7 +137,7 @@ CREATE FUNCTION public.alter_patios(
 DECLARE
     -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     -- >> Description: Create/Edit user                                             >>
-    -- >> Version:     Ver 1 patios                                                 >>
+    -- >> Version:     nina_fresa                                                   >>
     -- >> Date:        19/ago/2021                                                  >>
     -- >> Developer:   Alvaro Gamez Chavez                                          >>
     -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

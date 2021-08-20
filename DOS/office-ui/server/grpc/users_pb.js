@@ -1193,7 +1193,7 @@ proto.dylk.Param.prototype.setValue = function(value) {
  * @private {!Array<number>}
  * @const
  */
-proto.dylk.SearchParams.repeatedFields_ = [1];
+proto.dylk.SearchParams.repeatedFields_ = [1,2];
 
 
 
@@ -1227,6 +1227,8 @@ proto.dylk.SearchParams.prototype.toObject = function(opt_includeInstance) {
 proto.dylk.SearchParams.toObject = function(includeInstance, msg) {
   var f, obj = {
     paramlistList: jspb.Message.toObjectList(msg.getParamlistList(),
+    proto.dylk.Param.toObject, includeInstance),
+    pageparamlistList: jspb.Message.toObjectList(msg.getPageparamlistList(),
     proto.dylk.Param.toObject, includeInstance)
   };
 
@@ -1269,6 +1271,11 @@ proto.dylk.SearchParams.deserializeBinaryFromReader = function(msg, reader) {
       reader.readMessage(value,proto.dylk.Param.deserializeBinaryFromReader);
       msg.addParamlist(value);
       break;
+    case 2:
+      var value = new proto.dylk.Param;
+      reader.readMessage(value,proto.dylk.Param.deserializeBinaryFromReader);
+      msg.addPageparamlist(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -1302,6 +1309,14 @@ proto.dylk.SearchParams.serializeBinaryToWriter = function(message, writer) {
   if (f.length > 0) {
     writer.writeRepeatedMessage(
       1,
+      f,
+      proto.dylk.Param.serializeBinaryToWriter
+    );
+  }
+  f = message.getPageparamlistList();
+  if (f.length > 0) {
+    writer.writeRepeatedMessage(
+      2,
       f,
       proto.dylk.Param.serializeBinaryToWriter
     );
@@ -1344,6 +1359,44 @@ proto.dylk.SearchParams.prototype.addParamlist = function(opt_value, opt_index) 
  */
 proto.dylk.SearchParams.prototype.clearParamlistList = function() {
   return this.setParamlistList([]);
+};
+
+
+/**
+ * repeated Param pageParamList = 2;
+ * @return {!Array<!proto.dylk.Param>}
+ */
+proto.dylk.SearchParams.prototype.getPageparamlistList = function() {
+  return /** @type{!Array<!proto.dylk.Param>} */ (
+    jspb.Message.getRepeatedWrapperField(this, proto.dylk.Param, 2));
+};
+
+
+/**
+ * @param {!Array<!proto.dylk.Param>} value
+ * @return {!proto.dylk.SearchParams} returns this
+*/
+proto.dylk.SearchParams.prototype.setPageparamlistList = function(value) {
+  return jspb.Message.setRepeatedWrapperField(this, 2, value);
+};
+
+
+/**
+ * @param {!proto.dylk.Param=} opt_value
+ * @param {number=} opt_index
+ * @return {!proto.dylk.Param}
+ */
+proto.dylk.SearchParams.prototype.addPageparamlist = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 2, opt_value, proto.dylk.Param, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.dylk.SearchParams} returns this
+ */
+proto.dylk.SearchParams.prototype.clearPageparamlistList = function() {
+  return this.setPageparamlistList([]);
 };
 
 
@@ -1991,7 +2044,9 @@ proto.dylk.UserListResponse.toObject = function(includeInstance, msg) {
     returncode: jspb.Message.getFieldWithDefault(msg, 1, 0),
     returnmessage: jspb.Message.getFieldWithDefault(msg, 2, ""),
     userlistList: jspb.Message.toObjectList(msg.getUserlistList(),
-    proto.dylk.User.toObject, includeInstance)
+    proto.dylk.User.toObject, includeInstance),
+    totalitems: jspb.Message.getFieldWithDefault(msg, 4, 0),
+    totalpages: jspb.Message.getFieldWithDefault(msg, 5, 0)
   };
 
   if (includeInstance) {
@@ -2040,6 +2095,14 @@ proto.dylk.UserListResponse.deserializeBinaryFromReader = function(msg, reader) 
       var value = new proto.dylk.User;
       reader.readMessage(value,proto.dylk.User.deserializeBinaryFromReader);
       msg.addUserlist(value);
+      break;
+    case 4:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setTotalitems(value);
+      break;
+    case 5:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setTotalpages(value);
       break;
     default:
       reader.skipField();
@@ -2090,6 +2153,20 @@ proto.dylk.UserListResponse.serializeBinaryToWriter = function(message, writer) 
       3,
       f,
       proto.dylk.User.serializeBinaryToWriter
+    );
+  }
+  f = message.getTotalitems();
+  if (f !== 0) {
+    writer.writeInt32(
+      4,
+      f
+    );
+  }
+  f = message.getTotalpages();
+  if (f !== 0) {
+    writer.writeInt32(
+      5,
+      f
     );
   }
 };
@@ -2166,6 +2243,42 @@ proto.dylk.UserListResponse.prototype.addUserlist = function(opt_value, opt_inde
  */
 proto.dylk.UserListResponse.prototype.clearUserlistList = function() {
   return this.setUserlistList([]);
+};
+
+
+/**
+ * optional int32 totalItems = 4;
+ * @return {number}
+ */
+proto.dylk.UserListResponse.prototype.getTotalitems = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 4, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.dylk.UserListResponse} returns this
+ */
+proto.dylk.UserListResponse.prototype.setTotalitems = function(value) {
+  return jspb.Message.setProto3IntField(this, 4, value);
+};
+
+
+/**
+ * optional int32 totalPages = 5;
+ * @return {number}
+ */
+proto.dylk.UserListResponse.prototype.getTotalpages = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 5, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.dylk.UserListResponse} returns this
+ */
+proto.dylk.UserListResponse.prototype.setTotalpages = function(value) {
+  return jspb.Message.setProto3IntField(this, 5, value);
 };
 
 

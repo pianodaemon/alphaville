@@ -181,7 +181,7 @@ BEGIN
 
     END CASE;
 
-    return ( last_id::integer, ''::text );
+    return ( patio_id::integer, ''::text );
 
     EXCEPTION
         WHEN OTHERS THEN
@@ -190,4 +190,3 @@ BEGIN
 
 END;
 $$;
---(-1,"column ""_code_patios"" does not exist")

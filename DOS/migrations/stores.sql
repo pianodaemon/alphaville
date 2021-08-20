@@ -124,6 +124,9 @@ ALTER FUNCTION public.alter_user(_user_id integer, _username character varying, 
 
 
 
+
+
+
 CREATE FUNCTION public.alter_patios(
     _user_id integer,
     _username character varying,
@@ -197,57 +200,56 @@ BEGIN
                 username,
                 passwd,
                 role_id,
-		disabled,
-		first_name,
-		last_name,
-		last_touch_time,
+				disabled,
+				first_name,
+				last_name,
+				last_touch_time,
                 creation_time
                 --bloocked
             ) VALUES (
                 _username,
                 _passwd,
                 _role_id,
-		_disabled,
-		_first_name,
-		_last_name,
+				_disabled,
+				_first_name,
+				_last_name,
                 current_moment,
                 current_moment
             ) RETURNING id INTO last_id;
 
-            arr_len := array_length(_authorities, 1);
-	    
-            if arr_len is not NULL then
+			arr_len := array_length(_authorities, 1);
+			if arr_len is not NULL then
 
-                for i in 1 .. arr_len loop
-                    insert into users_authorities values (last_id, _authorities[i]);
-                end loop;
+				for i in 1 .. arr_len loop
+					insert into users_authorities values (last_id, _authorities[i]);
+				end loop;
 
-            end if;
+			end if;
 			
-            INSERT INTO apps(
+			INSERT INTO apps(
                 title
-            ) VALUES(
+			) VALUES(
                 _title_apps
-            );
+			);
 			
-            INSERT INTO authorities(
+			INSERT INTO authorities(
                 app_id,
                 code,
                 title
-            )VALUES(
+			)VALUES(
                 _app_id_apps,
                 _code_apps,
                 _title_apps
 			);
 			
-            INSERT INTO carries(
+			INSERT INTO carries(
                 code, 
                 title,
                 disabled,
                 last_touch_time,
                 creation_time
                 --blocked
-            )VALUES(
+			)VALUES(
                 _code_carriers,
                 _title_carriers,
                 _disabled_carriers,
@@ -255,24 +257,24 @@ BEGIN
                 _creationTime_carriers
 			);
 			
-            INSERT INTO patios(
+			INSERT INTO patios(
                 code,
                 title,
                 last_touch_time,
                 creation_time
                 --blocked
-            )VALUES(
+			)VALUES(
                 _code_patios,
                 _title_patios,
                 current_moment,
                 current_moment
-            );
+			);
 			
-            INSERT INTO roles(
+			INSERT INTO roles(
                 title
-            )VALUES(
+			)VALUES(
                 _title_roles
-            );
+			);
 			
 
         WHEN _user_id > 0 THEN

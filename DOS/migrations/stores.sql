@@ -128,7 +128,7 @@ ALTER FUNCTION public.alter_user(_user_id integer, _username character varying, 
 
 
 CREATE FUNCTION public.alter_patios(
-    _id_patio INT,
+    _patio_id INT,
     _code character varying,
     _title character varying
 ) RETURNS record
@@ -150,14 +150,14 @@ DECLARE
 BEGIN
 
     CASE
-        WHEN _id_patio = 0 THEN
+        WHEN _patio_id = 0 THEN
 
             INSERT INTO patios(
                 code,
                 title,
                 last_touch_time,
                 creation_time
-                --blocked
+                blocked
             )VALUES(
                 _code_patios,
                 _title_patios,
@@ -165,7 +165,7 @@ BEGIN
                 current_moment
             );
 
-        WHEN _id_patio > 0 THEN
+        WHEN _patio_id > 0 THEN
 
             if _passwd = '' then
 
@@ -174,12 +174,12 @@ BEGIN
                     title = _title,
                     last_touch_time = current_moment,
                     creation_time = current_moment
-                WHERE id = _id_patio;
+                WHERE id = _patio_id;
             
             end if;
 
         ELSE
-            RAISE EXCEPTION 'negative user identifier % is unsupported', _id_patio;
+            RAISE EXCEPTION 'negative user identifier % is unsupported', _patio_id;
 
     END CASE;
 

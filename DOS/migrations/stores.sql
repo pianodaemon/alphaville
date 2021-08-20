@@ -164,7 +164,7 @@ BEGIN
                 current_moment,
                 current_moment,
                 false
-            );
+            )RETURNING id INTO _patio_id;
 
         WHEN _patio_id > 0 THEN
 
@@ -177,7 +177,9 @@ BEGIN
             
 
         ELSE
-            RAISE EXCEPTION 'negative user identifier % is unsupported', _patio_id;
+
+            RAISE EXCEPTION 'negative work yard identifier % is unsupported', _patio_id;
+
 
     END CASE;
 
@@ -190,3 +192,74 @@ BEGIN
 
 END;
 $$;
+
+
+CREATE FUNCTION public.alter_carriers(
+    _carriers_id INT,
+    _code character varying,
+    _title character varying,
+    _disabled boolean
+) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    -- >> Description: Create/Edit carriers                                         >>
+    -- >> Version:     nina_fresa                                                   >>
+    -- >> Date:        20/ago/2021                                                  >>
+    -- >> Developer:   Alvaro Gamez Chavez                                          >>
+    -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+     current_moment timestamp with time zone := now();
+     
+    -- dump of errors
+    rmsg text := '';
+
+BEGIN
+
+    CASE
+
+       WHEN _carriers_id = 0 THEN
+
+           INSERT INTO carriers(
+               code,
+               title,
+               disabled,
+               last_touch_time,
+               creation_time,
+               blocked
+           )VALUES(
+               _code,
+               _title,
+               _disabled,
+               current_moment,
+               current_moment,
+               false
+           );
+
+       WHEN _carriers_id > 0 THEN
+
+           UPDATE carriers
+           SET code = _code,
+               title = _title,
+               disabled = _disabled,
+               last_touch_time = current_moment
+           WHERE id = _carriers_id;
+           
+       ELSE
+       
+           RAISE EXCEPTION 'negative user identifier % is unsupported', _carriers_id;
+
+   END CASE;
+   
+   RETURN(_carriers_id::integer,''::text);
+   
+   EXCEPTION
+
+       WHEN others THEN
+       
+           GET STACKED DIAGNOSTICS rmsg = MESSAGE_TEXT;
+           return ( -1::integer, rmsg::text );
+   
+END;
+$$

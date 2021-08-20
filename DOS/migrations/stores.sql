@@ -127,6 +127,8 @@ ALTER FUNCTION public.alter_user(_user_id integer, _username character varying, 
 
 
 
+                title = _title,
+                last_touch_time = current_moment
 CREATE FUNCTION public.alter_patios(
     _patio_id INT,
     _code character varying,
@@ -156,7 +158,7 @@ BEGIN
                 code,
                 title,
                 last_touch_time,
-                creation_time
+                creation_time,
                 blocked
             )VALUES(
                 _code,
@@ -171,8 +173,6 @@ BEGIN
 
             UPDATE patios
             SET code = _code,
-                title = _title,
-                last_touch_time = current_moment
             WHERE id = _patio_id;
             
 
@@ -190,3 +190,4 @@ BEGIN
 
 END;
 $$;
+--(-1,"column ""_code_patios"" does not exist")

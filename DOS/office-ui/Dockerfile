@@ -1,11 +1,12 @@
-FROM mhart/alpine-node:12 AS builder
+FROM mhart/alpine-node:12
 LABEL author="@telematica"
 
 ARG NODE_ENV
 ARG REACT_APP_HOST_API
 ARG REACT_APP_HOST_AUTH
 
-WORKDIR /app
+ENV APP_DIR=/app
+WORKDIR $APP_DIR
 COPY . .
 # ENV GENERATE_SOURCEMAP=false
 RUN rm -r ./node_modules
@@ -15,11 +16,9 @@ RUN yarn install
 RUN yarn run build
 # RUN yarn run prod-server
 
-FROM mhart/alpine-node
+# FROM mhart/alpine-node
 RUN yarn global add serve
-ENV APP_DIR=/app
-WORKDIR $APP_DIR
-COPY --from=builder /app/build .
+# COPY --from=builder /app/build .
 COPY scripts/run_service.sh $APP_DIR
 # CMD ["serve", "-p", "8080", "-s", "."]
 CMD ["/app/run_service.sh"]

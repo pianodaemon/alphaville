@@ -162,7 +162,8 @@ BEGIN
                 _code_patios,
                 _title_patios,
                 current_moment,
-                current_moment
+                current_moment,
+                false
             );
 
         WHEN _patio_id > 0 THEN

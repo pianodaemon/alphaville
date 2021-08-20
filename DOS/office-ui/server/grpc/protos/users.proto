@@ -11,6 +11,7 @@ service Users {
   rpc ListUsers   (SearchParams)    returns (UserListResponse) {}
   rpc AuthUser    (UserCredentials) returns (GeneralResponse)  {}
   rpc GetUser     (Id)              returns (UserResponse)     {}
+  rpc DeleteUser  (Id)              returns (GeneralResponse)  {}
   rpc GetCatalogs (Void)            returns (CatalogsResponse) {}
 }
 

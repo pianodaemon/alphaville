@@ -38,6 +38,12 @@ async function listUsers() {
     }
   };
   var request = new messages.SearchParams();
+  /*
+  var param = new messages.Param();
+  param.setValue('disabled');
+  param.setName('true');
+  request.addParamlist(param);
+  */
   const response = await call_service(request, promisifiedClient);
 
   return response;

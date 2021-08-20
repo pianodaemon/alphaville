@@ -208,7 +208,7 @@ CREATE FUNCTION public.alter_carriers(
 DECLARE
     -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     -- >> Description: Create/Edit carriers                                         >>
-    -- >> Version:     Ver 1 carriers                                               >>
+    -- >> Version:     nina_fresa                                                   >>
     -- >> Date:        20/ago/2021                                                  >>
     -- >> Developer:   Alvaro Gamez Chavez                                          >>
     -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

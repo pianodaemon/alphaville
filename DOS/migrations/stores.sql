@@ -127,8 +127,6 @@ ALTER FUNCTION public.alter_user(_user_id integer, _username character varying, 
 
 
 
-                title = _title,
-                last_touch_time = current_moment
 CREATE FUNCTION public.alter_patios(
     _patio_id INT,
     _code character varying,
@@ -173,6 +171,7 @@ BEGIN
 
             UPDATE patios
             SET code = _code
+                last_touch_time = current_moment
             WHERE id = _patio_id;
             
 

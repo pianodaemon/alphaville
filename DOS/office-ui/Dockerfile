@@ -13,10 +13,13 @@ RUN rm -r ./node_modules
 RUN yarn global add react-scripts
 RUN yarn install
 RUN yarn run build
-RUN yarn run prod-server
+# RUN yarn run prod-server
 
 FROM mhart/alpine-node
 RUN yarn global add serve
-WORKDIR /app
+ENV APP_DIR=/app
+WORKDIR $APP_DIR
 COPY --from=builder /app/build .
-CMD ["serve", "-p", "8080", "-s", "."]
+COPY scripts/run_service.sh $APP_DIR
+# CMD ["serve", "-p", "8080", "-s", "."]
+CMD ["/app/run_service.sh"]

@@ -171,6 +171,7 @@ BEGIN
 
             UPDATE patios
             SET code = _code,
+                title = _title,
                 last_touch_time = current_moment
             WHERE id = _patio_id;
             

@@ -168,16 +168,13 @@ BEGIN
 
         WHEN _patio_id > 0 THEN
 
-            if _passwd = '' then
 
-                UPDATE patios
-                SET code = _code,
-                    title = _title,
-                    last_touch_time = current_moment,
-                    creation_time = current_moment
-                WHERE id = _patio_id;
+            UPDATE patios
+            SET code = _code,
+                title = _title,
+                last_touch_time = current_moment
+            WHERE id = _patio_id;
             
-            end if;
 
         ELSE
             RAISE EXCEPTION 'negative user identifier % is unsupported', _patio_id;

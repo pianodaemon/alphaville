@@ -36,8 +36,8 @@
   },
   "scripts": {
     "dev": "yarn start && yarn dev-server",
-    "dev-server": "nodemon ./server/server.js &",
-    "prod-server": "node ./server/server.js &",
+    "dev-server": "nodemon ./server/server.js",
+    "prod-server": "node ./server/server.js",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

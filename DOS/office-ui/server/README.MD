@@ -25,6 +25,9 @@
     3) copio el file .sql dump a docker y lo ejecuto
 */
 
+docker rm -f rdbms_vales
+docker volume rm alphaville_serv_vales_pg_data
+
 #yarn add grpc-web
 #yarn add ts-protoc-gen
 #yarn add google-protobuf

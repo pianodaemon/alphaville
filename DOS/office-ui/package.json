@@ -35,8 +35,8 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "dev": "yarn start && yarn dev-server",
-    "dev-server": "nodemon ./server/server.js",
+    "dev": "yarn start",
+    "dev-server": "nodemon ./server/server.js -- --config nodemon.json",
     "prod-server": "node ./server/server.js",
     "start": "react-scripts start",
     "build": "react-scripts build",

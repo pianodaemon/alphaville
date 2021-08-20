@@ -15,11 +15,11 @@ const appSettings = {
   authUrl:
     process.env.NODE_ENV === 'production'
       ? `${process.env.REACT_APP_HOST_AUTH}`
-      : 'http://localhost:10090/v1', // @todo this should be fetch from docker image container env vars
+      : process.env.REACT_APP_HOST_AUTH || 'http://localhost:10090/v1', // @todo this should be fetch from docker image container env vars
   baseUrl:
     process.env.NODE_ENV === 'production'
       ? `${process.env.REACT_APP_HOST_API}`
-      : 'http://localhost:8081', // @todo this should be fetch from docker image container env vars
+      : process.env.REACT_APP_HOST_API || 'http://localhost:8081', // @todo this should be fetch from docker image container env vars
 };
 
 if (process.env.NODE_ENV !== 'production') {

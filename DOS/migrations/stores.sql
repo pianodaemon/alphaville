@@ -177,7 +177,9 @@ BEGIN
             
 
         ELSE
+
             RAISE EXCEPTION 'negative work yard identifier % is unsupported', _patio_id;
+
 
     END CASE;
 
@@ -190,11 +192,6 @@ BEGIN
 
 END;
 $$;
-
-
-
-
-
 
 
 CREATE FUNCTION public.alter_carriers(

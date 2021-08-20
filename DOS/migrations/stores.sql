@@ -159,8 +159,8 @@ BEGIN
                 creation_time
                 blocked
             )VALUES(
-                _code_patios,
-                _title_patios,
+                _code,
+                _title,
                 current_moment,
                 current_moment,
                 false

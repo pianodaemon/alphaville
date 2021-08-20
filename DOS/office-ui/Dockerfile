@@ -1,19 +1,25 @@
-FROM mhart/alpine-node:12 AS builder
+FROM mhart/alpine-node:12
 LABEL author="@telematica"
 
-#ARG NODE_ENV
-#ARG REACT_APP_HOST_API
-#ARG REACT_APP_HOST_AUTH
+ARG NODE_ENV
+ARG REACT_APP_HOST_API
+ARG REACT_APP_HOST_AUTH
 
-WORKDIR /app
+ENV APP_DIR=/app
+WORKDIR $APP_DIR
+
 COPY . .
-ENV GENERATE_SOURCEMAP=false
-RUN npm install react-scripts -g --silent
+
+RUN rm -r ./node_modules
+
+RUN yarn global add react-scripts
+
 RUN yarn install
+
 RUN yarn run build
 
-FROM mhart/alpine-node
 RUN yarn global add serve
-WORKDIR /app
-COPY --from=builder /app/build .
-CMD ["serve", "-p", "8080", "-s", "."]
+
+COPY scripts/run_service.sh $APP_DIR
+
+CMD ["/app/run_service.sh"]

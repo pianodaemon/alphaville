@@ -119,3 +119,74 @@ $$;
 
 
 ALTER FUNCTION public.alter_user(_user_id integer, _username character varying, _passwd character varying, _role_id integer, _disabled boolean, _first_name character varying, _last_name character varying, _authorities integer[]) OWNER TO postgres;
+
+
+
+
+
+
+
+
+CREATE FUNCTION public.alter_patios(
+    _patio_id INT,
+    _code character varying,
+    _title character varying
+) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    -- >> Description: Create/Edit user                                             >>
+    -- >> Version:     nina_fresa                                                   >>
+    -- >> Date:        19/ago/2021                                                  >>
+    -- >> Developer:   Alvaro Gamez Chavez                                          >>
+    -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+    current_moment timestamp with time zone := now();
+
+    -- dump of errors
+    rmsg text := '';
+
+BEGIN
+
+    CASE
+        WHEN _patio_id = 0 THEN
+
+            INSERT INTO patios(
+                code,
+                title,
+                last_touch_time,
+                creation_time,
+                blocked
+            )VALUES(
+                _code,
+                _title,
+                current_moment,
+                current_moment,
+                false
+            );
+
+        WHEN _patio_id > 0 THEN
+
+
+            UPDATE patios
+            SET code = _code,
+                title = _title,
+                last_touch_time = current_moment
+            WHERE id = _patio_id;
+            
+
+        ELSE
+            RAISE EXCEPTION 'negative user identifier % is unsupported', _patio_id;
+
+    END CASE;
+
+    return ( _patio_id::integer, ''::text );
+
+    EXCEPTION
+        WHEN OTHERS THEN
+            GET STACKED DIAGNOSTICS rmsg = MESSAGE_TEXT;
+            return ( -1::integer, rmsg::text );
+
+END;
+$$;

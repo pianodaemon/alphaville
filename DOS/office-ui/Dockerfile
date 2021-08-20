@@ -10,8 +10,6 @@ WORKDIR $APP_DIR
 
 COPY . .
 
-RUN rm -r ./node_modules
-
 RUN yarn global add react-scripts
 
 RUN yarn install

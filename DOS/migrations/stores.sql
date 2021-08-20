@@ -195,7 +195,7 @@ $$;
 
 
 CREATE FUNCTION public.alter_carriers(
-    _carriers_id INT,
+    _carrier_id INT,
     _code character varying,
     _title character varying,
     _disabled boolean
@@ -219,7 +219,7 @@ BEGIN
 
     CASE
 
-       WHEN _carriers_id = 0 THEN
+       WHEN _carrier_id = 0 THEN
 
            INSERT INTO carriers(
                code,
@@ -237,22 +237,22 @@ BEGIN
                false
            );
 
-       WHEN _carriers_id > 0 THEN
+       WHEN _carrier_id > 0 THEN
 
            UPDATE carriers
            SET code = _code,
                title = _title,
                disabled = _disabled,
                last_touch_time = current_moment
-           WHERE id = _carriers_id;
+           WHERE id = _carrier_id;
            
        ELSE
        
-           RAISE EXCEPTION 'negative user identifier % is unsupported', _carriers_id;
+           RAISE EXCEPTION 'negative user identifier % is unsupported', _carrier_id;
 
    END CASE;
    
-   RETURN(_carriers_id::integer,''::text);
+   RETURN(_carrier_id::integer,''::text);
    
    EXCEPTION
 

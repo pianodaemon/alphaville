@@ -177,7 +177,7 @@ BEGIN
             
 
         ELSE
-            RAISE EXCEPTION 'negative user identifier % is unsupported', _patio_id;
+            RAISE EXCEPTION 'negative work yard identifier % is unsupported', _patio_id;
 
     END CASE;
 

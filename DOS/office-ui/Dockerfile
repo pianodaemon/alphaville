@@ -7,18 +7,19 @@ ARG REACT_APP_HOST_AUTH
 
 ENV APP_DIR=/app
 WORKDIR $APP_DIR
-COPY . .
-# ENV GENERATE_SOURCEMAP=false
-RUN rm -r ./node_modules
-#RUN npm install react-scripts -g --silent
-RUN yarn global add react-scripts
-RUN yarn install
-RUN yarn run build
-# RUN yarn run prod-server
 
-# FROM mhart/alpine-node
+COPY . .
+
+RUN rm -r ./node_modules
+
+RUN yarn global add react-scripts
+
+RUN yarn install
+
+RUN yarn run build
+
 RUN yarn global add serve
-# COPY --from=builder /app/build .
+
 COPY scripts/run_service.sh $APP_DIR
-# CMD ["serve", "-p", "8080", "-s", "."]
+
 CMD ["/app/run_service.sh"]

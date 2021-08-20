@@ -234,7 +234,7 @@ BEGIN
            )VALUES(
                _code,
                _title,
-               false,
+               _disabled,
                current_moment,
                current_moment,
                false

@@ -164,7 +164,7 @@ BEGIN
                 current_moment,
                 current_moment,
                 false
-            );
+            )RETURNING id INTO _patio_id;
 
         WHEN _patio_id > 0 THEN
 

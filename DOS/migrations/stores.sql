@@ -172,7 +172,7 @@ BEGIN
 
 
             UPDATE patios
-            SET code = _code,
+            SET code = _code
             WHERE id = _patio_id;
             
 

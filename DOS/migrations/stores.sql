@@ -245,7 +245,7 @@ BEGIN
            UPDATE carriers
            SET code = _code,
                title = _title,
-               disabled = false,
+               disabled = _disabled,
                last_touch_time = current_moment
            WHERE id = _carriers_id;
            

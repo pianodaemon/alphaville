@@ -151,6 +151,17 @@ var UsersService = exports.UsersService = {
     responseSerialize: serialize_dylk_UserResponse,
     responseDeserialize: deserialize_dylk_UserResponse,
   },
+  deleteUser: {
+    path: '/dylk.Users/DeleteUser',
+    requestStream: false,
+    responseStream: false,
+    requestType: users_pb.Id,
+    responseType: users_pb.GeneralResponse,
+    requestSerialize: serialize_dylk_Id,
+    requestDeserialize: deserialize_dylk_Id,
+    responseSerialize: serialize_dylk_GeneralResponse,
+    responseDeserialize: deserialize_dylk_GeneralResponse,
+  },
   getCatalogs: {
     path: '/dylk.Users/GetCatalogs',
     requestStream: false,

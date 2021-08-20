@@ -5,7 +5,7 @@ var express = require("express"),
 const { listUsers, readUser, createUser } = require("./users");
 var cors = require('cors');
 
-const PORT = 8081;
+const PORT = process.env.SERVER_PORT || 8081;
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -17,7 +17,7 @@ app.use(cors({
 }));
 */
 
-var allowlist = ['http://localhost:3000', 'http://localhost:8080']
+var allowlist = ['http://localhost:3000', 'http://localhost:8080', 'http://3.16.91.101:8080'];
 var corsOptionsDelegate = function (req, callback) {
   var corsOptions;
   if (allowlist.indexOf(req.header('Origin')) !== -1) {

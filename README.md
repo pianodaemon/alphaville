@@ -4,4 +4,4 @@ Release - Big in Japan
 
 ## The ecosystem
 
-![enter image description here](./docs/imgs/ecosystem.jpeg)
+![enter image description here](./docs/imgs/ecosystem.png)

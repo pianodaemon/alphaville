@@ -122,12 +122,76 @@ ALTER FUNCTION public.alter_user(_user_id integer, _username character varying, 
 
 
 
+CREATE FUNCTION public.alter_equipment(
+    _equipment_id INT,
+    _code character varying,
+    _title character varying
+) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    -- >> Description: Create/Edit equipment     >>
+    -- >> Version:     nina_fresa                >>
+    -- >> Date:        20/ago/2021               >>
+    -- >> Developer:   Edwin Plauchu Camacho     >>
+    -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+    current_moment timestamp with time zone := now();
+
+    -- dump of errors
+    rmsg text := '';
+
+BEGIN
+
+    CASE
+        WHEN _equipment_id = 0 THEN
+
+            INSERT INTO equipments(
+                code,
+                title,
+                last_touch_time,
+                creation_time,
+                blocked
+            )VALUES(
+                _code,
+                _title,
+                current_moment,
+                current_moment,
+                false
+            )RETURNING id INTO _equipment_id;
+
+        WHEN _equipment_id > 0 THEN
+
+
+            UPDATE equipments
+            SET code = _code,
+                title = _title,
+                last_touch_time = current_moment
+            WHERE id = _equipment_id;
+            
+
+        ELSE
+
+            RAISE EXCEPTION 'negative equipment identifier % is unsupported', _equipment_id;
+
+
+    END CASE;
+
+    return ( _equipment_id::integer, ''::text );
+
+    EXCEPTION
+        WHEN OTHERS THEN
+            GET STACKED DIAGNOSTICS rmsg = MESSAGE_TEXT;
+            return ( -1::integer, rmsg::text );
+
+END;
+$$;
 
 
 
 
-
-CREATE FUNCTION public.alter_patios(
+CREATE FUNCTION public.alter_patio(
     _patio_id INT,
     _code character varying,
     _title character varying
@@ -136,7 +200,7 @@ CREATE FUNCTION public.alter_patios(
     AS $$
 DECLARE
     -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    -- >> Description: Create/Edit user                                             >>
+    -- >> Description: Create/Edit patio                                            >>
     -- >> Version:     nina_fresa                                                   >>
     -- >> Date:        19/ago/2021                                                  >>
     -- >> Developer:   Alvaro Gamez Chavez                                          >>
@@ -194,7 +258,7 @@ END;
 $$;
 
 
-CREATE FUNCTION public.alter_carriers(
+CREATE FUNCTION public.alter_carrier(
     _carrier_id INT,
     _code character varying,
     _title character varying,
@@ -204,7 +268,7 @@ CREATE FUNCTION public.alter_carriers(
     AS $$
 DECLARE
     -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    -- >> Description: Create/Edit carriers                                         >>
+    -- >> Description: Create/Edit carrier                                          >>
     -- >> Version:     nina_fresa                                                   >>
     -- >> Date:        20/ago/2021                                                  >>
     -- >> Developer:   Alvaro Gamez Chavez                                          >>

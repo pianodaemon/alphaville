@@ -31,7 +31,7 @@ function* loadUsersWorker(action?: any): Generator<any, any, any> {
       page: page || paging.page,
       pages: paging.pages,
       order: order || paging.order,
-      order_by: aliases[order_by] || aliases[paging.order_by],
+      order_by: aliases[order_by] || aliases[paging.order_by] || 'id',
       ...filters,
     };
     delete options.filters;

@@ -122,12 +122,76 @@ ALTER FUNCTION public.alter_user(_user_id integer, _username character varying, 
 
 
 
+CREATE FUNCTION public.alter_equipment(
+    _equipment_id INT,
+    _code character varying,
+    _title character varying
+) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    -- >> Description: Create/Edit equipment     >>
+    -- >> Version:     nina_fresa                >>
+    -- >> Date:        20/ago/2021               >>
+    -- >> Developer:   Edwin Plauchu Camacho     >>
+    -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+    current_moment timestamp with time zone := now();
+
+    -- dump of errors
+    rmsg text := '';
+
+BEGIN
+
+    CASE
+        WHEN _equipment_id = 0 THEN
+
+            INSERT INTO equipments(
+                code,
+                title,
+                last_touch_time,
+                creation_time,
+                blocked
+            )VALUES(
+                _code,
+                _title,
+                current_moment,
+                current_moment,
+                false
+            )RETURNING id INTO _equipment_id;
+
+        WHEN _equipment_id > 0 THEN
+
+
+            UPDATE equipments
+            SET code = _code,
+                title = _title,
+                last_touch_time = current_moment
+            WHERE id = _equipment_id;
+            
+
+        ELSE
+
+            RAISE EXCEPTION 'negative equipment identifier % is unsupported', _equipment_id;
+
+
+    END CASE;
+
+    return ( _equipment_id::integer, ''::text );
+
+    EXCEPTION
+        WHEN OTHERS THEN
+            GET STACKED DIAGNOSTICS rmsg = MESSAGE_TEXT;
+            return ( -1::integer, rmsg::text );
+
+END;
+$$;
 
 
 
 
-
-CREATE FUNCTION public.alter_patios(
+CREATE FUNCTION public.alter_patio(
     _patio_id INT,
     _code character varying,
     _title character varying
@@ -136,7 +200,7 @@ CREATE FUNCTION public.alter_patios(
     AS $$
 DECLARE
     -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    -- >> Description: Create/Edit user                                             >>
+    -- >> Description: Create/Edit patio                                            >>
     -- >> Version:     nina_fresa                                                   >>
     -- >> Date:        19/ago/2021                                                  >>
     -- >> Developer:   Alvaro Gamez Chavez                                          >>
@@ -164,7 +228,7 @@ BEGIN
                 current_moment,
                 current_moment,
                 false
-            );
+            )RETURNING id INTO _patio_id;
 
         WHEN _patio_id > 0 THEN
 
@@ -177,7 +241,9 @@ BEGIN
             
 
         ELSE
-            RAISE EXCEPTION 'negative user identifier % is unsupported', _patio_id;
+
+            RAISE EXCEPTION 'negative work yard identifier % is unsupported', _patio_id;
+
 
     END CASE;
 
@@ -190,3 +256,74 @@ BEGIN
 
 END;
 $$;
+
+
+CREATE FUNCTION public.alter_carrier(
+    _carrier_id INT,
+    _code character varying,
+    _title character varying,
+    _disabled boolean
+) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    -- >> Description: Create/Edit carrier                                          >>
+    -- >> Version:     nina_fresa                                                   >>
+    -- >> Date:        20/ago/2021                                                  >>
+    -- >> Developer:   Alvaro Gamez Chavez                                          >>
+    -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+     current_moment timestamp with time zone := now();
+     
+    -- dump of errors
+    rmsg text := '';
+
+BEGIN
+
+    CASE
+
+       WHEN _carrier_id = 0 THEN
+
+           INSERT INTO carriers(
+               code,
+               title,
+               disabled,
+               last_touch_time,
+               creation_time,
+               blocked
+           )VALUES(
+               _code,
+               _title,
+               _disabled,
+               current_moment,
+               current_moment,
+               false
+           );
+
+       WHEN _carrier_id > 0 THEN
+
+           UPDATE carriers
+           SET code = _code,
+               title = _title,
+               disabled = _disabled,
+               last_touch_time = current_moment
+           WHERE id = _carrier_id;
+           
+       ELSE
+       
+           RAISE EXCEPTION 'negative user identifier % is unsupported', _carrier_id;
+
+   END CASE;
+   
+   RETURN(_carrier_id::integer,''::text);
+   
+   EXCEPTION
+
+       WHEN others THEN
+       
+           GET STACKED DIAGNOSTICS rmsg = MESSAGE_TEXT;
+           return ( -1::integer, rmsg::text );
+   
+END;
+$$

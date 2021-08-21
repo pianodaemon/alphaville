@@ -299,7 +299,7 @@ BEGIN
                current_moment,
                current_moment,
                false
-           );
+           ) RETURNING id INTO _carrier_id;
 
        WHEN _carrier_id > 0 THEN
 

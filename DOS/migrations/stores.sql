@@ -327,3 +327,70 @@ BEGIN
    
 END;
 $$
+
+
+CREATE FUNCTION alter_unit(
+    _unit_id INT,
+    _code character varying,
+    _title character varying
+) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    -- >> Description: Create/Edit unit         >>
+    -- >> Version:     nina_fresa               >>
+    -- >> Date:        19/ago/2021              >>
+    -- >> Developer:   Alvaro Gamez Chavez      >>
+    -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+    current_moment timestamp with time zone := now();
+
+    -- dump of errors
+    rmsg text := '';
+
+BEGIN
+
+    CASE
+        WHEN _unit_id = 0 THEN
+
+            INSERT INTO units(
+                code,
+                title,
+                last_touch_time,
+                creation_time,
+                blocked
+            )VALUES(
+                _code,
+                _title,
+                current_moment,
+                current_moment,
+                false
+            ) RETURNING id INTO _unit_id;
+
+        WHEN _unit_id > 0 THEN
+
+
+            UPDATE units
+            SET code = _code,
+                title = _title,
+                last_touch_time = current_moment
+            WHERE id = _unit_id;
+            
+
+        ELSE
+
+            RAISE EXCEPTION 'negative unit identifier % is unsupported', _unit_id;
+
+
+    END CASE;
+
+    return ( _unit_id::integer, ''::text );
+
+    EXCEPTION
+        WHEN OTHERS THEN
+            GET STACKED DIAGNOSTICS rmsg = MESSAGE_TEXT;
+            return ( -1::integer, rmsg::text );
+
+END;
+$$;

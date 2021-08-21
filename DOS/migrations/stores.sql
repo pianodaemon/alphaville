@@ -312,7 +312,7 @@ BEGIN
            
        ELSE
        
-           RAISE EXCEPTION 'negative user identifier % is unsupported', _carrier_id;
+           RAISE EXCEPTION 'negative carrier identifier % is unsupported', _carrier_id;
 
    END CASE;
    

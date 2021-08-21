@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package dylk;
+
+// -------------------------------------------------------------------------
+// The Carriers service definition.
+service Carriers {
+  rpc AlterCarrier   (Carrier)       returns (GeneralResponse)  {}
+  rpc DeleteCarrier  (Id)            returns (GeneralResponse)  {}
+}
+
+message Carrier {
+  int32 carrierId            = 1;
+  string code                = 2;
+  string name                = 3;
+  bool disabled              = 4;
+}
+
+message Id {
+  int32 id = 1;
+}
+
+message GeneralResponse {
+  int32 returnCode     = 1;
+  string returnMessage = 2;
+}

@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package dylk;
+
+// -------------------------------------------------------------------------
+// The Units service definition.
+service Units {
+  rpc AlterUnit   (Unit)       returns (GeneralResponse)  {}
+  rpc DeleteUnit  (Id)         returns (GeneralResponse)  {}
+}
+
+message Unit {
+  int32 unitId               = 1;
+  string code                = 2;
+  string name                = 3;
+}
+
+message Id {
+  int32 id = 1;
+}
+
+message GeneralResponse {
+  int32 returnCode     = 1;
+  string returnMessage = 2;
+}

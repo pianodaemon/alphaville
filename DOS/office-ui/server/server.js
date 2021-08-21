@@ -37,7 +37,7 @@ router.get("/", function (req, res) {
 });
 
 router.get("/users", cors(corsOptionsDelegate), function (req, res) {
-  listUsers()
+  listUsers(req.query)
     .then((data) => res.json(data))
     .catch((err) => res.status(500).json(err));
 });

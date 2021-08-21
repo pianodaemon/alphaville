@@ -1,9 +1,9 @@
 import { Action, createAction, ActionFunctionAny } from 'redux-actions';
-import { call, put, /*select,*/ takeLatest, delay } from 'redux-saga/effects';
+import { call, put, select, takeLatest, delay } from 'redux-saga/effects';
 import { mergeSaga } from 'src/redux-utils/merge-saga';
 import { getUsers } from '../../service/user.service';
 import { usersReducer } from '../users.reducer';
-// import { pagingSelector } from '../users.selectors';
+import { pagingSelector } from '../users.selectors';
 
 const postfix = '/app';
 const LOAD_USERS = `LOAD_USERS${postfix}`;
@@ -22,30 +22,33 @@ export const loadUsersErrorAction: ActionFunctionAny<
 
 function* loadUsersWorker(action?: any): Generator<any, any, any> {
   try {
-    // const { per_page, page, order, order_by } = action.payload || {};
-    // const paging = yield select(pagingSelector);
-    /*
+    const aliases = {userId: "id", username: 'username'};
+    const { per_page, page, order, order_by, filters } = action.payload || {};
+    const paging = yield select(pagingSelector);
     const options = {
       ...action.payload,
       per_page: per_page || paging.per_page,
       page: page || paging.page,
       pages: paging.pages,
       order: order || paging.order,
+      order_by: aliases[order_by] || aliases[paging.order_by],
+      ...filters,
     };
-    */
-    const result = yield call(getUsers, {});
+    delete options.filters;
+    const result = yield call(getUsers, options);
     yield delay(500);
     yield put(
       loadUsersSuccessAction({
         users: result.data,
         paging: {
-          count: parseInt(result.headers['x-soa-total-items'], 10) || 0,
-          pages: parseInt(result.headers['x-soa-total-pages'], 10) || 0,
-          // page: page || paging.page,
-          // per_page: per_page || paging.per_page,
-          // order: order || paging.order,
-          // order_by: order_by || paging.order_by,
+          count: parseInt(result.data.totalItems, 10) || 0,
+          pages: parseInt(result.data.totalPages, 10) || 0,
+          page: page || paging.page,
+          per_page: per_page || paging.per_page,
+          order: order || paging.order,
+          order_by: order_by || paging.order_by,
         },
+        filters,
       }),
     );
   } catch (e) {
@@ -58,14 +61,15 @@ function* loadUsersWatcher(): Generator<any, any, any> {
 }
 
 const usersReducerHandlers = {
-  [LOAD_USERS]: (state: any) => {
+  [LOAD_USERS]: (state: any, action) => {
     return {
       ...state,
       loading: true,
+      filters: action.payload.filters,
     };
   },
   [LOAD_USERS_SUCCESS]: (state: any, action: any) => {
-    const { users, paging } = action.payload;
+    const { users, paging, filters } = action.payload;
     return {
       ...state,
       loading: false,
@@ -73,6 +77,7 @@ const usersReducerHandlers = {
       paging: {
         ...paging,
       },
+      filters,
     };
   },
   [LOAD_USERS_ERROR]: (state: any) => {

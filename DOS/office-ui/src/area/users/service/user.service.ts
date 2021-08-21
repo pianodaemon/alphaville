@@ -5,7 +5,7 @@ import { getAppSettings } from 'src/shared/utils/app-settings.util';
 export function getUsers(options: any): Promise<any> {
   const searchParams = new URLSearchParams({
     ...options,
-    limit: Number.MAX_SAFE_INTEGER,
+    // limit: Number.MAX_SAFE_INTEGER,
   });
   return axiosApi(
     `${getAppSettings().baseUrl}/users/?${searchParams}`,

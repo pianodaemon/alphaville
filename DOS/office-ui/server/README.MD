@@ -28,6 +28,10 @@
 docker rm -f rdbms_vales
 docker volume rm alphaville_serv_vales_pg_data
 
+# Log Docker container
+https://stackoverflow.com/questions/10815218/where-is-nodejs-log-file/41514710#41514710
+    docker attach eastern_sea
+
 #yarn add grpc-web
 #yarn add ts-protoc-gen
 #yarn add google-protobuf

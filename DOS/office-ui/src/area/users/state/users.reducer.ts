@@ -24,6 +24,7 @@ interface UserSlice {
     order: string,
     order_by: string,
   };
+  filters: {[key: string]: string} | null,
 }
 /*
 export type Catalog = {
@@ -53,6 +54,7 @@ const initialState: UserSlice = {
     order: 'desc',
     order_by: 'id',
   },
+  filters: null,
 };
 
 export const sliceName = 'usersSlice';

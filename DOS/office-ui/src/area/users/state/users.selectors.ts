@@ -77,3 +77,7 @@ export const pagingSelector = createSelector(
   (slice: any) => slice.paging
 );
 
+export const filtersSelector = createSelector(
+  sliceSelector,
+  (slice: any) => slice.filters
+);

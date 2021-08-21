@@ -6,9 +6,11 @@ var protoLoader = require("@grpc/proto-loader");
 //var parseArgs = require("minimist");
 var messages = require("./grpc/users_pb");
 var services = require("./grpc/users_grpc_pb");
-const TARGET = "localhost:10080";
+const TARGET =
+  process.env.NODE_ENV === "production"
+    ? "neon_nights:10080"
+    : "localhost:10080";
 const PROTO_PATH = __dirname + "/grpc/protos/users.proto";
-console.log('PROTO_PATH', PROTO_PATH);
 const options = {
   keepCase: true,
   longs: String,
@@ -19,79 +21,101 @@ const options = {
 var packageDefinition = protoLoader.loadSync(PROTO_PATH, options);
 const UsersService = grpc.loadPackageDefinition(packageDefinition).dylk.Users;
 
-function setupUsersClient() {
-  return new UsersService(TARGET, grpc.credentials.createInsecure());
+function setupUsersClient(method) {
+  const client = new UsersService(TARGET, grpc.credentials.createInsecure());
+  return (promisifiedClient = promisify(client[method]).bind(client));
 }
 
-async function listUsers() {
-  var client = setupUsersClient();
-  const promisifiedClient = promisify(client.listUsers).bind(client);
-  const call_service = async (req, service_name) => {
-    try {
-      // @todo add SearchParam (filters)
-      // var param = new messages.Param().setName('disabled').setValue(false);
-      const response = await service_name(req);
-      return response;
-    } catch (error) {
-      /* @todo Return HTTP 500 code or something appropied */
-      console.log("error", error);
+async function listUsers(query) {
+  try {
+    const promisifiedClient = setupUsersClient("listUsers");
+    // @todo add SearchParam (filters)
+    // var param = new messages.Param().setName('disabled').setValue(false);
+    // var request = new messages.SearchParams();
+    // var param = new messages.Param();
+    // param.setName("role_id");
+    // param.setValue("1");
+    // request.addParamlist();
+    //request.addPageparamlist(null);
+    const paramList = [];
+    if (query.roleId) {
+      paramList.push({
+        name: "role_id",
+        value: query.roleId,
+      });
     }
-  };
-  var request = new messages.SearchParams();
-  /*
-  var param = new messages.Param();
-  param.setValue('disabled');
-  param.setName('true');
-  request.addParamlist(param);
-  */
-  const response = await call_service(request, promisifiedClient);
-
-  return response;
+    if (query.disabled) {
+      paramList.push({
+        name: "disabled",
+        value: query.disabled,
+      });
+    }
+    const params = {
+      paramList,
+      pageParamList: [
+        {
+          name: "order_by",
+          value: query.order_by,
+        },
+        {
+          name: "order",
+          value: query.order,
+        },
+        {
+          name: "per_page",
+          value: query.per_page,
+        },
+        {
+          name: "page",
+          value: query.page,
+        },
+      ],
+    };
+    const call_service = async (req, service_name) => {
+      try {
+        const response = await service_name(req);
+        return response;
+      } catch (error) {
+        /* @todo Return HTTP 500 code or something appropied */
+        console.log("error", error);
+      }
+    };
+    const response = await call_service(params, promisifiedClient);
+    return response;
+  } catch (e) {
+    console.log("error", e);
+  }
 }
 
 async function createUser(fields) {
-
-  var client = setupUsersClient();
-  var request = new messages.User();
-  request.setUserid(0);
-  request.setUsername("qwertxx");
-  request.setPasswd(""); //
-  request.setRoleid(2);
-  request.setDisabled(false);
-  request.setFirstname("test");
-  request.setLastname("test");
-  request.setAuthoritiesList([1, 2, 3]);
-  // console.log(request);
-  client.alterUser(request, function (err, response) {
-    console.log("Response:", util.inspect(response, true, 255), err);
-  });
-  /*
-  var client = setupUsersClient();
-  const promisifiedClient = promisify(client.alterUser).bind(client);
-  const call_service = async (req, service_name) => {
-    try {
-      console.log('req:', req);
-      const response = await service_name(req);
-      return response;
-    } catch (error) {
-      // @todo Return HTTP 500 code or something appropied
-      console.log("error", error);
-    }
+  const promisifiedClient = setupUsersClient("alterUser");
+  const user = {
+    userId: 0,
+    username: fields.username,
+    passwd: fields.username,
+    roleId: fields.roleId,
+    disabled: fields.disabled,
+    firstName: fields.firstName,
+    lastName: fields.lastName,
+    authorities: fields.authorities || [],
   };
-  console.log(fields);
-  var request = new messages.User();
-  request.setUserid(0);
-  request.setUsername(fields.username);
-  request.setPasswd(fields.passwd);
-  request.setRoleid(fields.roleId);
-  request.setDisabled(fields.disabled);
-  request.setFirstname(fields.firstName);
-  request.setLastname(fields.lastName);
-  request.setAuthoritiesList(fields.authorities);
-  
-  const response = await call_service(request, promisifiedClient);
-  return response;
-  */
+  try {
+    const call_service = async (req, service) => {
+      try {
+        // @todo add SearchParam (filters)
+        // var param = new messages.Param().setName('disabled').setValue(false);
+        const response = await service(req);
+        return response;
+      } catch (error) {
+        /* @todo Return HTTP 500 code or something appropied */
+        console.log("error", error);
+      }
+    };
+    const response = await call_service(user, promisifiedClient);
+    return response;
+  } catch (e) {
+    console.log("error", e);
+  }
 }
 
 async function readUser(id) {
@@ -110,7 +134,6 @@ async function readUser(id) {
   };
   var request = { id };
   const response = await call_service(request, promisifiedClient);
-
   return response;
 }
 

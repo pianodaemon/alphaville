@@ -3,19 +3,21 @@ import math
 from misc.helperpg import run_stored_procedure, exec_steady, update_steady, EmptySetError
 from .entity import count_entities
 
-def alter_carrier(carrier_id, code, name):
+def alter_carrier(carrier_id, code, name, disabled):
     """Calls database function in order to create/update a carrier"""
 
     sql = """
             SELECT * FROM alter_carrier(
                 {}::integer,
                 '{}'::character varying,
-                '{}'::character varying
+                '{}'::character varying,
+                {}::boolean
             ) AS (rc integer, msg text);
             """.format(
                 carrier_id,
                 code.replace("'", "''"),
-                name.replace("'", "''")
+                name.replace("'", "''"),
+                disabled
             )
 
     return run_stored_procedure(sql)

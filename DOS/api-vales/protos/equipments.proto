@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package dylk;
+
+// -------------------------------------------------------------------------
+// The Equipments service definition.
+service Equipments {
+  rpc AlterEquipment   (Equipment)       returns (GeneralResponse)  {}
+  rpc DeleteEquipment  (Id)              returns (GeneralResponse)  {}
+}
+
+message Equipment {
+  int32 equipmentId          = 1;
+  string code                = 2;
+  string name                = 3;
+}
+
+message Id {
+  int32 id = 1;
+}
+
+message GeneralResponse {
+  int32 returnCode     = 1;
+  string returnMessage = 2;
+}

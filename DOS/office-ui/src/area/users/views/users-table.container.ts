@@ -6,7 +6,8 @@ import { loadUsersAction } from '../state/usecases/load-users.usecase';
 import {
   isLoadingSelector,
   usersCatalogSelector,
-  // pagingSelector,
+  pagingSelector,
+  filtersSelector
 } from '../state/users.selectors';
 
 const mapDispatchToProps = {
@@ -18,8 +19,9 @@ function mapStateToProps(state: any) {
   return {
     users: usersCatalogSelector(state),
     loading: isLoadingSelector(state),
-    // paging: pagingSelector(state),
+    paging: pagingSelector(state),
     // isAllowed: permissionSelector(state),
+    filters: filtersSelector(state),
   };
 }
 

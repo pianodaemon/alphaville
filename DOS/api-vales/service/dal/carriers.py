@@ -39,7 +39,7 @@ def delete_carrier(id):
         msg = ''
     except EmptySetError as err:
         rc = -1
-        msg = 'Patio with id {} does not exist.'.format(id)
+        msg = 'Carrier with id {} does not exist.'.format(id)
     except Exception as err:
         rc = -1
         msg = repr(err)

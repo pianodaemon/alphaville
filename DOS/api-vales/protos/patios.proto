@@ -12,7 +12,7 @@ service Patios {
 }
 
 message Patio {
-  int32 equipmentId          = 1;
+  int32 patioId              = 1;
   string code                = 2;
   string name                = 3;
 }

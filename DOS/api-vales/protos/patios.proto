@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+option go_package = "immortalcrab.com/sso/protos";
+
+package dylk;
+
+// -------------------------------------------------------------------------
+// The Patios service definition.
+service Patios {
+  rpc AlterPatio   (Patio)       returns (GeneralResponse)  {}
+  rpc DeletePatio  (Id)          returns (GeneralResponse)  {}
+}
+
+message Patio {
+  int32 equipmentId          = 1;
+  string code                = 2;
+  string name                = 3;
+}
+
+message Id {
+  int32 id = 1;
+}
+
+message GeneralResponse {
+  int32 returnCode     = 1;
+  string returnMessage = 2;
+}

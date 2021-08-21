@@ -1,5 +1,5 @@
-# alphaville
-Big in Japan
+# The alphaville's project
+Release - Big in Japan
 
 
 # The ecosystem

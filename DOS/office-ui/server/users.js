@@ -6,10 +6,13 @@ var protoLoader = require("@grpc/proto-loader");
 //var parseArgs = require("minimist");
 var messages = require("./grpc/users_pb");
 var services = require("./grpc/users_grpc_pb");
+/*
 const TARGET =
   process.env.NODE_ENV === "production"
     ? "neon_nights:10080"
     : "localhost:10080";
+*/
+const TARGET = "neon_nights:10080";
 const PROTO_PATH = __dirname + "/grpc/protos/users.proto";
 const options = {
   keepCase: true,
@@ -22,8 +25,26 @@ var packageDefinition = protoLoader.loadSync(PROTO_PATH, options);
 const UsersService = grpc.loadPackageDefinition(packageDefinition).dylk.Users;
 
 function setupUsersClient(method) {
+  console.log(TARGET, process.env.NODE_ENV);
   const client = new UsersService(TARGET, grpc.credentials.createInsecure());
   return (promisifiedClient = promisify(client[method]).bind(client));
+}
+
+async function getCatalogs() {
+  const promisifiedClient = setupUsersClient("getCatalogs");
+  const call_service = async (req, service_name) => {
+    try {
+      // @todo add SearchParam (filters)
+      // var param = new messages.Param().setName('disabled').setValue(false);
+      const response = await service_name(req);
+      return response;
+    } catch (error) {
+      /* @todo Return HTTP 500 code or something appropied */
+      console.log("error", error);
+    }
+  };
+  const response = await call_service({}, promisifiedClient);
+  return response;
 }
 
 async function listUsers(query) {

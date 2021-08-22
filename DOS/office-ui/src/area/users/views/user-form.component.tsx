@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
-// import { Formik } from 'formik';
 import { useForm, Controller } from "react-hook-form";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
@@ -14,7 +13,6 @@ import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-// import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { CheckboxesGroup } from "src/shared/components/select-multiple.component";
@@ -115,7 +113,6 @@ const schema = yup.object().shape({
   firstName: yup.string().required(),
   lastName: yup.string().required(),
   disabled: yup.boolean(),
-  // age: yup.number().positive().integer().required(),
 });
 
 export const UserForm = (props: Props) => {
@@ -138,10 +135,11 @@ export const UserForm = (props: Props) => {
   };
   const {
     control,
-    // register,
     handleSubmit,
     formState: { errors },
     reset,
+    getValues,
+    setValue,
   } = useForm({
     defaultValues: initialValues,
     resolver: yupResolver(schema),
@@ -308,13 +306,13 @@ export const UserForm = (props: Props) => {
               control={control}
               render={({ field }) => (
                 <FormControl className={classes.formControl}>
-                  <InputLabel>Puesto</InputLabel>
+                  <InputLabel>Rol</InputLabel>
                   <Select
                     {...field}
                     labelId="roleId"
                     id="roleId"
                     // value={catalog && field.value ? field.value || "" : ""}
-                    value={field.value ? field.value || "" : ""}
+                    value={catalog && field.value ? field.value || "" : ""}
                   >
                     {catalog &&
                       catalog.roleList &&
@@ -339,31 +337,22 @@ export const UserForm = (props: Props) => {
             />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <Controller
-              name="authorities"
+            <CheckboxesGroup
               control={control}
-              render={({ field }) => (
-                <>
-                  <CheckboxesGroup
-                    {...field}
-                    title="Permisos"
-                    options={(catalog && catalog.authorityList) || []}
-                    onChange={field.onChange}
-                    // items={field.value}
-                    // items={field.value || []}
-                    items={[]}
-                  />
-                  {errors.authorities && (
-                    <FormHelperText
-                      error
-                      classes={{ error: classes.textErrorHelper }}
-                    >
-                      Ingrese al menos un permiso
-                    </FormHelperText>
-                  )}
-                </>
-              )}
+              getValues={getValues}
+              name="authorities"
+              options={(catalog && catalog.authorityList) || []}
+              setValue={setValue}
+              title="Permisos"
             />
+            {errors.authorities && (
+              <FormHelperText
+                error
+                classes={{ error: classes.textErrorHelper }}
+              >
+                Ingrese al menos un permiso
+              </FormHelperText>
+            )}
           </Grid>
         </Grid>
 

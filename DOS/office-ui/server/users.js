@@ -22,7 +22,7 @@ var packageDefinition = protoLoader.loadSync(PROTO_PATH, options);
 const UsersService = grpc.loadPackageDefinition(packageDefinition).dylk.Users;
 
 function setupUsersClient(method) {
-  console.log(TARGET, process.env.NODE_ENV);
+  // console.log(TARGET, process.env.NODE_ENV);
   const client = new UsersService(TARGET, grpc.credentials.createInsecure());
   return (promisifiedClient = promisify(client[method]).bind(client));
 }

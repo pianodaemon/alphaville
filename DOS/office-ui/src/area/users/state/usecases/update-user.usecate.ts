@@ -25,7 +25,6 @@ export const updateUserErrorAction: ActionFunctionAny<
 function* updateUserWorker(action: any): Generator<any, any, any> {
   try {
     const { fields, history, id } = action.payload;
-    console.log('fields: ', fields);
     const result = yield call(updateUser, id, fields);
     yield put(updateUserSuccessAction(result));
     yield history.push('/users');

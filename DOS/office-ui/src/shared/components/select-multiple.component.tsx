@@ -1,4 +1,5 @@
 import React from 'react';
+import { Controller } from "react-hook-form";
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import FormLabel from '@material-ui/core/FormLabel';
 import FormControl from '@material-ui/core/FormControl';
@@ -14,13 +15,16 @@ type Props = {
     id: any,
     description?: string,
     code?: string,
+    title?: string,
   }>,
-  items: Array<string | number>,
-  onChange: (
+  onChange?: (
     event: React.ChangeEvent<HTMLInputElement>,
     checked: boolean,
   ) => void,
   name: string,
+  control: any,
+  getValues: any,
+  setValue: any,
 };
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -55,12 +59,18 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
+/**
+ * 
+ * Warning: 
+ * this component is Highly Coupled to React Hook Forms lib  
+ */
 export function CheckboxesGroup({
-  items,
   name,
   options,
   title,
-  onChange,
+  control,
+  getValues,
+  setValue,
 }: Props) {
   const classes = useStyles();
   return (
@@ -72,25 +82,40 @@ export function CheckboxesGroup({
           <FormGroup>
             {options &&
               options.map((option, index) => (
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={
-                        options &&
-                        options
-                          .map((op) => op.id.toString())
-                          .includes(
-                            items &&
-                              items.find((i: any) => i === option.id.toString())
-                          )
+                <Controller
+                  name={name}
+                  control={control}
+                  render={({ field }) => (
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          {...field}
+                          name={name}
+                          value={option.id}
+                          key={index}
+                          onChange={(e:any) => {
+                            const value = parseInt(e.target.value, 10);
+                            if (e.target.checked) {
+                              if (!getValues(name).includes(value)) {
+                                setValue(name, [...getValues(name), value]);
+                              }
+                            } else if (!e.target.checked) {
+                              if (getValues(name).includes(value)) {
+                                const a = (getValues(name) || []).filter(item => item !== value);
+                                setValue(name, [...a]);
+                              }
+                            }
+                          }}
+                          checked={
+                            (getValues(name) || []).includes(parseInt(option.id, 10))
+                          }
+                        />
                       }
-                      onChange={onChange}
-                      name={name}
-                      value={option.id}
+                      label={`${option.title} - ${option.code}`}
+                      key={`${option.id}-${index.toString().concat('index')}`}
                     />
-                  }
-                  label={option.description || option.code}
-                  key={`${option.id}-${index.toString().concat('index')}`}
+                  )}
+                  key={index}
                 />
               ))}
           </FormGroup>

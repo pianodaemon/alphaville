@@ -326,7 +326,7 @@ BEGIN
            return ( -1::integer, rmsg::text );
    
 END;
-$$
+$$;
 
 
 CREATE FUNCTION alter_unit(

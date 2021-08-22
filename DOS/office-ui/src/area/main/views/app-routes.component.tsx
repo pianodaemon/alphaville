@@ -82,7 +82,7 @@ const useStyles = makeStyles((theme: Theme) =>
     content: {
       top: 156,
       position: 'relative',
-      display: 'flex',
+      // display: 'flex',
       width: '100%',
       justifyContent: 'center',
     },

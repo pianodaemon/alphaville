@@ -14,13 +14,13 @@ COPY public.apps (id, title) FROM stdin;
 --
 
 COPY public.authorities (id, app_id, code, title) FROM stdin;
-1	1	USR-R	Read User data
-2	1	USR-U	Update/Create User data
-3	1	USR-D	Delete User data
-4	2	TIE-R	Read Tie-Down Equipment data
-5	2	TIE-U	Update/Create Tie-Down Equipment data
-6	2	TIE-D	Delete Tie-Down Equipment data
-7	3	REP-R	Take a look at reports
+1	1	USU-L	Leer datos de Usuario
+2	1	USU-A	Actualizar/Crear datos de Usuario
+3	1	USU-E	Eliminar Datos de Usuario
+4	2	EQA-L	Leer datos de Equipo de amarre
+5	2	EQA-A	Actualizar/Crear datos de Equipo de amarre
+6	2	EQA-E	Eliminar datos de Equipo de amarre
+7	3	REP-L	Visualizar reportes
 \.
 
 

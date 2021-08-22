@@ -21,9 +21,9 @@ SET row_security = off;
 --
 
 COPY public.apps (id, title) FROM stdin;
-1	USERS
-3	REPORTING
-2	TIE-DOWN-EQUIPMENT
+1	USUARIOS
+3	REPORTES
+2	EQUIPO DE AMARRE
 \.
 
 

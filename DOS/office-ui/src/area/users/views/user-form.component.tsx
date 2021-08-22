@@ -18,13 +18,14 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { CheckboxesGroup } from "src/shared/components/select-multiple.component";
-import { /*Catalog,*/ User } from "../state/users.reducer";
+import { Catalog, User } from "../state/users.reducer";
 
 type Props = {
-  createUserAction: Function,
+  createUserAction: Function;
   readUserAction: Function;
-  updateUserAction: Function,
-  // catalog: Catalog | null,
+  updateUserAction: Function;
+  loadUsersCatalogAction: Function;
+  catalog: Catalog | null;
   user: any;
 };
 
@@ -119,22 +120,25 @@ const schema = yup.object().shape({
 
 export const UserForm = (props: Props) => {
   const {
-    // catalog,
+    catalog,
     createUserAction,
     readUserAction,
     updateUserAction,
+    loadUsersCatalogAction,
     user,
   } = props;
   const initialValues = {
-    username: '',
-    passwd: '',
-    firstName: '',
-    lastName: '',
+    username: "",
+    passwd: "",
+    firstName: "",
+    lastName: "",
     disabled: false,
+    roleId: null,
+    authorities: [],
   };
   const {
     control,
-    register,
+    // register,
     handleSubmit,
     formState: { errors },
     reset,
@@ -146,6 +150,7 @@ export const UserForm = (props: Props) => {
   const history = useHistory();
   const { id } = useParams<any>();
   useEffect(() => {
+    loadUsersCatalogAction();
     if (id) {
       readUserAction({ id, history });
     }
@@ -168,9 +173,9 @@ export const UserForm = (props: Props) => {
     */
     if (id) {
       delete fields.id;
-      updateUserAction({ id, fields, history, /* releaseForm */ });
+      updateUserAction({ id, fields, history /* releaseForm */ });
     } else {
-      createUserAction({ fields, history, /* releaseForm */});
+      createUserAction({ fields, history /* releaseForm */ });
     }
   };
   return (
@@ -189,7 +194,7 @@ export const UserForm = (props: Props) => {
                     {...field}
                     id="username"
                     label="Nombre del Usuario"
-                    value={field.value ? field.value || '' : ''}
+                    value={field.value ? field.value || "" : ""}
                   />
                   {errors.username && (
                     <FormHelperText
@@ -213,7 +218,7 @@ export const UserForm = (props: Props) => {
                     {...field}
                     id="passwd"
                     label="Contraseña"
-                    value={field.value ? field.value || '' : ''}
+                    value={field.value ? field.value || "" : ""}
                   />
                   {errors.passwd && (
                     <FormHelperText
@@ -237,7 +242,7 @@ export const UserForm = (props: Props) => {
                     {...field}
                     id="firstName"
                     label="Nombre"
-                    value={field.value ? field.value || '' : ''}
+                    value={field.value ? field.value || "" : ""}
                   />
                   {errors.firstName && (
                     <FormHelperText
@@ -261,7 +266,7 @@ export const UserForm = (props: Props) => {
                     {...field}
                     id="lastName"
                     label="Apellido"
-                    value={field.value ? field.value || '' : ''}
+                    value={field.value ? field.value || "" : ""}
                   />
                   {errors.lastName && (
                     <FormHelperText
@@ -297,111 +302,69 @@ export const UserForm = (props: Props) => {
               )}
             />
           </Grid>
-
-
-
-
-
-
-
-
-          {/*
           <Grid item xs={12} sm={6}>
-            <FormControl className={classes.formControl}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    color="primary"
-                    checked={values.disabled || false}
-                    name="disabled"
-                    onChange={handleChange("disabled")}
-                  />
-                }
-                label="Desactivar"
-              />
-            </FormControl>
-          </Grid>
-
-
-          <Grid item xs={12} sm={6}>
-            <FormControl className={classes.formControl}>
-              <InputLabel>Puesto</InputLabel>
-              <Select
-                labelId="orgchart_role_id"
-                id="orgchart_role_id"
-                value={catalog ? values.orgchart_role_id || "" : ""}
-                onChange={handleChange("orgchart_role_id")}
-              >
-                {catalog &&
-                  catalog.orgchart_roles &&
-                  catalog.orgchart_roles.map((item) => {
-                    return (
-                      <MenuItem value={item.id} key={`type-${item.id}`}>
-                        {item.title}
-                      </MenuItem>
-                    );
-                  })}
-              </Select>
-              {errors.orgchart_role_id && touched.orgchart_role_id && (
-                <FormHelperText
-                  error
-                  classes={{ error: classes.textErrorHelper }}
-                >
-                  Seleccione un Puesto
-                </FormHelperText>
+            <Controller
+              name="roleId"
+              control={control}
+              render={({ field }) => (
+                <FormControl className={classes.formControl}>
+                  <InputLabel>Puesto</InputLabel>
+                  <Select
+                    {...field}
+                    labelId="roleId"
+                    id="roleId"
+                    // value={catalog && field.value ? field.value || "" : ""}
+                    value={field.value ? field.value || "" : ""}
+                  >
+                    {catalog &&
+                      catalog.roleList &&
+                      catalog.roleList.map((item) => {
+                        return (
+                          <MenuItem value={item.id} key={`type-${item.id}`}>
+                            {item.title}
+                          </MenuItem>
+                        );
+                      })}
+                  </Select>
+                  {errors.roleId && (
+                    <FormHelperText
+                      error
+                      classes={{ error: classes.textErrorHelper }}
+                    >
+                      Seleccione un Rol
+                    </FormHelperText>
+                  )}
+                </FormControl>
               )}
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <FormControl className={classes.formControl}>
-              <InputLabel>Dirección</InputLabel>
-              <Select
-                labelId="division_id"
-                id="division_id"
-                value={catalog ? values.division_id || 0 : ""}
-                onChange={handleChange("division_id")}
-              >
-                <MenuItem value={"0"} key={`type-todas`}>
-                  TODAS
-                </MenuItem>
-                {catalog &&
-                  catalog.divisions &&
-                  catalog.divisions.map((item) => {
-                    return (
-                      <MenuItem value={item.id} key={`type-${item.id}`}>
-                        {item.title}
-                      </MenuItem>
-                    );
-                  })}
-              </Select>
-              {errors.division_id && touched.division_id && (
-                <FormHelperText
-                  error
-                  classes={{ error: classes.textErrorHelper }}
-                >
-                  Seleccione una Dirección
-                </FormHelperText>
-              )}
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <CheckboxesGroup
-              title="Roles Disponibles"
-              options={(catalog && catalog.authorities) || []}
-              onChange={handleChange}
-              items={values.access_vector}
-              name="access_vector"
             />
-            {errors.access_vector && touched.access_vector && (
-              <FormHelperText
-                error
-                classes={{ error: classes.textErrorHelper }}
-              >
-                {errors.access_vector}
-              </FormHelperText>
-            )}
           </Grid>
-          */}
+          <Grid item xs={12} sm={6}>
+            <Controller
+              name="authorities"
+              control={control}
+              render={({ field }) => (
+                <>
+                  <CheckboxesGroup
+                    {...field}
+                    title="Permisos"
+                    options={(catalog && catalog.authorityList) || []}
+                    onChange={field.onChange}
+                    // items={field.value}
+                    // items={field.value || []}
+                    items={[]}
+                  />
+                  {errors.authorities && (
+                    <FormHelperText
+                      error
+                      classes={{ error: classes.textErrorHelper }}
+                    >
+                      Ingrese al menos un permiso
+                    </FormHelperText>
+                  )}
+                </>
+              )}
+            />
+          </Grid>
         </Grid>
 
         <Button

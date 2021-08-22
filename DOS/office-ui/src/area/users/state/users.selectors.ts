@@ -27,12 +27,12 @@ export const isLoadingSelector = createSelector(
   sliceSelector,
   (slice: any) => slice.loading
 );
-/*
+
 export const catalogSelector = createSelector(
   sliceSelector,
   (slice: any) => slice.catalog
 );
-*/
+
 export const usersCatalogSelector = createSelector(
   sliceSelector,
   // catalogSelector,

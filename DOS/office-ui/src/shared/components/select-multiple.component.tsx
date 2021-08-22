@@ -12,9 +12,10 @@ type Props = {
   title: string,
   options?: Array<{
     id: any,
-    description: string,
+    description?: string,
+    code?: string,
   }>,
-  items: Array<string>,
+  items: Array<string | number>,
   onChange: (
     event: React.ChangeEvent<HTMLInputElement>,
     checked: boolean,
@@ -88,7 +89,7 @@ export function CheckboxesGroup({
                       value={option.id}
                     />
                   }
-                  label={option.description}
+                  label={option.description || option.code}
                   key={`${option.id}-${index.toString().concat('index')}`}
                 />
               ))}

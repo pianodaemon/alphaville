@@ -1,4 +1,4 @@
-FROM mhart/alpine-node:12
+FROM mhart/alpine-node:14
 LABEL author="@telematica"
 
 ARG NODE_ENV
@@ -7,6 +7,8 @@ ARG REACT_APP_HOST_AUTH
 
 ENV APP_DIR=/app
 WORKDIR $APP_DIR
+
+ENV NODE_OPTIONS=--max-old-space-size=1024
 
 COPY . .
 

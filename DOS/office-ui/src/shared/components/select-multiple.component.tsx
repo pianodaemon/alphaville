@@ -95,13 +95,14 @@ export function CheckboxesGroup({
                           key={index}
                           onChange={(e:any) => {
                             const value = parseInt(e.target.value, 10);
+                            const values = getValues(name) || [];
                             if (e.target.checked) {
-                              if (!getValues(name).includes(value)) {
-                                setValue(name, [...getValues(name), value]);
+                              if (!values.includes(value)) {
+                                setValue(name, [...values, value]);
                               }
                             } else if (!e.target.checked) {
-                              if (getValues(name).includes(value)) {
-                                const a = (getValues(name) || []).filter(item => item !== value);
+                              if (values.includes(value)) {
+                                const a = (values || []).filter(item => item !== value);
                                 setValue(name, [...a]);
                               }
                             }

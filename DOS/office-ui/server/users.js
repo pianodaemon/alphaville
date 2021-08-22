@@ -55,7 +55,7 @@ async function listUsers(query) {
       pageParamList: [
         {
           name: "order_by",
-          value: query.order_by,
+          value: query.order_by || "id",
         },
         {
           name: "order",
@@ -93,7 +93,7 @@ async function createUser(fields) {
     userId: 0,
     username: fields.username,
     passwd: fields.username,
-    roleId: fields.roleId,
+    roleId: 1, // @todo remove this hardcoded value
     disabled: fields.disabled,
     firstName: fields.firstName,
     lastName: fields.lastName,
@@ -119,8 +119,56 @@ async function createUser(fields) {
 }
 
 async function readUser(id) {
-  var client = setupUsersClient();
-  const promisifiedClient = promisify(client.getUser).bind(client);
+  const promisifiedClient = setupUsersClient("getUser");
+  const call_service = async (req, service_name) => {
+    try {
+      // @todo add SearchParam (filters)
+      // var param = new messages.Param().setName('disabled').setValue(false);
+      const response = await service_name(req);
+      return response;
+    } catch (error) {
+      /* @todo Return HTTP 500 code or something appropied */
+      console.log("error", error);
+    }
+  };
+  var request = { id };
+  const response = await call_service(request, promisifiedClient);
+  return response;
+}
+
+async function updateUser(id, fields) {
+  const promisifiedClient = setupUsersClient("alterUser");
+  const user = {
+    userId: id,
+    username: fields.username,
+    passwd: fields.username,
+    roleId: fields.roleId,
+    disabled: fields.disabled,
+    firstName: fields.firstName,
+    lastName: fields.lastName,
+    authorities: fields.authorities || [],
+  };
+  try {
+    const call_service = async (req, service) => {
+      try {
+        // @todo add SearchParam (filters)
+        // var param = new messages.Param().setName('disabled').setValue(false);
+        const response = await service(req);
+        return response;
+      } catch (error) {
+        /* @todo Return HTTP 500 code or something appropied */
+        console.log("error", error);
+      }
+    };
+    const response = await call_service(user, promisifiedClient);
+    return response;
+  } catch (e) {
+    console.log("error", e);
+  }
+}
+
+async function deleteUser(id) {
+  const promisifiedClient = setupUsersClient("deleteUser");
   const call_service = async (req, service_name) => {
     try {
       // @todo add SearchParam (filters)
@@ -141,4 +189,6 @@ module.exports = {
   listUsers,
   createUser,
   readUser,
+  updateUser,
+  deleteUser,
 };

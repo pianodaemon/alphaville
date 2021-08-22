@@ -1,6 +1,6 @@
 import { axiosApi } from 'src/redux-utils/axios.helper';
 import { getAppSettings } from 'src/shared/utils/app-settings.util';
-// import { User } from '../state/users.reducer';
+import { User } from '../state/users.reducer';
 
 export function getUsers(options: any): Promise<any> {
   const searchParams = new URLSearchParams({
@@ -16,13 +16,6 @@ export function getUsers(options: any): Promise<any> {
     },
     false
   );
-}
-/*
-export function removeUser(id: number | string): Promise<any> {
-  return axiosApi(`${getAppSettings().baseUrl}/users/${id}`, {
-    method: 'delete',
-    withCredentials: true,
-  });
 }
 
 export function createUser(fields: User): Promise<any> {
@@ -59,4 +52,11 @@ export function updateUser(id: number | string, fields: User): Promise<any> {
     withCredentials: true,
   });
 }
-*/
+
+export function deleteUser(id: number | string): Promise<any> {
+  return axiosApi(`${getAppSettings().baseUrl}/users/${id}`, {
+    method: 'delete',
+    withCredentials: true,
+  });
+}
+

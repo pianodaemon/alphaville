@@ -6,13 +6,10 @@ var protoLoader = require("@grpc/proto-loader");
 //var parseArgs = require("minimist");
 var messages = require("./grpc/users_pb");
 var services = require("./grpc/users_grpc_pb");
-/*
 const TARGET =
   process.env.NODE_ENV === "production"
     ? "neon_nights:10080"
     : "localhost:10080";
-*/
-const TARGET = "neon_nights:10080";
 const PROTO_PATH = __dirname + "/grpc/protos/users.proto";
 const options = {
   keepCase: true,

@@ -1,11 +1,11 @@
 /* eslint-disable no-alert */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, /* useState */ } from "react";
 import { useHistory } from "react-router-dom";
 // import { User } from "src/area/users/state/users.reducer";
 import MaterialTable, {
   MTableToolbar,
   MTableBody,
-  MTableFilterRow,
+  // MTableFilterRow,
 } from "material-table";
 import TablePagination from "@material-ui/core/TablePagination";
 import Button from "@material-ui/core/Button";
@@ -21,7 +21,7 @@ type Props = {
   // users: Array<User>,
   users: any;
   loadUsersAction: Function;
-  // removeUserAction: Function,
+  deleteUserAction: Function,
   loading: boolean;
   paging: any;
   // isAllowed: Function,
@@ -32,14 +32,15 @@ export const UsersTable = (props: Props) => {
   const {
     users,
     loadUsersAction,
-    /*removeUserAction,*/ loading,
+    deleteUserAction,
+    loading,
     paging /* isAllowed */,
     filters,
   } = props;
   const { count, page, per_page, order } = paging;
   const history = useHistory();
-  const [listOrder, setListOrder] = useState<string>("");
-  const customSort = () => 0;
+  // const [listOrder, setListOrder] = useState<string>("");
+  // const customSort = () => 0;
   const customFilterAndSearch = (term: any, rowData: any) => true;
   const draggable: boolean = false;
   const sorting: boolean = false;
@@ -234,7 +235,7 @@ export const UsersTable = (props: Props) => {
                 `¿Realmente quieres eliminar el Usuario ${rowData.id}?\n Esta acción es irreversible`
               )
             ) {
-              // removeUserAction(rowData.id);
+              deleteUserAction(rowData.id);
             }
           },
           // disabled: !isAllowed('USR', PERMISSIONS.DELETE),

@@ -62,10 +62,13 @@ function* loadUsersWatcher(): Generator<any, any, any> {
 
 const usersReducerHandlers = {
   [LOAD_USERS]: (state: any, action) => {
+    const { payload } = action || {};
+    const { filters } = payload || {};
     return {
       ...state,
       loading: true,
-      filters: action.payload.filters,
+      filters: filters || {},
+      user: null,
     };
   },
   [LOAD_USERS_SUCCESS]: (state: any, action: any) => {

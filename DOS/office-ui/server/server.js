@@ -8,6 +8,7 @@ const {
   readUser,
   updateUser,
   deleteUser,
+  getCatalogs,
 } = require("./users");
 var cors = require("cors");
 
@@ -45,6 +46,12 @@ app.options("/users", cors(corsOptionsDelegate));
 
 router.get("/", function (req, res) {
   res.send("Dylk!");
+});
+
+router.get("/users/catalogs", cors(corsOptionsDelegate), function (req, res) {
+  getCatalogs()
+    .then((data) => res.json(data))
+    .catch((err) => res.status(500).json(err));
 });
 
 // enable pre-flight request for DELETE request

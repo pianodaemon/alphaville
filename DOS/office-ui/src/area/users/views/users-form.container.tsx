@@ -3,12 +3,14 @@ import { UserForm } from './user-form.component';
 import { createUserAction } from '../../users/state/usecases/create-user.usecase';
 import { readUserAction } from '../../users/state/usecases/read-user.usecase';
 import { updateUserAction } from '../../users/state/usecases/update-user.usecate';
+import { loadUsersCatalogAction } from '../../users/state/usecases/load-users-catalog.usecase';
 import {
-  // catalogSelector,
+  catalogSelector,
   userSelector,
 } from '../../users/state/users.selectors';
 
 const mapDispatchToProps = {
+  loadUsersCatalogAction,
   createUserAction,
   readUserAction,
   updateUserAction,
@@ -17,7 +19,7 @@ const mapDispatchToProps = {
 function mapStateToProps(state: any) {
   return {
     user: userSelector(state),
-    // catalog: catalogSelector(state),
+    catalog: catalogSelector(state),
   };
 }
 

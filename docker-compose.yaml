@@ -9,6 +9,10 @@ x-shared-environment: &commonEnv
     POSTGRES_HOST: "rdbms_vales"
     POSTGRES_DB: "vales_dylk"
 
+x-common-environment: &common-variables
+    SERVER_PORT: 8081
+    NODE_ENV: "production"
+
 services:
     illuminated_mannequin:
         container_name: 'illuminated_mannequin'
@@ -40,6 +44,7 @@ services:
             REACT_APP_HOST_API: 'http://localhost:8081'
             REACT_APP_HOST_AUTH: 'http://localhost:10090/v1'
             SERVER_PORT: 8081
+        environment: *common-variables
         ports:
           - '8080:8080'
           - '8081:8081'

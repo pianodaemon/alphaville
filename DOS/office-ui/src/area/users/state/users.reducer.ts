@@ -15,7 +15,7 @@ interface UserSlice {
   user: User | null;
   users: Array<User> | null;
   loading: boolean;
-  // catalog: Catalog | null;
+  catalog: Catalog | null;
   paging: {
     count: number,
     pages: number,
@@ -26,11 +26,11 @@ interface UserSlice {
   };
   filters: {[key: string]: string} | null,
 }
-/*
+
 export type Catalog = {
-  divisions: Array<Division>,
-  orgchart_roles: Array<OrgchartRoles>,
-  authorities: Array<{ id: number, description: string }>,
+  roleList: Array<Roles>,
+  appList: Array<Apps>,
+  authorityList: Array<Authorities & { appId: number, code: string }>,
 };
 
 type CatalogItem = {
@@ -38,14 +38,15 @@ type CatalogItem = {
   title: string,
 };
 
-type Division = CatalogItem;
-type OrgchartRoles = CatalogItem;
-*/
+type Roles = CatalogItem;
+type Apps = CatalogItem;
+type Authorities = CatalogItem;
+
 const initialState: UserSlice = {
   user: null,
   users: null,
   loading: false,
-  // catalog: null,
+  catalog: null,
   paging: {
     count: 0,
     pages: 0,

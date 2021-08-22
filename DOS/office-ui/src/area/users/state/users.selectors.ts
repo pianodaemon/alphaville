@@ -12,13 +12,13 @@ export const userSelector = createSelector(
   sliceSelector,
   (slice: any): User | null => {
     const { user } = slice;
-    const { access_vector } = user || {};
+    // const { access_vector } = user || {};
     return {
       ...user,
-      access_vector:
+      /*access_vector:
         user &&
         access_vector &&
-        access_vector.map((id: number) => id.toString()),
+        access_vector.map((id: number) => id.toString()),*/
     };
   },
 );

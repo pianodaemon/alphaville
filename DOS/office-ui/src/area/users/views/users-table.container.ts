@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { UsersTable } from './users-table.component';
 import { loadUsersAction } from '../state/usecases/load-users.usecase';
-// import { removeUserAction } from '../state/usecases/remove-user.usecase';
+import { deleteUserAction } from '../state/usecases/delete-user.usecase';
 // import { permissionSelector } from 'src/area/auth/state/auth.selectors';
 import {
   isLoadingSelector,
@@ -12,7 +12,7 @@ import {
 
 const mapDispatchToProps = {
   loadUsersAction,
-  // removeUserAction,
+  deleteUserAction,
 };
 
 function mapStateToProps(state: any) {

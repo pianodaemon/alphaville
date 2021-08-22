@@ -12,6 +12,7 @@ import { NotFound } from './not-found.component';
 import { CatalogsContainer } from 'src/area/catalogs/views/catalogs.container';
 import { LoginFormContainer } from 'src/area/auth/views/login-form.container';
 import { UsersTableContainer } from 'src/area/users/views/users-table.container';
+import { UsersFormContainer } from 'src/area/users/views/users-form.container';
 
 // import { PERMISSIONS } from 'src/shared/constants/permissions.contants';
 
@@ -42,10 +43,19 @@ const routes: Array<CustomRoute> = [
   },
   {
     props: {
-      path: ['/users', '/users/:category'],
+      path: ['/users'], // /user/list
       exact: true,
     },
     component: <UsersTableContainer />,
+    app: 'USR',
+  },
+  {
+    props: {
+      path: ['/user/create', '/user/:id/edit'],
+      exact: true,
+    },
+    component: <UsersFormContainer />,
+    app: 'USR',
   },
   {
     props: {

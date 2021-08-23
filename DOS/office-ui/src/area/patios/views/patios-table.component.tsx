@@ -1,7 +1,6 @@
 /* eslint-disable no-alert */
 import React, { useEffect, /* useState */ } from "react";
 import { useHistory } from "react-router-dom";
-// import { User } from "src/area/users/state/users.reducer";
 import MaterialTable, {
   MTableToolbar,
   MTableBody,
@@ -11,28 +10,26 @@ import TablePagination from "@material-ui/core/TablePagination";
 import Button from "@material-ui/core/Button";
 import PostAddIcon from "@material-ui/icons/PostAdd";
 // import { PERMISSIONS } from 'src/shared/constants/permissions.contants';
-
-import TextField from "@material-ui/core/TextField";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import Tooltip from "@material-ui/core/Tooltip";
-import FilterListIcon from "@material-ui/icons/FilterList";
+// import TextField from "@material-ui/core/TextField";
+// import InputAdornment from "@material-ui/core/InputAdornment";
+// import Tooltip from "@material-ui/core/Tooltip";
+// import FilterListIcon from "@material-ui/icons/FilterList";
 
 type Props = {
-  // users: Array<User>,
-  users: any;
-  loadUsersAction: Function;
-  deleteUserAction: Function,
+  patios: any;
+  loadPatiosAction: Function;
+  deletePatioAction: Function,
   loading: boolean;
   paging: any;
   // isAllowed: Function,
   filters: any;
 };
 
-export const UsersTable = (props: Props) => {
+export const PatiosTable = (props: Props) => {
   const {
-    users,
-    loadUsersAction,
-    deleteUserAction,
+    patios,
+    loadPatiosAction,
+    deletePatioAction,
     loading,
     paging /* isAllowed */,
     filters,
@@ -47,7 +44,7 @@ export const UsersTable = (props: Props) => {
   const columns = [
     {
       title: "ID",
-      field: "userId",
+      field: "id",
       // customSort,
       customFilterAndSearch,
       sorting: !sorting,
@@ -55,96 +52,39 @@ export const UsersTable = (props: Props) => {
       defaultSort: "asc",
     },
     {
-      title: "Nombre de Usuario",
-      field: "username",
+      title: "Clave",
+      field: "code",
       sorting: !sorting,
       customFilterAndSearch,
       filtering: false,
       defaultSort: "asc",
     },
     {
-      title: "Nombre",
-      field: "firstName",
+      title: "Operador",
+      field: "title",
       sorting: !sorting,
       customFilterAndSearch,
       filtering: false,
-    },
-    {
-      title: "Apellido",
-      field: "lastName",
-      sorting: !sorting,
-      customFilterAndSearch,
-      filtering: false,
-    },
-    {
-      title: "Rol en la Organización",
-      field: "roleId",
-      sorting: !sorting,
-      // customSort,
-      customFilterAndSearch,
-      // @todo Make me a reusable component, please!
-      filterComponent: (props: any) => {
-        const { columnDef, onFilterChanged } = props;
-        return (
-          <TextField
-            style={columnDef.type === "numeric" ? { float: "right" } : {}}
-            type={columnDef.type === "numeric" ? "number" : "search"}
-            defaultValue={
-              columnDef.tableData.filterValue || (filters && filters["roleId"])
-            }
-            // placeholder={this.getLocalizedFilterPlaceHolder(columnDef)}
-            onChange={(event: any) => {
-              if (!event.target.value) {
-                onFilterChanged(columnDef.tableData.id, event.target.value);
-                return false;
-              }
-            }}
-            onKeyDown={(event: any) => {
-              if (event.keyCode === 13) {
-                onFilterChanged(columnDef.tableData.id, event.target.value);
-                return false;
-              }
-            }}
-            inputProps={{ "aria-label": `filter data by ${columnDef.title}` }}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Tooltip title="filtrar por">
-                    <FilterListIcon />
-                  </Tooltip>
-                </InputAdornment>
-              ),
-            }}
-          />
-        );
-      },
-    },
-    {
-      title: "Activo",
-      field: "disabled",
-      sorting,
-      lookup: { "false": 'Sí', "true": 'No' },
     },
   ];
   const getColumnNameByIndex = (columnId: number) =>
     columns.map((column) => column.field)[columnId];
   useEffect(() => {
-    loadUsersAction({ per_page: paging.per_page, order });
+    loadPatiosAction({ per_page: paging.per_page, order });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <MaterialTable
       title=""
       onOrderChange={(orderBy: number, orderDirection: "asc" | "desc") => {
-        console.log(orderBy, orderDirection);
-        loadUsersAction({
+        loadPatiosAction({
           //...paging,
           order: orderDirection,
           order_by: getColumnNameByIndex(orderBy),
         });
       }}
       columns={columns as any}
-      data={users || []}
+      data={patios || []}
       options={{
         draggable,
         initialPage: 1, // @todo include this settings value in a CONSTANTS file
@@ -165,7 +105,7 @@ export const UsersTable = (props: Props) => {
               rowsPerPage={per_page}
               rowsPerPageOptions={[5, 10, 25, 50, 100]}
               onChangePage={(event, currentPage: number) => {
-                loadUsersAction({
+                loadPatiosAction({
                   per_page,
                   page: currentPage + 1,
                   order,
@@ -175,7 +115,7 @@ export const UsersTable = (props: Props) => {
               }}
               onChangeRowsPerPage={(event: any) => {
                 componentProps.onChangeRowsPerPage(event);
-                loadUsersAction({
+                loadPatiosAction({
                   per_page: event.target.value,
                 });
               }}
@@ -192,9 +132,9 @@ export const UsersTable = (props: Props) => {
                   color="primary"
                   startIcon={<PostAddIcon />}
                   size="medium"
-                  onClick={() => history.push("/user/create")}
+                  onClick={() => history.push("/patio/create")}
                 >
-                  Agregar Usuario
+                  Agregar Patio
                 </Button>
               </div>
             </div>
@@ -204,9 +144,8 @@ export const UsersTable = (props: Props) => {
           <MTableBody
             {...bodyProps}
             onFilterChanged={(columnId: number, value: string) => {
-              // console.log(columnId, value, getColumnNameByIndex(columnId));
               bodyProps.onFilterChanged(columnId, value);
-              loadUsersAction({
+              loadPatiosAction({
                 filters: {
                   ...filters,
                   [getColumnNameByIndex(columnId)]: value,
@@ -219,22 +158,22 @@ export const UsersTable = (props: Props) => {
       actions={[
         {
           icon: "edit",
-          tooltip: "Editar Usuario",
+          tooltip: "Editar Patio",
           onClick: (event, rowData: any) =>
-            history.push(`/user/${rowData.id}/edit`),
+            history.push(`/patio/${rowData.id}/edit`),
           // disabled: !isAllowed('USR', PERMISSIONS.UPDATE),
         },
         {
           icon: "delete",
-          tooltip: "Eliminar Usuario",
+          tooltip: "Eliminar Patio",
           onClick: (event, rowData: any) => {
             if (
               // eslint-disable-next-line no-restricted-globals
               confirm(
-                `¿Realmente quieres eliminar el Usuario ${rowData.id}?\n Esta acción es irreversible`
+                `¿Realmente quieres eliminar el Patio ${rowData.id}?\n Esta acción es irreversible`
               )
             ) {
-              deleteUserAction(rowData.id);
+              deletePatioAction(rowData.id);
             }
           },
           // disabled: !isAllowed('USR', PERMISSIONS.DELETE),

@@ -8,10 +8,13 @@ import patios_pb2
 import patios_pb2_grpc
 import equipments_pb2
 import equipments_pb2_grpc
+import units_pb2
+import units_pb2_grpc
 
 from dal import users
 from dal import patios
 from dal import equipments
+from dal import units
 
 class Users(users_pb2_grpc.UsersServicer):
 
@@ -229,11 +232,73 @@ class Equipments(equipments_pb2_grpc.EquipmentsServicer):
         )
 
 
+class Units(units_pb2_grpc.UnitsServicer):
+
+    def AlterUnit(self, request, context):
+        print(request)
+
+        ret_code, ret_message = units.alter_unit(
+            request.id,
+            request.code,
+            request.title
+        )
+
+        return units_pb2.UnitGeneralResponse(
+            returnCode=ret_code,
+            returnMessage=ret_message
+        )
+
+
+    def ListUnits(self, request, context):
+        print(request)
+
+        ret_code, ret_message, unit_list, total_items, total_pages = units.list_units(
+            request.paramList,
+            request.pageParamList
+        )
+
+        return units_pb2.UnitListResponse(
+            returnCode=ret_code,
+            returnMessage=ret_message,
+            unitList=unit_list,
+            totalItems=total_items,
+            totalPages=total_pages
+        )
+
+
+    def GetUnit(self, request, context):
+        print(request)
+
+        ret_code, ret_message, unit_data = units.get_unit(
+            request.id
+        )
+
+        return units_pb2.UnitResponse(
+            returnCode=ret_code,
+            returnMessage=ret_message,
+            unit=unit_data
+        )
+
+
+    def DeleteUnit(self, request, context):
+        print(request)
+
+        ret_code, ret_message = units.delete_unit(
+            request.id
+        )
+
+        return units_pb2.UnitGeneralResponse(
+            returnCode=ret_code,
+            returnMessage=ret_message
+        )
+
+
 def _engage():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     users_pb2_grpc.add_UsersServicer_to_server(Users(), server)
     patios_pb2_grpc.add_PatiosServicer_to_server(Patios(), server)
     equipments_pb2_grpc.add_EquipmentsServicer_to_server(Equipments(), server)
+    units_pb2_grpc.add_UnitsServicer_to_server(Units(), server)
     server.add_insecure_port('[::]:10080')
     server.start()
     server.wait_for_termination()

@@ -5,21 +5,47 @@ package dylk;
 // -------------------------------------------------------------------------
 // The Equipments service definition.
 service Equipments {
-  rpc AlterEquipment   (Equipment)       returns (GeneralResponse)  {}
-  rpc DeleteEquipment  (Id)              returns (GeneralResponse)  {}
+  rpc AlterEquipment   (Equipment)       returns (EquipmentGeneralResponse)  {}
+  rpc ListEquipments   (EquipmentParams) returns (EquipmentListResponse)     {}
+  rpc GetEquipment     (EquipmentId)     returns (EquipmentResponse)         {}
+  rpc DeleteEquipment  (EquipmentId)     returns (EquipmentGeneralResponse)  {}
 }
 
 message Equipment {
-  int32 equipmentId          = 1;
-  string code                = 2;
-  string name                = 3;
+  int32 id          = 1;
+  string code       = 2;
+  string title      = 3;
 }
 
-message Id {
+message EquipmentId {
   int32 id = 1;
 }
 
-message GeneralResponse {
+message EquipmentParam {
+  string name  = 1;
+  string value = 2;
+}
+
+message EquipmentParams {
+  repeated EquipmentParam paramList     = 1;
+  repeated EquipmentParam pageParamList = 2;
+}
+
+message EquipmentResponse {
+  int32 returnCode       = 1;
+  string returnMessage   = 2;
+  Equipment equipment    = 3;
+}
+
+message EquipmentListResponse {
+  int32 returnCode        = 1;
+  string returnMessage    = 2;
+  repeated Equipment equipmentList = 3;
+  int32 totalItems        = 4;
+  int32 totalPages        = 5;
+}
+
+message EquipmentGeneralResponse {
   int32 returnCode     = 1;
   string returnMessage = 2;
 }

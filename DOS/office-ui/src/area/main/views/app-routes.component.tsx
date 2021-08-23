@@ -13,7 +13,9 @@ import { CatalogsContainer } from 'src/area/catalogs/views/catalogs.container';
 import { LoginFormContainer } from 'src/area/auth/views/login-form.container';
 import { UsersTableContainer } from 'src/area/users/views/users-table.container';
 import { UsersFormContainer } from 'src/area/users/views/users-form.container';
-
+import { PatiosTableContainer } from 'src/area/patios/views/patios-table.container';
+import { PatiosFormContainer } from 'src/area/patios/views/patio-form.container';
+// import { UsersFormContainer } from 'src/area/patios/views/patios-form.container';
 // import { PERMISSIONS } from 'src/shared/constants/permissions.contants';
 
 type Props = {
@@ -55,6 +57,22 @@ const routes: Array<CustomRoute> = [
       exact: true,
     },
     component: <UsersFormContainer />,
+    app: 'USR',
+  },
+  {
+    props: {
+      path: ['/patios'],
+      exact: true,
+    },
+    component: <PatiosTableContainer />,
+    app: 'USR',
+  },
+  {
+    props: {
+      path: ['/patio/create', '/patio/:id/edit'],
+      exact: true,
+    },
+    component: <PatiosFormContainer />,
     app: 'USR',
   },
   {

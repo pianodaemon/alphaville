@@ -16,11 +16,11 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+alter database vales_dylk SET TIME ZONE 'America/Mexico_City';
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
-
-alter database vales_dylk SET TIME ZONE 'America/Mexico_City';
 
 --
 -- Name: apps; Type: TABLE; Schema: public; Owner: postgres
@@ -130,6 +130,44 @@ ALTER SEQUENCE public.carriers_id_seq OWNED BY public.carriers.id;
 
 
 --
+-- Name: equipments; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.equipments (
+    id integer NOT NULL,
+    code character varying NOT NULL,
+    title character varying NOT NULL,
+    last_touch_time timestamp with time zone NOT NULL,
+    creation_time timestamp with time zone NOT NULL,
+    blocked boolean DEFAULT false NOT NULL
+);
+
+
+ALTER TABLE public.equipments OWNER TO postgres;
+
+--
+-- Name: equipments_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.equipments_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.equipments_id_seq OWNER TO postgres;
+
+--
+-- Name: equipments_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.equipments_id_seq OWNED BY public.equipments.id;
+
+
+--
 -- Name: patios; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -198,6 +236,44 @@ ALTER TABLE public.roles_id_seq OWNER TO postgres;
 --
 
 ALTER SEQUENCE public.roles_id_seq OWNED BY public.roles.id;
+
+
+--
+-- Name: units; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.units (
+    id integer NOT NULL,
+    code character varying NOT NULL,
+    title character varying NOT NULL,
+    last_touch_time timestamp with time zone NOT NULL,
+    creation_time timestamp with time zone NOT NULL,
+    blocked boolean DEFAULT false NOT NULL
+);
+
+
+ALTER TABLE public.units OWNER TO postgres;
+
+--
+-- Name: units_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.units_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.units_id_seq OWNER TO postgres;
+
+--
+-- Name: units_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.units_id_seq OWNED BY public.units.id;
 
 
 --
@@ -275,6 +351,13 @@ ALTER TABLE ONLY public.carriers ALTER COLUMN id SET DEFAULT nextval('public.car
 
 
 --
+-- Name: equipments id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.equipments ALTER COLUMN id SET DEFAULT nextval('public.equipments_id_seq'::regclass);
+
+
+--
 -- Name: patios id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -286,6 +369,13 @@ ALTER TABLE ONLY public.patios ALTER COLUMN id SET DEFAULT nextval('public.patio
 --
 
 ALTER TABLE ONLY public.roles ALTER COLUMN id SET DEFAULT nextval('public.roles_id_seq'::regclass);
+
+
+--
+-- Name: units id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.units ALTER COLUMN id SET DEFAULT nextval('public.units_id_seq'::regclass);
 
 
 --
@@ -344,6 +434,22 @@ ALTER TABLE ONLY public.carriers
 
 
 --
+-- Name: equipments equipments_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.equipments
+    ADD CONSTRAINT equipments_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: equipments equipments_unique_code; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.equipments
+    ADD CONSTRAINT equipments_unique_code UNIQUE (code);
+
+
+--
 -- Name: patios patios_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -373,6 +479,22 @@ ALTER TABLE ONLY public.roles
 
 ALTER TABLE ONLY public.roles
     ADD CONSTRAINT roles_unique UNIQUE (title);
+
+
+--
+-- Name: units units_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.units
+    ADD CONSTRAINT units_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: units units_unique_code; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.units
+    ADD CONSTRAINT units_unique_code UNIQUE (code);
 
 
 --
@@ -434,4 +556,3 @@ ALTER TABLE ONLY public.users
 --
 -- PostgreSQL database dump complete
 --
-

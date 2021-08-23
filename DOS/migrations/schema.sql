@@ -434,6 +434,22 @@ ALTER TABLE ONLY public.carriers
 
 
 --
+-- Name: equipments equipments_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.equipments
+    ADD CONSTRAINT equipments_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: equipments equipments_unique_code; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.equipments
+    ADD CONSTRAINT equipments_unique_code UNIQUE (code);
+
+
+--
 -- Name: patios patios_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -463,6 +479,22 @@ ALTER TABLE ONLY public.roles
 
 ALTER TABLE ONLY public.roles
     ADD CONSTRAINT roles_unique UNIQUE (title);
+
+
+--
+-- Name: units units_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.units
+    ADD CONSTRAINT units_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: units units_unique_code; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.units
+    ADD CONSTRAINT units_unique_code UNIQUE (code);
 
 
 --

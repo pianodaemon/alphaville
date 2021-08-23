@@ -6,9 +6,12 @@ import users_pb2
 import users_pb2_grpc
 import patios_pb2
 import patios_pb2_grpc
+import equipments_pb2
+import equipments_pb2_grpc
 
 from dal import users
 from dal import patios
+from dal import equipments
 
 class Users(users_pb2_grpc.UsersServicer):
 
@@ -165,10 +168,72 @@ class Patios(patios_pb2_grpc.PatiosServicer):
         )
 
 
+class Equipments(equipments_pb2_grpc.EquipmentsServicer):
+
+    def AlterEquipment(self, request, context):
+        print(request)
+
+        ret_code, ret_message = equipments.alter_equipment(
+            request.id,
+            request.code,
+            request.title
+        )
+
+        return equipments_pb2.EquipmentGeneralResponse(
+            returnCode=ret_code,
+            returnMessage=ret_message
+        )
+
+
+    def ListEquipments(self, request, context):
+        print(request)
+
+        ret_code, ret_message, equipment_list, total_items, total_pages = equipments.list_equipments(
+            request.paramList,
+            request.pageParamList
+        )
+
+        return equipments_pb2.EquipmentListResponse(
+            returnCode=ret_code,
+            returnMessage=ret_message,
+            equipmentList=equipment_list,
+            totalItems=total_items,
+            totalPages=total_pages
+        )
+
+
+    def GetEquipment(self, request, context):
+        print(request)
+
+        ret_code, ret_message, equipment_data = equipments.get_equipment(
+            request.id
+        )
+
+        return equipments_pb2.EquipmentResponse(
+            returnCode=ret_code,
+            returnMessage=ret_message,
+            equipment=equipment_data
+        )
+
+
+    def DeleteEquipment(self, request, context):
+        print(request)
+
+        ret_code, ret_message = equipments.delete_equipment(
+            request.id
+        )
+
+        return equipments_pb2.EquipmentGeneralResponse(
+            returnCode=ret_code,
+            returnMessage=ret_message
+        )
+
+
 def _engage():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     users_pb2_grpc.add_UsersServicer_to_server(Users(), server)
     patios_pb2_grpc.add_PatiosServicer_to_server(Patios(), server)
+    equipments_pb2_grpc.add_EquipmentsServicer_to_server(Equipments(), server)
     server.add_insecure_port('[::]:10080')
     server.start()
     server.wait_for_termination()

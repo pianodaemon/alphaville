@@ -16,20 +16,20 @@ import PostAddIcon from "@material-ui/icons/PostAdd";
 // import FilterListIcon from "@material-ui/icons/FilterList";
 
 type Props = {
-  patios: any;
-  loadPatiosAction: Function;
-  deletePatioAction: Function,
+  equipments: any;
+  loadEquipmentsAction: Function;
+  deleteEquipmentAction: Function,
   loading: boolean;
   paging: any;
   // isAllowed: Function,
   filters: any;
 };
 
-export const PatiosTable = (props: Props) => {
+export const EquipmentsTable = (props: Props) => {
   const {
-    patios,
-    loadPatiosAction,
-    deletePatioAction,
+    equipments,
+    loadEquipmentsAction,
+    deleteEquipmentAction,
     loading,
     paging /* isAllowed */,
     filters,
@@ -70,21 +70,21 @@ export const PatiosTable = (props: Props) => {
   const getColumnNameByIndex = (columnId: number) =>
     columns.map((column) => column.field)[columnId];
   useEffect(() => {
-    loadPatiosAction({ per_page: paging.per_page, order });
+    loadEquipmentsAction({ per_page: paging.per_page, order });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <MaterialTable
       title=""
       onOrderChange={(orderBy: number, orderDirection: "asc" | "desc") => {
-        loadPatiosAction({
+        loadEquipmentsAction({
           //...paging,
           order: orderDirection,
           order_by: getColumnNameByIndex(orderBy),
         });
       }}
       columns={columns as any}
-      data={patios || []}
+      data={equipments || []}
       options={{
         draggable,
         initialPage: 1, // @todo include this settings value in a CONSTANTS file
@@ -105,7 +105,7 @@ export const PatiosTable = (props: Props) => {
               rowsPerPage={per_page}
               rowsPerPageOptions={[5, 10, 25, 50, 100]}
               onChangePage={(event, currentPage: number) => {
-                loadPatiosAction({
+                loadEquipmentsAction({
                   per_page,
                   page: currentPage + 1,
                   order,
@@ -115,7 +115,7 @@ export const PatiosTable = (props: Props) => {
               }}
               onChangeRowsPerPage={(event: any) => {
                 componentProps.onChangeRowsPerPage(event);
-                loadPatiosAction({
+                loadEquipmentsAction({
                   per_page: event.target.value,
                 });
               }}
@@ -132,9 +132,9 @@ export const PatiosTable = (props: Props) => {
                   color="primary"
                   startIcon={<PostAddIcon />}
                   size="medium"
-                  onClick={() => history.push("/patio/create")}
+                  onClick={() => history.push("/equipment/create")}
                 >
-                  Agregar Patio
+                  Agregar Equipo
                 </Button>
               </div>
             </div>
@@ -145,7 +145,7 @@ export const PatiosTable = (props: Props) => {
             {...bodyProps}
             onFilterChanged={(columnId: number, value: string) => {
               bodyProps.onFilterChanged(columnId, value);
-              loadPatiosAction({
+              loadEquipmentsAction({
                 filters: {
                   ...filters,
                   [getColumnNameByIndex(columnId)]: value,
@@ -158,22 +158,22 @@ export const PatiosTable = (props: Props) => {
       actions={[
         {
           icon: "edit",
-          tooltip: "Editar Patio",
+          tooltip: "Editar Equipo",
           onClick: (event, rowData: any) =>
-            history.push(`/patio/${rowData.id}/edit`),
+            history.push(`/equipment/${rowData.id}/edit`),
           // disabled: !isAllowed('USR', PERMISSIONS.UPDATE),
         },
         {
           icon: "delete",
-          tooltip: "Eliminar Patio",
+          tooltip: "Eliminar Equipo",
           onClick: (event, rowData: any) => {
             if (
               // eslint-disable-next-line no-restricted-globals
               confirm(
-                `¿Realmente quieres eliminar el Patio ${rowData.id}?\n Esta acción es irreversible`
+                `¿Realmente quieres eliminar el Equipo ${rowData.id}?\n Esta acción es irreversible`
               )
             ) {
-              deletePatioAction(rowData.id);
+              deleteEquipmentAction(rowData.id);
             }
           },
           // disabled: !isAllowed('USR', PERMISSIONS.DELETE),

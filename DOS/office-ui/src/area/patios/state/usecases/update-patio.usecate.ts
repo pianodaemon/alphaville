@@ -10,7 +10,7 @@ import { loadPatiosAction } from './load-patios.usecase';
 const postfix = '/app';
 const UPDATE_PATIO = `UPDATE_PATIO${postfix}`;
 const UPDATE_PATIO_SUCCESS = `UPDATE_PATIO_SUCCESS${postfix}`;
-const UUPDATE_PATIO_ERROR = `UUPDATE_PATIO_ERROR${postfix}`;
+const UPDATE_PATIO_ERROR = `UPDATE_PATIO_ERROR${postfix}`;
 
 export const updatePatioAction: ActionFunctionAny<Action<any>> = createAction(
   UPDATE_PATIO
@@ -20,7 +20,7 @@ export const updatePatioSuccessAction: ActionFunctionAny<
 > = createAction(UPDATE_PATIO_SUCCESS);
 export const updatePatioErrorAction: ActionFunctionAny<
   Action<any>
-> = createAction(UUPDATE_PATIO_ERROR);
+> = createAction(UPDATE_PATIO_ERROR);
 
 function* updatePatioWorker(action: any): Generator<any, any, any> {
   try {
@@ -31,7 +31,7 @@ function* updatePatioWorker(action: any): Generator<any, any, any> {
     yield put(loadPatiosAction());
     yield put(
       notificationAction({
-        message: `¡Usuario ${id} ha sido actualizado!`,
+        message: `¡Patio ${id} ha sido actualizado!`,
       }),
     );
   } catch (e) {
@@ -77,7 +77,7 @@ const patiosReducerHandlers = {
       patio: null,
     };
   },
-  [UUPDATE_PATIO_ERROR]: (state: any) => {
+  [UPDATE_PATIO_ERROR]: (state: any) => {
     return {
       ...state,
       error: true,

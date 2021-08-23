@@ -18,6 +18,14 @@ const {
   listPatios,
   // getCatalogs,
 } = require("./patios");
+const {
+  createEquipment,
+  readEquipment,
+  updateEquipment,
+  deleteEquipment,
+  listEquipments,
+  // getCatalogs,
+} = require("./equipments");
 
 var cors = require("cors");
 
@@ -150,6 +158,48 @@ router.delete("/patios/:id", cors(corsOptionsDelegate), function (req, res) {
     .then((data) => res.json(data))
     .catch((err) => res.status(500).json(err));
 });
+
+/**
+ *
+ * Equipos
+ * ---------------------------------------------------------------------------------------------------
+ * ---------------------------------------------------------------------------------------------------
+ * ---------------------------------------------------------------------------------------------------
+ */
+ app.options("/equipments", cors(corsOptionsDelegate));
+ 
+ // enable pre-flight request for DELETE request
+ app.options("/equipments/:id", cors(corsOptionsDelegate));
+ 
+ router.get("/equipments", cors(corsOptionsDelegate), function (req, res) {
+  listEquipments(req.query)
+     .then((data) => res.json(data))
+     .catch((err) => res.status(500).json(err));
+ });
+ 
+ router.post("/equipments", cors(corsOptionsDelegate), function (req, res) {
+   createEquipment(req.body)
+     .then((data) => res.json(data))
+     .catch((err) => res.status(500).json(err));
+ });
+ 
+ router.get("/equipments/:id", cors(corsOptionsDelegate), function (req, res) {
+  readEquipment(req.params.id)
+     .then((data) => res.json(data))
+     .catch((err) => res.status(500).json(err));
+ });
+ 
+ router.put("/equipments/:id", cors(corsOptionsDelegate), function (req, res) {
+   updateEquipment(req.params.id, req.body)
+     .then((data) => res.json(data))
+     .catch((err) => res.status(500).json(err));
+ });
+ 
+ router.delete("/equipments/:id", cors(corsOptionsDelegate), function (req, res) {
+   deleteEquipment(req.params.id)
+     .then((data) => res.json(data))
+     .catch((err) => res.status(500).json(err));
+ });
 
 app.use(router);
 

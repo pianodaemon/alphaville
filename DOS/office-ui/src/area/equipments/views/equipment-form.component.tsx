@@ -10,13 +10,13 @@ import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { Patio } from "../state/patios.reducer";
+import { Equipment } from "../state/equipments.reducer";
 
 type Props = {
-  createPatioAction: Function;
-  readPatioAction: Function;
-  updatePatioAction: Function;
-  patio: Patio | null;
+  createEquipmentAction: Function;
+  readEquipmentAction: Function;
+  updateEquipmentAction: Function;
+  equipment: Equipment | null;
 };
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -105,12 +105,12 @@ const schema = yup.object().shape({
   title: yup.string().required(),
 });
 
-export const PatioForm = (props: Props) => {
+export const EquipmentForm = (props: Props) => {
   const {
-    createPatioAction,
-    readPatioAction,
-    updatePatioAction,
-    patio,
+    createEquipmentAction,
+    readEquipmentAction,
+    updateEquipmentAction,
+    equipment,
   } = props;
   const initialValues = {
     code: "",
@@ -130,17 +130,17 @@ export const PatioForm = (props: Props) => {
   const { id } = useParams<any>();
   useEffect(() => {
     if (id) {
-      readPatioAction({ id, history });
+      readEquipmentAction({ id, history });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    if (patio) {
-      reset(patio || {});
+    if (equipment) {
+      reset(equipment || {});
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [patio]);
+  }, [equipment]);
   const onSubmit = (fields) => {
     /*
     const releaseForm: () => void = () => setSubmitting(false);
@@ -151,14 +151,14 @@ export const PatioForm = (props: Props) => {
     */
     if (id) {
       delete fields.id;
-      updatePatioAction({ id, fields, history /* releaseForm */ });
+      updateEquipmentAction({ id, fields, history /* releaseForm */ });
     } else {
-      createPatioAction({ fields, history /* releaseForm */ });
+      createEquipmentAction({ fields, history /* releaseForm */ });
     }
   };
   return (
     <Paper className={classes.paper}>
-      <h1 style={{ color: "#128aba" }}>Patios</h1>
+      <h1 style={{ color: "#128aba" }}>Equipos</h1>
       <hr className={classes.hrDivider} />
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid container spacing={3}>

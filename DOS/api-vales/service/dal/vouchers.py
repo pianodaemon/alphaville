@@ -1,4 +1,5 @@
-
+from carriers import get_carrier
+from patios import get_patio
 
 
 class VouchersPersistence(object):

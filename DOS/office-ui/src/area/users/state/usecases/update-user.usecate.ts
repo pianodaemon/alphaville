@@ -10,7 +10,7 @@ import { loadUsersAction } from './load-users.usecase';
 const postfix = '/app';
 const UPDATE_USER = `UPDATE_USER${postfix}`;
 const UPDATE_USER_SUCCESS = `UPDATE_USER_SUCCESS${postfix}`;
-const UUPDATE_USER_ERROR = `UUPDATE_USER_ERROR${postfix}`;
+const UPDATE_USER_ERROR = `UPDATE_USER_ERROR${postfix}`;
 
 export const updateUserAction: ActionFunctionAny<Action<any>> = createAction(
   UPDATE_USER
@@ -20,7 +20,7 @@ export const updateUserSuccessAction: ActionFunctionAny<
 > = createAction(UPDATE_USER_SUCCESS);
 export const updateUserErrorAction: ActionFunctionAny<
   Action<any>
-> = createAction(UUPDATE_USER_ERROR);
+> = createAction(UPDATE_USER_ERROR);
 
 function* updateUserWorker(action: any): Generator<any, any, any> {
   try {
@@ -77,7 +77,7 @@ const usersReducerHandlers = {
       user: null,
     };
   },
-  [UUPDATE_USER_ERROR]: (state: any) => {
+  [UPDATE_USER_ERROR]: (state: any) => {
     return {
       ...state,
       error: true,

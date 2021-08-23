@@ -31,7 +31,7 @@ function* createPatioWorker(action: any): Generator<any, any, any> {
     yield put(loadPatiosAction());
     yield put(
       notificationAction({
-        message: `¡Usuario ${result.returnCode} ha sido creado!`,
+        message: `¡Patio ${result.returnCode} ha sido creado!`,
         type: 'success',
       })
     );

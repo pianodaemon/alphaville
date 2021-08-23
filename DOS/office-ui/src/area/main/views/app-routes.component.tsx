@@ -15,6 +15,8 @@ import { UsersTableContainer } from 'src/area/users/views/users-table.container'
 import { UsersFormContainer } from 'src/area/users/views/users-form.container';
 import { PatiosTableContainer } from 'src/area/patios/views/patios-table.container';
 import { PatiosFormContainer } from 'src/area/patios/views/patio-form.container';
+import { EquipmentsTableContainer } from 'src/area/equipments/views/equipments-table.container';
+import { EquipmentsFormContainer } from 'src/area/equipments/views/equipment-form.container';
 // import { UsersFormContainer } from 'src/area/patios/views/patios-form.container';
 // import { PERMISSIONS } from 'src/shared/constants/permissions.contants';
 
@@ -73,6 +75,22 @@ const routes: Array<CustomRoute> = [
       exact: true,
     },
     component: <PatiosFormContainer />,
+    app: 'USR',
+  },
+  {
+    props: {
+      path: ['/equipments'],
+      exact: true,
+    },
+    component: <EquipmentsTableContainer />,
+    app: 'USR',
+  },
+  {
+    props: {
+      path: ['/equipment/create', '/equipment/:id/edit'],
+      exact: true,
+    },
+    component: <EquipmentsFormContainer />,
     app: 'USR',
   },
   {

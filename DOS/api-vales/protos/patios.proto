@@ -5,21 +5,47 @@ package dylk;
 // -------------------------------------------------------------------------
 // The Patios service definition.
 service Patios {
-  rpc AlterPatio   (Patio)       returns (GeneralResponse)  {}
-  rpc DeletePatio  (Id)          returns (GeneralResponse)  {}
+  rpc AlterPatio   (Patio)       returns (PatioGeneralResponse)  {}
+  rpc ListPatios   (PatioParams) returns (PatioListResponse)     {}
+  rpc GetPatio     (PatioId)     returns (PatioResponse)         {}
+  rpc DeletePatio  (PatioId)     returns (PatioGeneralResponse)  {}
 }
 
 message Patio {
-  int32 patioId              = 1;
-  string code                = 2;
-  string name                = 3;
+  int32 id         = 1;
+  string code      = 2;
+  string title     = 3;
 }
 
-message Id {
+message PatioId {
   int32 id = 1;
 }
 
-message GeneralResponse {
+message PatioParam {
+  string name  = 1;
+  string value = 2;
+}
+
+message PatioParams {
+  repeated PatioParam paramList     = 1;
+  repeated PatioParam pageParamList = 2;
+}
+
+message PatioResponse {
+  int32 returnCode       = 1;
+  string returnMessage   = 2;
+  Patio patio            = 3;
+}
+
+message PatioListResponse {
+  int32 returnCode        = 1;
+  string returnMessage    = 2;
+  repeated Patio patioList = 3;
+  int32 totalItems        = 4;
+  int32 totalPages        = 5;
+}
+
+message PatioGeneralResponse {
   int32 returnCode     = 1;
   string returnMessage = 2;
 }

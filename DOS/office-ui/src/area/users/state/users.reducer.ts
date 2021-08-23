@@ -8,7 +8,7 @@ export interface User {
   disabled: boolean;
   firstName: string;
   lastName: string;
-  authorities: Array<any>;
+  authorities: never[];
 }
 
 interface UserSlice {

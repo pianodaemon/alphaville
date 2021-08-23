@@ -24,7 +24,7 @@ type Props = {
   updateUserAction: Function;
   loadUsersCatalogAction: Function;
   catalog: Catalog | null;
-  user: any;
+  user: User | null;
 };
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -130,7 +130,7 @@ export const UserForm = (props: Props) => {
     firstName: "",
     lastName: "",
     disabled: false,
-    roleId: null,
+    roleId: 0,
     authorities: [],
   };
   const {
@@ -361,7 +361,6 @@ export const UserForm = (props: Props) => {
           className={classes.submitInput}
           disabled={/*isSubmitting*/ false}
           type="submit"
-          // onClick={handleSubmit(onSubmit)}
         >
           {!id ? "Crear" : "Actualizar"}
         </Button>

@@ -4,8 +4,11 @@ from concurrent import futures
 
 import users_pb2
 import users_pb2_grpc
+import patios_pb2
+import patios_pb2_grpc
 
 from dal import users
+from dal import patios
 
 class Users(users_pb2_grpc.UsersServicer):
 
@@ -101,9 +104,71 @@ class Users(users_pb2_grpc.UsersServicer):
         )
 
 
+class Patios(patios_pb2_grpc.PatiosServicer):
+
+    def AlterPatio(self, request, context):
+        print(request)
+
+        ret_code, ret_message = patios.alter_patio(
+            request.id,
+            request.code,
+            request.title
+        )
+
+        return patios_pb2.PatioGeneralResponse(
+            returnCode=ret_code,
+            returnMessage=ret_message
+        )
+
+
+    def ListPatios(self, request, context):
+        print(request)
+
+        ret_code, ret_message, patio_list, total_items, total_pages = patios.list_patios(
+            request.paramList,
+            request.pageParamList
+        )
+
+        return patios_pb2.PatioListResponse(
+            returnCode=ret_code,
+            returnMessage=ret_message,
+            patioList=patio_list,
+            totalItems=total_items,
+            totalPages=total_pages
+        )
+
+
+    def GetPatio(self, request, context):
+        print(request)
+
+        ret_code, ret_message, patio_data = patios.get_patio(
+            request.id
+        )
+
+        return patios_pb2.PatioResponse(
+            returnCode=ret_code,
+            returnMessage=ret_message,
+            patio=patio_data
+        )
+
+
+    def DeletePatio(self, request, context):
+        print(request)
+
+        ret_code, ret_message = patios.delete_patio(
+            request.id
+        )
+
+        return patios_pb2.PatioGeneralResponse(
+            returnCode=ret_code,
+            returnMessage=ret_message
+        )
+
+
 def _engage():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     users_pb2_grpc.add_UsersServicer_to_server(Users(), server)
+    patios_pb2_grpc.add_PatiosServicer_to_server(Patios(), server)
     server.add_insecure_port('[::]:10080')
     server.start()
     server.wait_for_termination()

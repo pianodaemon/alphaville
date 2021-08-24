@@ -26,6 +26,14 @@ const {
   listEquipments,
   // getCatalogs,
 } = require("./equipments");
+const {
+  createUnit,
+  readUnit,
+  updateUnit,
+  deleteUnit,
+  listUnits,
+  // getCatalogs,
+} = require("./units");
 
 var cors = require("cors");
 
@@ -166,40 +174,86 @@ router.delete("/patios/:id", cors(corsOptionsDelegate), function (req, res) {
  * ---------------------------------------------------------------------------------------------------
  * ---------------------------------------------------------------------------------------------------
  */
- app.options("/equipments", cors(corsOptionsDelegate));
- 
- // enable pre-flight request for DELETE request
- app.options("/equipments/:id", cors(corsOptionsDelegate));
- 
- router.get("/equipments", cors(corsOptionsDelegate), function (req, res) {
+app.options("/equipments", cors(corsOptionsDelegate));
+
+// enable pre-flight request for DELETE request
+app.options("/equipments/:id", cors(corsOptionsDelegate));
+
+router.get("/equipments", cors(corsOptionsDelegate), function (req, res) {
   listEquipments(req.query)
-     .then((data) => res.json(data))
-     .catch((err) => res.status(500).json(err));
- });
- 
- router.post("/equipments", cors(corsOptionsDelegate), function (req, res) {
-   createEquipment(req.body)
-     .then((data) => res.json(data))
-     .catch((err) => res.status(500).json(err));
- });
- 
- router.get("/equipments/:id", cors(corsOptionsDelegate), function (req, res) {
+    .then((data) => res.json(data))
+    .catch((err) => res.status(500).json(err));
+});
+
+router.post("/equipments", cors(corsOptionsDelegate), function (req, res) {
+  createEquipment(req.body)
+    .then((data) => res.json(data))
+    .catch((err) => res.status(500).json(err));
+});
+
+router.get("/equipments/:id", cors(corsOptionsDelegate), function (req, res) {
   readEquipment(req.params.id)
-     .then((data) => res.json(data))
-     .catch((err) => res.status(500).json(err));
- });
- 
- router.put("/equipments/:id", cors(corsOptionsDelegate), function (req, res) {
-   updateEquipment(req.params.id, req.body)
-     .then((data) => res.json(data))
-     .catch((err) => res.status(500).json(err));
- });
- 
- router.delete("/equipments/:id", cors(corsOptionsDelegate), function (req, res) {
-   deleteEquipment(req.params.id)
-     .then((data) => res.json(data))
-     .catch((err) => res.status(500).json(err));
- });
+    .then((data) => res.json(data))
+    .catch((err) => res.status(500).json(err));
+});
+
+router.put("/equipments/:id", cors(corsOptionsDelegate), function (req, res) {
+  updateEquipment(req.params.id, req.body)
+    .then((data) => res.json(data))
+    .catch((err) => res.status(500).json(err));
+});
+
+router.delete(
+  "/equipments/:id",
+  cors(corsOptionsDelegate),
+  function (req, res) {
+    deleteEquipment(req.params.id)
+      .then((data) => res.json(data))
+      .catch((err) => res.status(500).json(err));
+  }
+);
+
+/**
+ *
+ * Unidades
+ * ---------------------------------------------------------------------------------------------------
+ * ---------------------------------------------------------------------------------------------------
+ * ---------------------------------------------------------------------------------------------------
+ */
+app.options("/units", cors(corsOptionsDelegate));
+
+// enable pre-flight request for DELETE request
+app.options("/units/:id", cors(corsOptionsDelegate));
+
+router.get("/units", cors(corsOptionsDelegate), function (req, res) {
+  listUnits(req.query)
+    .then((data) => res.json(data))
+    .catch((err) => res.status(500).json(err));
+});
+
+router.post("/units", cors(corsOptionsDelegate), function (req, res) {
+  createUnit(req.body)
+    .then((data) => res.json(data))
+    .catch((err) => res.status(500).json(err));
+});
+
+router.get("/units/:id", cors(corsOptionsDelegate), function (req, res) {
+  readUnit(req.params.id)
+    .then((data) => res.json(data))
+    .catch((err) => res.status(500).json(err));
+});
+
+router.put("/units/:id", cors(corsOptionsDelegate), function (req, res) {
+  updateUnit(req.params.id, req.body)
+    .then((data) => res.json(data))
+    .catch((err) => res.status(500).json(err));
+});
+
+router.delete("/units/:id", cors(corsOptionsDelegate), function (req, res) {
+  deleteUnit(req.params.id)
+    .then((data) => res.json(data))
+    .catch((err) => res.status(500).json(err));
+});
 
 app.use(router);
 

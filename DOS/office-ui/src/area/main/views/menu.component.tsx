@@ -62,6 +62,7 @@ const menu = [
   'users',
   'patios',
   'equipments',
+  'units',
   'catalogs',
   'processes',
   'reports',
@@ -99,6 +100,7 @@ export default function ScrollableTabsButtonAuto() {
           <Tab icon={<PersonPinIcon />} label="Usuarios" {...a11yProps(0)} />
           <Tab icon={<ListAltIcon />} label="Patios" {...a11yProps(1)} />
           <Tab icon={<ListAltIcon />} label="Equipos" {...a11yProps(1)} />
+          <Tab icon={<ListAltIcon />} label="Unidades" {...a11yProps(1)} />
           <Tab icon={<ListAltIcon />} label="Catálogos" {...a11yProps(1)} />
           <Tab icon={<SettingsIcon />} label="Procesos" {...a11yProps(2)} />
           <Tab icon={<AssessmentIcon />} label="Reportes" {...a11yProps(3)} />

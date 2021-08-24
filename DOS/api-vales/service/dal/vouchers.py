@@ -7,8 +7,7 @@ class VouchersPersistence(object):
     @classmethod
     def alter(cls, doc_id, carrier_id, patio_id, plat, obs):
         if doc_id:
-            # Here we should place actions for edition
-            # pending code (alvaro)
+            cls._update(col, doc_id, carrier_id, patio_id, plat, obs)
         else:
             cls._create(col, carrier_id, patio_id, plat, obs)
 
@@ -34,11 +33,11 @@ class VouchersPersistence(object):
         """
         # The attributes to update
         atu = {
-            'platform':plat,
-            'obs':obs,
-            'carrier_id':get_carrier(carrier_id)['clave'],
-            'patio':get_patio(patio_id)['clave'],
-            'disabled':false
+            'platform': plat,
+            'observations': obs,
+            'carrier': get_carrier(carrier_id).get('clave', None),
+            'patio': get_patio(patio_id).get('clave', None),
+            'disabled': False
         }
 
         col.update_one({'doc_id': doc_id}, {"$set": atu })

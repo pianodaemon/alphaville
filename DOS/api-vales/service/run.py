@@ -10,11 +10,14 @@ import equipments_pb2
 import equipments_pb2_grpc
 import units_pb2
 import units_pb2_grpc
+import carriers_pb2
+import carriers_pb2_grpc
 
 from dal import users
 from dal import patios
 from dal import equipments
 from dal import units
+from dal import carriers
 
 class Users(users_pb2_grpc.UsersServicer):
 
@@ -293,12 +296,77 @@ class Units(units_pb2_grpc.UnitsServicer):
         )
 
 
+class Carriers(carriers_pb2_grpc.CarriersServicer):
+
+    def AlterCarrier(self, request, context):
+        print(request)
+
+        ret_code, ret_message = carriers.alter_carrier(
+            request.id,
+            request.code,
+            request.title,
+            request.disabled
+        )
+
+        return carriers_pb2.CarrierGeneralResponse(
+            returnCode=ret_code,
+            returnMessage=ret_message
+        )
+
+
+    def ListCarriers(self, request, context):
+        print(request)
+
+        ret_code, ret_message, carrier_list, total_items, total_pages = carriers.list_carriers(
+            request.paramList,
+            request.pageParamList
+        )
+
+        return carriers_pb2.CarrierListResponse(
+            returnCode=ret_code,
+            returnMessage=ret_message,
+            carrierList=carrier_list,
+            totalItems=total_items,
+            totalPages=total_pages
+        )
+
+
+    def GetCarrier(self, request, context):
+        print(request)
+
+        ret_code, ret_message, carrier_data = carriers.get_carrier(
+            request.id
+        )
+
+        return carriers_pb2.CarrierResponse(
+            returnCode=ret_code,
+            returnMessage=ret_message,
+            carrier=carrier_data
+        )
+
+
+    def DeleteCarrier(self, request, context):
+        print(request)
+
+        ret_code, ret_message = carriers.delete_carrier(
+            request.id
+        )
+
+        return carriers_pb2.CarrierGeneralResponse(
+            returnCode=ret_code,
+            returnMessage=ret_message
+        )
+
+
 def _engage():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+
     users_pb2_grpc.add_UsersServicer_to_server(Users(), server)
     patios_pb2_grpc.add_PatiosServicer_to_server(Patios(), server)
     equipments_pb2_grpc.add_EquipmentsServicer_to_server(Equipments(), server)
     units_pb2_grpc.add_UnitsServicer_to_server(Units(), server)
+    carriers_pb2_grpc.add_CarriersServicer_to_server(Carriers(), server)
+
     server.add_insecure_port('[::]:10080')
     server.start()
     server.wait_for_termination()

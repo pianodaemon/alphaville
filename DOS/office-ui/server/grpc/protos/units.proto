@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package dylk;
+
+// -------------------------------------------------------------------------
+// The Units service definition.
+service Units {
+  rpc AlterUnit   (Unit)       returns (UnitGeneralResponse)  {}
+  rpc ListUnits   (UnitParams) returns (UnitListResponse)     {}
+  rpc GetUnit     (UnitId)     returns (UnitResponse)         {}
+  rpc DeleteUnit  (UnitId)     returns (UnitGeneralResponse)  {}
+}
+
+message Unit {
+  int32 id      = 1;
+  string code   = 2;
+  string title  = 3;
+}
+
+message UnitId {
+  int32 id = 1;
+}
+
+message UnitParam {
+  string name  = 1;
+  string value = 2;
+}
+
+message UnitParams {
+  repeated UnitParam paramList     = 1;
+  repeated UnitParam pageParamList = 2;
+}
+
+message UnitResponse {
+  int32 returnCode     = 1;
+  string returnMessage = 2;
+  Unit unit            = 3;
+}
+
+message UnitListResponse {
+  int32 returnCode        = 1;
+  string returnMessage    = 2;
+  repeated Unit unitList  = 3;
+  int32 totalItems        = 4;
+  int32 totalPages        = 5;
+}
+
+message UnitGeneralResponse {
+  int32 returnCode     = 1;
+  string returnMessage = 2;
+}

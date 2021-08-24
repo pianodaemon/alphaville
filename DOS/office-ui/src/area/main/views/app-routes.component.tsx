@@ -17,6 +17,8 @@ import { PatiosTableContainer } from 'src/area/patios/views/patios-table.contain
 import { PatiosFormContainer } from 'src/area/patios/views/patio-form.container';
 import { EquipmentsTableContainer } from 'src/area/equipments/views/equipments-table.container';
 import { EquipmentsFormContainer } from 'src/area/equipments/views/equipment-form.container';
+import { UnitsTableContainer } from 'src/area/units/views/units-table.container';
+import { UnitsFormContainer } from 'src/area/units/views/unit-form.container';
 // import { UsersFormContainer } from 'src/area/patios/views/patios-form.container';
 // import { PERMISSIONS } from 'src/shared/constants/permissions.contants';
 
@@ -91,6 +93,22 @@ const routes: Array<CustomRoute> = [
       exact: true,
     },
     component: <EquipmentsFormContainer />,
+    app: 'USR',
+  },
+  {
+    props: {
+      path: ['/units'],
+      exact: true,
+    },
+    component: <UnitsTableContainer />,
+    app: 'USR',
+  },
+  {
+    props: {
+      path: ['/unit/create', '/unit/:id/edit'],
+      exact: true,
+    },
+    component: <UnitsFormContainer />,
     app: 'USR',
   },
   {

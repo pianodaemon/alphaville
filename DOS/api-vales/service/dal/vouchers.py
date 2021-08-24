@@ -39,7 +39,8 @@ class VouchersPersistence(object):
             'observations': obs,
             'carrier': carrier_bk,
             'patio': patio_bk,
-            'disabled': False
+            'disabled': False,
+            'last_touch_time': None
         )
 
     @staticmethod

@@ -6,7 +6,11 @@ class VouchersPersistence(object):
 
     @classmethod
     def alter(cls, doc_id, carrier_id, patio_id, plat, obs):
-        pass
+        if doc_id:
+            # Here we should place actions for edition
+            # pending code (alvaro)
+        else:
+            cls._create(col, carrier_id, patio_id, plat, obs)
 
     @staticmethod
     def _create(col, carrier_id, patio_id, plat, obs):
@@ -21,7 +25,11 @@ class VouchersPersistence(object):
             'patio': get_patio(patio_id).get('clave', None),
             'disabled': False
         )
-    
+
+    @staticmethod
+    def _update(col, carrier_id, patio_id, plat, obs):
+        pass
+
     @staticmethod
     def delete(doc_id):
         pass

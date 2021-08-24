@@ -4,13 +4,13 @@ const { promisify } = util;
 var grpc = require("@grpc/grpc-js");
 var protoLoader = require("@grpc/proto-loader");
 //var parseArgs = require("minimist");
-var messages = require("./grpc/units_pb");
-var services = require("./grpc/units_grpc_pb");
+var messages = require("./grpc/carriers_pb");
+var services = require("./grpc/carriers_grpc_pb");
 const TARGET =
   process.env.NODE_ENV === "production"
     ? "neon_nights:10080"
     : "localhost:10080";
-const PROTO_PATH = __dirname + "/grpc/protos/units.proto";
+const PROTO_PATH = __dirname + "/grpc/protos/carriers.proto";
 const options = {
   keepCase: true,
   longs: String,
@@ -19,16 +19,16 @@ const options = {
   oneofs: true,
 };
 var packageDefinition = protoLoader.loadSync(PROTO_PATH, options);
-const UnitService = grpc.loadPackageDefinition(packageDefinition).dylk.Units;
+const CarrierService = grpc.loadPackageDefinition(packageDefinition).dylk.Carriers;
 
-function setupUnitClient(method) {
-  const client = new UnitService(TARGET, grpc.credentials.createInsecure());
+function setupCarrierClient(method) {
+  const client = new CarrierService(TARGET, grpc.credentials.createInsecure());
   return (promisifiedClient = promisify(client[method]).bind(client));
 }
 
-async function listUnits(query) {
+async function listCarriers(query) {
   try {
-    const promisifiedClient = setupUnitClient("listUnits");
+    const promisifiedClient = setupCarrierClient("listCarriers");
     // @todo add SearchParam (filters)
     // var param = new messages.Param().setName('disabled').setValue(false);
     // var request = new messages.SearchParams();
@@ -87,12 +87,13 @@ async function listUnits(query) {
   }
 }
 
-async function createUnit(fields) {
-  const promisifiedClient = setupUnitClient("alterUnit");
-  const unit = {
+async function createCarrier(fields) {
+  const promisifiedClient = setupCarrierClient("alterCarrier");
+  const carrier = {
     id: 0,
     code: fields.code,
     title: fields.title,
+    disabled: fields.disabled,
   };
   try {
     const call_service = async (req, service) => {
@@ -106,15 +107,15 @@ async function createUnit(fields) {
         console.log("error", error);
       }
     };
-    const response = await call_service(unit, promisifiedClient);
+    const response = await call_service(carrier, promisifiedClient);
     return response;
   } catch (e) {
     console.log("error", e);
   }
 }
 
-async function readUnit(id) {
-  const promisifiedClient = setupUnitClient("getUnit");
+async function readCarrier(id) {
+  const promisifiedClient = setupCarrierClient("getCarrier");
   const call_service = async (req, service_name) => {
     try {
       // @todo add SearchParam (filters)
@@ -131,12 +132,13 @@ async function readUnit(id) {
   return response;
 }
 
-async function updateUnit(id, fields) {
-  const promisifiedClient = setupUnitClient("alterUnit");
-  const unit = {
+async function updateCarrier(id, fields) {
+  const promisifiedClient = setupCarrierClient("alterCarrier");
+  const carrier = {
     id,
     code: fields.code,
     title: fields.title,
+    disabled: fields.disabled,
   };
   try {
     const call_service = async (req, service) => {
@@ -150,15 +152,15 @@ async function updateUnit(id, fields) {
         console.log("error", error);
       }
     };
-    const response = await call_service(unit, promisifiedClient);
+    const response = await call_service(carrier, promisifiedClient);
     return response;
   } catch (e) {
     console.log("error", e);
   }
 }
 
-async function deleteUnit(id) {
-  const promisifiedClient = setupUnitClient("deleteUnit");
+async function deleteCarrier(id) {
+  const promisifiedClient = setupCarrierClient("deleteCarrier");
   const call_service = async (req, service_name) => {
     try {
       // @todo add SearchParam (filters)
@@ -176,9 +178,9 @@ async function deleteUnit(id) {
 }
 
 module.exports = {
-  listUnits,
-  createUnit,
-  readUnit,
-  updateUnit,
-  deleteUnit,
+  listCarriers,
+  createCarrier,
+  readCarrier,
+  updateCarrier,
+  deleteCarrier,
 };

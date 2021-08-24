@@ -2,17 +2,33 @@ from carriers import get_carrier
 from patios import get_patio
 
 
+class VouchersPersistenceError(Exception):
+    """
+    VouchersPersistence exception
+    """
+    def __init__(self, message=None):
+        self.message = message
+
+        
 class VouchersPersistence(object):
 
     @classmethod
     def alter(cls, doc_id, carrier_id, patio_id, plat, obs):
+        """
+        """
+        try:
+            carrier_bk = get_carrier(carrier_id)['clave']
+            patio_bk = get_patio(patio_id)['clave']
+        except KeyError as e:
+            raise VouchersPersistenceError(e)
+
         if doc_id:
-            cls._update(col, doc_id, carrier_id, patio_id, plat, obs)
+            cls._update(col, doc_id, carrier_bk, patio_bk, plat, obs)
         else:
-            cls._create(col, carrier_id, patio_id, plat, obs)
+            cls._create(col, carrier_bk, patio_bk, plat, obs)
 
     @staticmethod
-    def _create(col, carrier_id, patio_id, plat, obs):
+    def _create(col, carrier_bk, patio_bk, plat, obs):
         """
         It creates a newer voucher
         within the collection
@@ -20,13 +36,13 @@ class VouchersPersistence(object):
         col.insert_one(
             'platform': plat,
             'observations': obs,
-            'carrier': get_carrier(carrier_id).get('clave', None),
-            'patio': get_patio(patio_id).get('clave', None),
+            'carrier': carrier_bk,
+            'patio': patio_bk,
             'disabled': False
         )
 
     @staticmethod
-    def _update(col, doc_id, carrier_id, patio_id, plat, obs):
+    def _update(col, doc_id, carrier_bk, patio_bk, plat, obs):
         """
         It updates any voucher as per
         its document identifier
@@ -35,8 +51,8 @@ class VouchersPersistence(object):
         atu = {
             'platform': plat,
             'observations': obs,
-            'carrier': get_carrier(carrier_id).get('clave', None),
-            'patio': get_patio(patio_id).get('clave', None),
+            'carrier': carrier_bk,
+            'patio': patio_bk,
             'disabled': False
         }
 

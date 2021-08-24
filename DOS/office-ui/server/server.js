@@ -16,7 +16,6 @@ const {
   updatePatio,
   deletePatio,
   listPatios,
-  // getCatalogs,
 } = require("./patios");
 const {
   createEquipment,
@@ -24,7 +23,6 @@ const {
   updateEquipment,
   deleteEquipment,
   listEquipments,
-  // getCatalogs,
 } = require("./equipments");
 const {
   createUnit,
@@ -32,8 +30,14 @@ const {
   updateUnit,
   deleteUnit,
   listUnits,
-  // getCatalogs,
 } = require("./units");
+const {
+  createCarrier,
+  readCarrier,
+  updateCarrier,
+  deleteCarrier,
+  listCarriers,
+} = require("./carriers");
 
 var cors = require("cors");
 
@@ -254,6 +258,50 @@ router.delete("/units/:id", cors(corsOptionsDelegate), function (req, res) {
     .then((data) => res.json(data))
     .catch((err) => res.status(500).json(err));
 });
+
+
+/**
+ *
+ * Carriers
+ * ---------------------------------------------------------------------------------------------------
+ * ---------------------------------------------------------------------------------------------------
+ * ---------------------------------------------------------------------------------------------------
+ */
+ app.options("/carriers", cors(corsOptionsDelegate));
+
+ // enable pre-flight request for DELETE request
+ app.options("/carriers/:id", cors(corsOptionsDelegate));
+ 
+ router.get("/carriers", cors(corsOptionsDelegate), function (req, res) {
+   listCarriers(req.query)
+     .then((data) => res.json(data))
+     .catch((err) => res.status(500).json(err));
+ });
+ 
+ router.post("/carriers", cors(corsOptionsDelegate), function (req, res) {
+   createCarrier(req.body)
+     .then((data) => res.json(data))
+     .catch((err) => res.status(500).json(err));
+ });
+ 
+ router.get("/carriers/:id", cors(corsOptionsDelegate), function (req, res) {
+   readCarrier(req.params.id)
+     .then((data) => res.json(data))
+     .catch((err) => res.status(500).json(err));
+ });
+ 
+ router.put("/carriers/:id", cors(corsOptionsDelegate), function (req, res) {
+   updateCarrier(req.params.id, req.body)
+     .then((data) => res.json(data))
+     .catch((err) => res.status(500).json(err));
+ });
+ 
+ router.delete("/carriers/:id", cors(corsOptionsDelegate), function (req, res) {
+   deleteCarrier(req.params.id)
+     .then((data) => res.json(data))
+     .catch((err) => res.status(500).json(err));
+ });
+
 
 app.use(router);
 

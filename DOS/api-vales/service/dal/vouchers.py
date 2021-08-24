@@ -27,8 +27,21 @@ class VouchersPersistence(object):
         )
 
     @staticmethod
-    def _update(col, carrier_id, patio_id, plat, obs):
-        pass
+    def _update(col, doc_id, carrier_id, patio_id, plat, obs):
+        """
+        It updates any voucher as per
+        its document identifier
+        """
+        # The attributes to update
+        atu = {
+            'platform':plat,
+            'obs':obs,
+            'carrier_id':get_carrier(carrier_id)['clave'],
+            'patio':get_patio(patio_id)['clave'],
+            'disabled':false
+        }
+
+        col.update_one({'doc_id': doc_id}, {"$set": atu })
 
     @staticmethod
     def delete(doc_id):

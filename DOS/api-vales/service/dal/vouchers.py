@@ -15,6 +15,7 @@ class VouchersPersistence(object):
     @classmethod
     def alter(cls, doc_id, carrier_id, patio_id, plat, obs):
         """
+        It creates and edits a voucher
         """
         try:
             carrier_bk = get_carrier(carrier_id)['clave']

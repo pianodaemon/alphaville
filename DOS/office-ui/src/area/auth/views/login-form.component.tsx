@@ -219,7 +219,7 @@ export const LoginForm = (props: Props) => {
     }
 
     if (user) {
-      history.push("/users");
+      history.push("/start");
     }
   };
   return /*checked*/ true ? (

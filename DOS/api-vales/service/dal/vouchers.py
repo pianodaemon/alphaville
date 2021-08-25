@@ -18,6 +18,7 @@ class VouchersPersistence(object):
         It creates and edits a voucher
         """
         try:
+            # We search for the business keys for the below entities
             carrier_bk = get_carrier(carrier_id)['clave']
             patio_bk = get_patio(patio_id)['clave']
         except KeyError as e:

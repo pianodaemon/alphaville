@@ -18,6 +18,7 @@ class VouchersPersistence(object):
         It creates and edits a voucher
         """
         try:
+            # We search for the business keys for the below entities
             carrier_bk = get_carrier(carrier_id)['clave']
             patio_bk = get_patio(patio_id)['clave']
         except KeyError as e:
@@ -34,12 +35,16 @@ class VouchersPersistence(object):
         It creates a newer voucher
         within the collection
         """
+        # Insertion resorts to a document with counters
+        # to get the current value of a sequence
         col.insert_one(
+            'doc_id': fetchValFromSeq("doc_id"),
             'platform': plat,
             'observations': obs,
             'carrier': carrier_bk,
             'patio': patio_bk,
-            'disabled': False
+            'disabled': False,
+            'last_touch_time': None
         )
 
     @staticmethod

@@ -34,7 +34,10 @@ class VouchersPersistence(object):
         It creates a newer voucher
         within the collection
         """
+        # Insertion resorts to a document with counters
+        # to get the current value of a sequence
         col.insert_one(
+            'doc_id': fetchValFromSeq("doc_id"),
             'platform': plat,
             'observations': obs,
             'carrier': carrier_bk,

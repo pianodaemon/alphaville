@@ -26,6 +26,7 @@ export const carriersCatalogSelector = createSelector(
     slice.carriers.map((carrier: Carrier) => {
       return {
         ...carrier,
+        disabled: carrier.disabled ? 'No' : 'Sí',
       };
     })
 );

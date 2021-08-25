@@ -66,6 +66,13 @@ export const CarriersTable = (props: Props) => {
       customFilterAndSearch,
       filtering: false,
     },
+    {
+      title: "Activo",
+      field: "disabled",
+      sorting: !sorting,
+      customFilterAndSearch,
+      filtering: false,
+    },
   ];
   const getColumnNameByIndex = (columnId: number) =>
     columns.map((column) => column.field)[columnId];

@@ -10,6 +10,7 @@ import { NotFound } from './not-found.component';
 // import { Unauthorized } from './unauthorized.component';
 // import { TabPanelMenu } from './home-screen.component';
 import { CatalogsContainer } from 'src/area/catalogs/views/catalogs.container';
+import { StartPage } from 'src/area/main/views/start-page.component';
 import { LoginFormContainer } from 'src/area/auth/views/login-form.container';
 import { UsersTableContainer } from 'src/area/users/views/users-table.container';
 import { UsersFormContainer } from 'src/area/users/views/users-form.container';
@@ -48,6 +49,13 @@ const routes: Array<CustomRoute> = [
       exact: true,
     },
     component: <LoginFormContainer />,
+  },
+  {
+    props: {
+      path: ['/start', ],
+      exact: true,
+    },
+    component: <StartPage />,
   },
   {
     props: {

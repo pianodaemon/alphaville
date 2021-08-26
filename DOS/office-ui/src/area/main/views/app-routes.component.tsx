@@ -22,6 +22,7 @@ import { UnitsTableContainer } from 'src/area/units/views/units-table.container'
 import { UnitsFormContainer } from 'src/area/units/views/unit-form.container';
 import { CarriersTableContainer } from 'src/area/carriers/views/carriers-table.container';
 import { CarriersFormContainer } from 'src/area/carriers/views/carrier-form.container';
+import { ValesFormContainer } from 'src/area/vales/views/vales-form.container';
 // import { UsersFormContainer } from 'src/area/patios/views/patios-form.container';
 // import { PERMISSIONS } from 'src/shared/constants/permissions.contants';
 
@@ -135,6 +136,14 @@ const routes: Array<CustomRoute> = [
       exact: true,
     },
     component: <CarriersFormContainer />,
+    app: 'USR',
+  },
+  {
+    props: {
+      path: ['/vale/create', '/vale/:id/edit'],
+      exact: true,
+    },
+    component: <ValesFormContainer />,
     app: 'USR',
   },
   {

@@ -1,9 +1,10 @@
 import { Action, createAction, ActionFunctionAny } from 'redux-actions';
-import { call, put, select, takeLatest, delay } from 'redux-saga/effects';
+import { call, put, select, takeLatest } from 'redux-saga/effects';
 import { mergeSaga } from 'src/redux-utils/merge-saga';
 import { getUsers } from '../../service/user.service';
 import { usersReducer } from '../users.reducer';
 import { pagingSelector } from '../users.selectors';
+import { loadUsersCatalogAction } from './load-users-catalog.usecase';
 
 const postfix = '/app';
 const LOAD_USERS = `LOAD_USERS${postfix}`;
@@ -36,7 +37,7 @@ function* loadUsersWorker(action?: any): Generator<any, any, any> {
     };
     delete options.filters;
     const result = yield call(getUsers, options);
-    yield delay(500);
+    yield put(loadUsersCatalogAction());
     yield put(
       loadUsersSuccessAction({
         users: result.data,

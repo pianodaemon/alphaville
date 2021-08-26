@@ -78,7 +78,7 @@ export const UsersTable = (props: Props) => {
     },
     {
       title: "Rol en la Organización",
-      field: "roleId",
+      field: "roleId_str",
       sorting: !sorting,
       // customSort,
       customFilterAndSearch,

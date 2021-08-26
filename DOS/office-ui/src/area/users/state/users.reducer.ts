@@ -11,7 +11,7 @@ export interface User {
   authorities: never[];
 }
 
-interface UserSlice {
+export interface UserSlice {
   user: User | null;
   users: Array<User> | null;
   loading: boolean;

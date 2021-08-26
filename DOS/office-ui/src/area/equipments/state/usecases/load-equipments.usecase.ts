@@ -1,5 +1,5 @@
 import { Action, createAction, ActionFunctionAny } from 'redux-actions';
-import { call, put, select, takeLatest, delay } from 'redux-saga/effects';
+import { call, put, select, takeLatest } from 'redux-saga/effects';
 import { mergeSaga } from 'src/redux-utils/merge-saga';
 import { getEquipments } from '../../service/equipment.service';
 import { equipmentsReducer } from '../equipments.reducer';
@@ -36,7 +36,6 @@ function* loadEquipmentsWorker(action?: any): Generator<any, any, any> {
     };
     delete options.filters;
     const result = yield call(getEquipments, options);
-    yield delay(500);
     yield put(
       loadEquipmentsSuccessAction({
         equipments: result.data,

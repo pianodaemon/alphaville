@@ -35,7 +35,7 @@ export const StartPage = () => {
   const classes = useStyles();
   return (
     <div className={classes.root}>
-      <img src="/images/logo.png" className={classes.logo} />
+      <img src="/images/logo.png" alt="Logo" className={classes.logo} />
     </div>
   );
 };

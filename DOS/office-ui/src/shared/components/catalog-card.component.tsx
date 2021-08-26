@@ -60,7 +60,7 @@ export const CatalogCard = (props: Props) => {
       }
     >
       <Box className={classes.circle} component="span" m={1}>
-        <img src={imageURL} className={classes.image} />
+        <img src={imageURL} className={classes.image} alt={title} />
       </Box>
       <Typography className={classes.title}>{title}</Typography>
     </Box>

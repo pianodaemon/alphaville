@@ -25,19 +25,29 @@ export const Catalogs = () => {
       onClick: (e: React.MouseEvent<HTMLElement>) => history.push('/carriers'),
     },
     {
+      title: "Equipos",
+      imageURL: "/images/equipos.png",
+      onClick: (e: React.MouseEvent<HTMLElement>) => history.push('/equipments'),
+    },
+    {
+      title: "Patios",
+      imageURL: "/images/patios.png",
+      onClick: (e: React.MouseEvent<HTMLElement>) => history.push('/patios'),
+    },
+    {
+      title: "Puestos",
+      imageURL: "/images/carrier.png",
+      onClick: (e: React.MouseEvent<HTMLElement>) => history.push('/puestos'),
+    },
+    {
       title: "Unidades",
       imageURL: "/images/carrier.png",
       onClick: (e: React.MouseEvent<HTMLElement>) => history.push('/units'),
     },
     {
-      title: "Patios",
+      title: "Usuarios",
       imageURL: "/images/carrier.png",
-      onClick: (e: React.MouseEvent<HTMLElement>) => history.push('/patios'),
-    },
-    {
-      title: "Equipos",
-      imageURL: "/images/carrier.png",
-      onClick: (e: React.MouseEvent<HTMLElement>) => history.push('/equipments'),
+      onClick: (e: React.MouseEvent<HTMLElement>) => history.push('/users'),
     },
   ];
   return (

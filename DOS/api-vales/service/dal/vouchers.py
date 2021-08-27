@@ -13,7 +13,7 @@ class VouchersPersistenceError(Exception):
 class VouchersPersistence(object):
 
     @classmethod
-    def alter(cls, _id, carrier_id, patio_id, plat, obs):
+    def alter(cls, doc_id, carrier_id, patio_id, plat, obs):
         """
         It creates and edits a voucher
         """
@@ -25,7 +25,7 @@ class VouchersPersistence(object):
             raise VouchersPersistenceError(e)
 
         if _id:
-            cls._update(col, _id, carrier_bk, patio_bk, plat, obs)
+            cls._update(col, doc_id, carrier_bk, patio_bk, plat, obs)
         else:
             cls._create(col, carrier_bk, patio_bk, plat, obs)
 
@@ -42,12 +42,12 @@ class VouchersPersistence(object):
             'observations': obs,
             'carrier': carrier_bk,
             'patio': patio_bk,
-            'disabled': False,
+            'blocked': False,
             'last_touch_time': None
         )
 
     @staticmethod
-    def _update(col, _id, carrier_bk, patio_bk, plat, obs):
+    def _update(col, doc_id, carrier_bk, patio_bk, plat, obs):
         """
         It updates any voucher as per
         its document identifier
@@ -58,14 +58,20 @@ class VouchersPersistence(object):
             'observations': obs,
             'carrier': carrier_bk,
             'patio': patio_bk,
-            'disabled': False
+            'blocked': False
         }
 
-        col.update_one({'_id': _id}, {"$set": atu })
+        col.update_one({'_id': doc_id }, {"$set": atu })
 
     @staticmethod
-    def delete(_id):
-        pass
+    def delete(doc_id):
+        """
+        It disabled the 
+        """
+        collection.update_one(
+            {'_id': doc_id },
+            {'$set':{'blocked': True}}
+        )
 
     @staticmethod
     def find_by(**kwargs):

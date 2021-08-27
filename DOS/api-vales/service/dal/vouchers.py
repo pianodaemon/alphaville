@@ -69,7 +69,7 @@ class VouchersPersistence(object):
         It blocks a voucher as
         a kind of logical deletion.
         """
-        collection.update_one(
+        col.update_one(
             {'_id': doc_id },
             {'$set':{'blocked': True}}
         )

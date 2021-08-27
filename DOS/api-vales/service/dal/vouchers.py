@@ -42,8 +42,7 @@ class VouchersPersistence(object):
             'observations': obs,
             'carrier': carrier_bk,
             'patio': patio_bk,
-            'blocked': False,
-            'last_touch_time': None
+            'blocked': False
         )
 
     @staticmethod
@@ -58,6 +57,7 @@ class VouchersPersistence(object):
             'observations': obs,
             'carrier': carrier_bk,
             'patio': patio_bk,
+            'last_touch_time': None,  # this attribute shall contain a unix epoch time stamp
             'blocked': False
         }
 

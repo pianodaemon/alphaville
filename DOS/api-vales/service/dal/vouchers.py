@@ -35,16 +35,14 @@ class VouchersPersistence(object):
         It creates a newer voucher
         within the collection
         """
-        # Insertion resorts to a document with counters
-        # to get the current value of a sequence
-        col.insert_one(
-            'doc_id': fetchValFromSeq("doc_id"),
+        # After insertion we shall get
+        # a reference to the newer doc
+        doc = col.insert_one(            
             'platform': plat,
             'observations': obs,
             'carrier': carrier_bk,
             'patio': patio_bk,
-            'disabled': False,
-            'last_touch_time': None
+            'blocked': False
         )
 
     @staticmethod
@@ -59,14 +57,22 @@ class VouchersPersistence(object):
             'observations': obs,
             'carrier': carrier_bk,
             'patio': patio_bk,
-            'disabled': False
+            'last_touch_time': None,  # this attribute shall contain a unix epoch time stamp
+            'blocked': False
         }
 
-        col.update_one({'doc_id': doc_id}, {"$set": atu })
+        col.update_one({'_id': doc_id }, {"$set": atu })
 
     @staticmethod
     def delete(doc_id):
-        pass
+        """
+        It blocks a voucher as
+        a kind of logical deletion.
+        """
+        col.update_one(
+            {'_id': doc_id },
+            {'$set':{'blocked': True}}
+        )
 
     @staticmethod
     def find_by(**kwargs):

@@ -24,7 +24,7 @@ class VouchersPersistence(object):
         except KeyError as e:
             raise VouchersPersistenceError(e)
 
-        if _id:
+        if doc_id:
             cls._update(col, doc_id, carrier_bk, patio_bk, plat, obs)
         else:
             cls._create(col, carrier_bk, patio_bk, plat, obs)

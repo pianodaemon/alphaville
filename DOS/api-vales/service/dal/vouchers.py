@@ -66,7 +66,8 @@ class VouchersPersistence(object):
     @staticmethod
     def delete(doc_id):
         """
-        It disabled the 
+        It blocks a voucher as
+        a kind of logical deletion.
         """
         collection.update_one(
             {'_id': doc_id },

@@ -13,7 +13,7 @@ class VouchersPersistenceError(Exception):
 class VouchersPersistence(object):
 
     @classmethod
-    def alter(cls, doc_id, carrier_id, patio_id, plat, obs):
+    def alter(cls, _id, carrier_id, patio_id, plat, obs):
         """
         It creates and edits a voucher
         """
@@ -24,8 +24,8 @@ class VouchersPersistence(object):
         except KeyError as e:
             raise VouchersPersistenceError(e)
 
-        if doc_id:
-            cls._update(col, doc_id, carrier_bk, patio_bk, plat, obs)
+        if _id:
+            cls._update(col, _id, carrier_bk, patio_bk, plat, obs)
         else:
             cls._create(col, carrier_bk, patio_bk, plat, obs)
 
@@ -35,10 +35,9 @@ class VouchersPersistence(object):
         It creates a newer voucher
         within the collection
         """
-        # Insertion resorts to a document with counters
-        # to get the current value of a sequence
-        col.insert_one(
-            'doc_id': fetchValFromSeq("doc_id"),
+        # After insertion we shall get
+        # a reference to the newer doc
+        doc = col.insert_one(            
             'platform': plat,
             'observations': obs,
             'carrier': carrier_bk,
@@ -48,7 +47,7 @@ class VouchersPersistence(object):
         )
 
     @staticmethod
-    def _update(col, doc_id, carrier_bk, patio_bk, plat, obs):
+    def _update(col, _id, carrier_bk, patio_bk, plat, obs):
         """
         It updates any voucher as per
         its document identifier
@@ -62,10 +61,10 @@ class VouchersPersistence(object):
             'disabled': False
         }
 
-        col.update_one({'doc_id': doc_id}, {"$set": atu })
+        col.update_one({'_id': _id}, {"$set": atu })
 
     @staticmethod
-    def delete(doc_id):
+    def delete(_id):
         pass
 
     @staticmethod

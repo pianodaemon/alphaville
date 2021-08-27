@@ -7,7 +7,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-import PersonPinIcon from '@material-ui/icons/PersonPin';
+// import PersonPinIcon from '@material-ui/icons/PersonPin';
 import ListAltIcon from '@material-ui/icons/ListAlt';
 import AssessmentIcon from '@material-ui/icons/Assessment';
 import SettingsIcon from '@material-ui/icons/Settings';
@@ -59,13 +59,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const menu = [
-  'users',
+  // 'users',
   // 'patios',
   // 'equipments',
   // 'units',
   // 'carriers',
   'catalogs',
-  'processes',
+  'process',
   'reports',
 ];
 
@@ -98,7 +98,7 @@ export default function ScrollableTabsButtonAuto() {
               indicator: classes.indicator
           }}
         >
-          <Tab icon={<PersonPinIcon />} label="Usuarios" {...a11yProps(0)} />
+          {/* <Tab icon={<PersonPinIcon />} label="Usuarios" {...a11yProps(0)} /> */}
           {/* <Tab icon={<ListAltIcon />} label="Patios" {...a11yProps(1)} /> */}
           {/* <Tab icon={<ListAltIcon />} label="Equipos" {...a11yProps(1)} /> */}
           {/* <Tab icon={<ListAltIcon />} label="Unidades" {...a11yProps(1)} /> */}

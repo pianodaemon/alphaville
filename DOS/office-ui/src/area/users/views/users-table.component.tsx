@@ -149,9 +149,9 @@ export const UsersTable = (props: Props) => {
         draggable,
         initialPage: 1, // @todo include this settings value in a CONSTANTS file
         paging: true,
-        // pageSize: per_page,
+        pageSize: per_page,
         thirdSortClick: false,
-        actionsColumnIndex: 5, // @todo this shouldn't be hardcoded, calculate using columns.lenght
+        actionsColumnIndex: columns.length, // @todo this shouldn't be hardcoded, calculate using columns.lenght
         filtering: true,
       }}
       components={{

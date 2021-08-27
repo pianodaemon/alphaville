@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
+import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -11,12 +12,15 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 import Select from "@material-ui/core/Select";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
-import Checkbox from "@material-ui/core/Checkbox";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
+// import Checkbox from "@material-ui/core/Checkbox";
+// import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { CheckboxesGroup } from "src/shared/components/select-multiple.component";
-import { Catalog, User } from "../../users/state/users.reducer";
+import mxLocale from "date-fns/locale/es";
+import DateFnsUtils from "@date-io/date-fns";
+// import { CheckboxesGroup } from "src/shared/components/select-multiple.component";
+import { CustomDatePicker } from "src/shared/components/custom-date-picker.component";
+import { Catalog, /*User*/ } from "../../users/state/users.reducer";
 
 type Props = {
   createUserAction: Function;
@@ -24,7 +28,7 @@ type Props = {
   updateUserAction: Function;
   loadUsersCatalogAction: Function;
   catalog: Catalog | null;
-  user: User | null;
+  user: any | null;
 };
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -126,19 +130,18 @@ export const ValesForm = (props: Props) => {
   } = props;
   const initialValues = {
     number: "",
-    passwd: "",
-    firstName: "",
-    lastName: "",
-    disabled: false,
-    roleId: 0,
-    authorities: [],
+    date: "",
+    platform: "",
+    company: "",
+    unit: "",
+    patio: "",
   };
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     reset,
-    getValues,
+    // getValues,
     setValue,
   } = useForm({
     defaultValues: initialValues,
@@ -177,194 +180,193 @@ export const ValesForm = (props: Props) => {
     }
   };
   return (
-    <Paper className={classes.paper}>
-      <h1 style={{ color: "#E31B23" }}>Vales</h1>
-      <hr className={classes.hrDivider} />
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Grid container spacing={3}>
-          <Grid item xs={12} sm={6}>
-            <Controller
-              name="number"
-              control={control}
-              render={({ field }) => (
-                <FormControl className={classes.formControl}>
-                  <TextField
-                    {...field}
-                    id="number"
-                    label="#"
-                    value={field.value ? field.value || "" : ""}
-                  />
-                  {errors.number && (
-                    <FormHelperText
-                      error
-                      classes={{ error: classes.textErrorHelper }}
+    <MuiPickersUtilsProvider utils={DateFnsUtils} locale={mxLocale}>
+      <Paper className={classes.paper}>
+        <h1 style={{ color: "#E31B23" }}>Vales</h1>
+        <hr className={classes.hrDivider} />
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={6}>
+              <Controller
+                name="number"
+                control={control}
+                render={({ field }) => (
+                  <FormControl className={classes.formControl}>
+                    <TextField
+                      {...field}
+                      id="number"
+                      label="#"
+                      value={field.value ? field.value || "" : ""}
+                    />
+                    {errors.number && (
+                      <FormHelperText
+                        error
+                        classes={{ error: classes.textErrorHelper }}
+                      >
+                        Ingrese un Número
+                      </FormHelperText>
+                    )}
+                  </FormControl>
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Controller
+                name="date"
+                control={control}
+                render={({ field }) => (
+                  <FormControl className={classes.formControl}>
+                    <CustomDatePicker
+                      field={field}
+                      label="Fecha"
+                      form={{
+                        setValue
+                      }} 
+                    />
+                    {errors.date && (
+                      <FormHelperText
+                        error
+                        classes={{ error: classes.textErrorHelper }}
+                      >
+                        Ingrese una Contraseña
+                      </FormHelperText>
+                    )}
+                  </FormControl>
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Controller
+                name="platform"
+                control={control}
+                render={({ field }) => (
+                  <FormControl className={classes.formControl}>
+                    <TextField
+                      {...field}
+                      id="platform"
+                      label="Plataforma"
+                      value={field.value ? field.value || "" : ""}
+                    />
+                    {errors.platform && (
+                      <FormHelperText
+                        error
+                        classes={{ error: classes.textErrorHelper }}
+                      >
+                        Ingrese una Plataforma
+                      </FormHelperText>
+                    )}
+                  </FormControl>
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Controller
+                name="company"
+                control={control}
+                render={({ field }) => (
+                  <FormControl className={classes.formControl}>
+                    <TextField
+                      {...field}
+                      id="company"
+                      label="Compañía"
+                      value={field.value ? field.value || "" : ""}
+                    />
+                    {errors.company && (
+                      <FormHelperText
+                        error
+                        classes={{ error: classes.textErrorHelper }}
+                      >
+                        Ingrese una Compañía
+                      </FormHelperText>
+                    )}
+                  </FormControl>
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Controller
+                name="unit"
+                control={control}
+                render={({ field }) => (
+                  <FormControl className={classes.formControl}>
+                    <InputLabel>Unidad</InputLabel>
+                    <Select
+                      {...field}
+                      labelId="unit"
+                      id="unit"
+                      // value={catalog && field.value ? field.value || "" : ""}
+                      value={catalog && field.value ? field.value || "" : ""}
                     >
-                      Ingrese un Número
-                    </FormHelperText>
-                  )}
-                </FormControl>
-              )}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <Controller
-              name="passwd"
-              control={control}
-              render={({ field }) => (
-                <FormControl className={classes.formControl}>
-                  <TextField
-                    {...field}
-                    id="passwd"
-                    label="Contraseña"
-                    value={field.value ? field.value || "" : ""}
-                  />
-                  {errors.passwd && (
-                    <FormHelperText
-                      error
-                      classes={{ error: classes.textErrorHelper }}
+                      {catalog &&
+                        catalog.roleList &&
+                        catalog.roleList.map((item) => {
+                          return (
+                            <MenuItem value={item.id} key={`type-${item.id}`}>
+                              {item.title}
+                            </MenuItem>
+                          );
+                        })}
+                    </Select>
+                    {errors.unit && (
+                      <FormHelperText
+                        error
+                        classes={{ error: classes.textErrorHelper }}
+                      >
+                        Seleccione una Unidad
+                      </FormHelperText>
+                    )}
+                  </FormControl>
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Controller
+                name="patio"
+                control={control}
+                render={({ field }) => (
+                  <FormControl className={classes.formControl}>
+                    <InputLabel>Patio</InputLabel>
+                    <Select
+                      {...field}
+                      labelId="patio"
+                      id="patio"
+                      // value={catalog && field.value ? field.value || "" : ""}
+                      value={catalog && field.value ? field.value || "" : ""}
                     >
-                      Ingrese una Contraseña
-                    </FormHelperText>
-                  )}
-                </FormControl>
-              )}
-            />
+                      {catalog &&
+                        catalog.roleList &&
+                        catalog.roleList.map((item) => {
+                          return (
+                            <MenuItem value={item.id} key={`type-${item.id}`}>
+                              {item.title}
+                            </MenuItem>
+                          );
+                        })}
+                    </Select>
+                    {errors.patio && (
+                      <FormHelperText
+                        error
+                        classes={{ error: classes.textErrorHelper }}
+                      >
+                        Seleccione un Patio
+                      </FormHelperText>
+                    )}
+                  </FormControl>
+                )}
+              />
+            </Grid>
           </Grid>
-          <Grid item xs={12} sm={6}>
-            <Controller
-              name="firstName"
-              control={control}
-              render={({ field }) => (
-                <FormControl className={classes.formControl}>
-                  <TextField
-                    {...field}
-                    id="firstName"
-                    label="Nombre"
-                    value={field.value ? field.value || "" : ""}
-                  />
-                  {errors.firstName && (
-                    <FormHelperText
-                      error
-                      classes={{ error: classes.textErrorHelper }}
-                    >
-                      Ingrese una Contraseña
-                    </FormHelperText>
-                  )}
-                </FormControl>
-              )}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <Controller
-              name="lastName"
-              control={control}
-              render={({ field }) => (
-                <FormControl className={classes.formControl}>
-                  <TextField
-                    {...field}
-                    id="lastName"
-                    label="Apellido"
-                    value={field.value ? field.value || "" : ""}
-                  />
-                  {errors.lastName && (
-                    <FormHelperText
-                      error
-                      classes={{ error: classes.textErrorHelper }}
-                    >
-                      Ingrese un Apellido
-                    </FormHelperText>
-                  )}
-                </FormControl>
-              )}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <Controller
-              name="disabled"
-              control={control}
-              render={({ field }) => (
-                <FormControl className={classes.formControl}>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        {...field}
-                        color="primary"
-                        // checked={values.disabled || false}
-                        // onChange={handleChange("disabled")}
-                        checked={field.value ? field.value || false : false}
-                      />
-                    }
-                    label="Desactivado"
-                  />
-                </FormControl>
-              )}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <Controller
-              name="roleId"
-              control={control}
-              render={({ field }) => (
-                <FormControl className={classes.formControl}>
-                  <InputLabel>Rol</InputLabel>
-                  <Select
-                    {...field}
-                    labelId="roleId"
-                    id="roleId"
-                    // value={catalog && field.value ? field.value || "" : ""}
-                    value={catalog && field.value ? field.value || "" : ""}
-                  >
-                    {catalog &&
-                      catalog.roleList &&
-                      catalog.roleList.map((item) => {
-                        return (
-                          <MenuItem value={item.id} key={`type-${item.id}`}>
-                            {item.title}
-                          </MenuItem>
-                        );
-                      })}
-                  </Select>
-                  {errors.roleId && (
-                    <FormHelperText
-                      error
-                      classes={{ error: classes.textErrorHelper }}
-                    >
-                      Seleccione un Rol
-                    </FormHelperText>
-                  )}
-                </FormControl>
-              )}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <CheckboxesGroup
-              control={control}
-              getValues={getValues}
-              name="authorities"
-              options={(catalog && catalog.authorityList) || []}
-              setValue={setValue}
-              title="Permisos"
-            />
-            {errors.authorities && (
-              <FormHelperText
-                error
-                classes={{ error: classes.textErrorHelper }}
-              >
-                Ingrese al menos un permiso
-              </FormHelperText>
-            )}
-          </Grid>
-        </Grid>
 
-        <Button
-          variant="contained"
-          className={classes.submitInput}
-          disabled={/*isSubmitting*/ false}
-          type="submit"
-        >
-          {!id ? "Crear" : "Actualizar"}
-        </Button>
-      </form>
-    </Paper>
+          <Button
+            variant="contained"
+            className={classes.submitInput}
+            disabled={isSubmitting}
+            type="submit"
+          >
+            {!id ? "Crear" : "Actualizar"}
+          </Button>
+        </form>
+      </Paper>
+    </MuiPickersUtilsProvider>
   );
 };

@@ -24,6 +24,7 @@ import { CarriersTableContainer } from 'src/area/carriers/views/carriers-table.c
 import { CarriersFormContainer } from 'src/area/carriers/views/carrier-form.container';
 import { ValesFormContainer } from 'src/area/vales/views/vales-form.container';
 import { ProcessContainer } from 'src/area/catalogs/views/process.container';
+import { PrintValeTableContainer } from 'src/area/vales/views/print-vale-table.container';
 // import { UsersFormContainer } from 'src/area/patios/views/patios-form.container';
 // import { PERMISSIONS } from 'src/shared/constants/permissions.contants';
 
@@ -145,6 +146,14 @@ const routes: Array<CustomRoute> = [
       exact: true,
     },
     component: <ValesFormContainer />,
+    app: 'USR',
+  },
+  {
+    props: {
+      path: ['/imprimir-vale',],
+      exact: true,
+    },
+    component: <PrintValeTableContainer />,
     app: 'USR',
   },
   {

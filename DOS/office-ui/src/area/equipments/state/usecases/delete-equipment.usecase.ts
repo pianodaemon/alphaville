@@ -1,47 +1,47 @@
-import { Action, createAction, ActionFunctionAny } from 'redux-actions';
-import { call, put, takeLatest } from 'redux-saga/effects';
-import { mergeSaga } from 'src/redux-utils/merge-saga';
-import { notificationAction } from 'src/area/main/state/usecase/notification.usecase';
-import { deleteEquipment } from '../../service/equipment.service';
-import { equipmentsReducer } from '../equipments.reducer';
-import { loadEquipmentsAction } from './load-equipments.usecase';
+import { Action, createAction, ActionFunctionAny } from "redux-actions";
+import { call, put, takeLatest } from "redux-saga/effects";
+import { mergeSaga } from "src/redux-utils/merge-saga";
+import { notificationAction } from "src/area/main/state/usecase/notification.usecase";
+import { errorCodes, resolveError } from "src/shared/utils/resolve-error.util";
+import { deleteEquipment } from "../../service/equipment.service";
+import { equipmentsReducer } from "../equipments.reducer";
+import { loadEquipmentsAction } from "./load-equipments.usecase";
 
-const postfix = '/app';
+const postfix = "/app";
 const DELETE_EQUIPMENT = `DELETE_EQUIPMENT${postfix}`;
 const DELETE_EQUIPMENT_SUCCESS = `DELETE_EQUIPMENT_SUCCESS${postfix}`;
 const DELETE_EQUIPMENT_ERROR = `DELETE_EQUIPMENT_ERROR${postfix}`;
 
-export const deleteEquipmentAction: ActionFunctionAny<Action<any>> = createAction(
-  DELETE_EQUIPMENT
-);
-export const deleteEquipmentSuccessAction: ActionFunctionAny<
-  Action<any>
-> = createAction(DELETE_EQUIPMENT_SUCCESS);
-export const deleteEquipmentErrorAction: ActionFunctionAny<
-  Action<any>
-> = createAction(DELETE_EQUIPMENT_ERROR);
+export const deleteEquipmentAction: ActionFunctionAny<Action<any>> =
+  createAction(DELETE_EQUIPMENT);
+export const deleteEquipmentSuccessAction: ActionFunctionAny<Action<any>> =
+  createAction(DELETE_EQUIPMENT_SUCCESS);
+export const deleteEquipmentErrorAction: ActionFunctionAny<Action<any>> =
+  createAction(DELETE_EQUIPMENT_ERROR);
 
 function* deleteEquipmentWorker(action: any): Generator<any, any, any> {
   try {
     const result = yield call(deleteEquipment, action.payload);
+    if (result && result.returnCode === errorCodes.GENERIC_ERROR) {
+      throw new Error(result.returnMessage);
+    }
     yield put(deleteEquipmentSuccessAction(result));
     yield put(loadEquipmentsAction());
     yield put(
       notificationAction({
         message: `¡Equipment ${action.payload} ha sido eliminado!`,
-      }),
+      })
     );
   } catch (e) {
-    const message =
-      e.response && e.response.data && e.response.data.message
-        ? e.response.data.message
-        : '¡Error de inesperado! Por favor contacte al Administrador.';
+    const message: string = resolveError(
+      e.response?.data?.message || e.message
+    );
     yield put(deleteEquipmentErrorAction());
     yield put(
       notificationAction({
         message,
-        type: 'error',
-      }),
+        type: "error",
+      })
     );
     yield console.log(e);
   }

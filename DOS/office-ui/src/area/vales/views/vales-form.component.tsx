@@ -14,13 +14,14 @@ import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 // import Checkbox from "@material-ui/core/Checkbox";
 // import FormControlLabel from "@material-ui/core/FormControlLabel";
+import { Typography } from "@material-ui/core";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import mxLocale from "date-fns/locale/es";
 import DateFnsUtils from "@date-io/date-fns";
 // import { CheckboxesGroup } from "src/shared/components/select-multiple.component";
 import { CustomDatePicker } from "src/shared/components/custom-date-picker.component";
-import { Catalog, /*User*/ } from "../../users/state/users.reducer";
+import { Catalog /*User*/ } from "../../users/state/users.reducer";
 
 type Props = {
   createUserAction: Function;
@@ -51,20 +52,20 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     fieldset: {
       borderRadius: 3,
-      borderWidth: 0,
+      // borderWidth: 0,
       borderColor: "#DDD",
       borderStyle: "solid",
       margin: "20px 0px",
     },
     containerLegend: {
-      display: "block",
-      top: "-30px",
-      position: "relative",
-      fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-      width: "128px",
-      margin: "0px auto",
-      textAlign: "center",
       background: "transparent",
+      display: "block",
+      // margin: "0px auto",
+      padding: "0 1em",
+      // position: "relative",
+      // textAlign: "center",
+      // top: "-30px",
+      width: "auto !important",
       [theme.breakpoints.down("sm")]: {
         margin: "0 auto",
         width: "auto !important",
@@ -72,7 +73,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     legend: {
       fontWeight: "bolder",
-      color: "#128aba",
+      color: "#E31B23",
       fontSize: "1rem",
       background: "#FFF",
     },
@@ -108,6 +109,14 @@ const useStyles = makeStyles((theme: Theme) =>
     hrSpacer: {
       height: "25px",
       border: "none",
+    },
+    formControlFull: {
+      margin: theme.spacing(1),
+      minWidth: 350,
+      [theme.breakpoints.up("xs")]: {
+        minWidth: "100%",
+        display: "flex",
+      },
     },
   })
 );
@@ -220,8 +229,8 @@ export const ValesForm = (props: Props) => {
                       field={field}
                       label="Fecha"
                       form={{
-                        setValue
-                      }} 
+                        setValue,
+                      }}
                     />
                     {errors.date && (
                       <FormHelperText
@@ -349,6 +358,127 @@ export const ValesForm = (props: Props) => {
                         classes={{ error: classes.textErrorHelper }}
                       >
                         Seleccione un Patio
+                      </FormHelperText>
+                    )}
+                  </FormControl>
+                )}
+              />
+            </Grid>
+          </Grid>
+
+          <fieldset className={classes.fieldset}>
+            <legend
+              className={classes.containerLegend}
+              style={{ width: "335px" }}
+            >
+              <Typography
+                variant="body2"
+                align="center"
+                classes={{ root: classes.legend }}
+              >
+                {/* <Icon> attach_money </Icon> */}
+                EQUIPO
+              </Typography>
+            </legend>
+            <Grid container spacing={3}>
+              <Grid item xs={12}></Grid>
+            </Grid>
+          </fieldset>
+
+          <Grid container spacing={3}>
+            <Grid item sm={12}>
+              <Controller
+                name="company"
+                control={control}
+                render={({ field }) => (
+                  <FormControl className={classes.formControlFull}>
+                    <TextField
+                      {...field}
+                      id="observations"
+                      label="Observaciones"
+                      multiline
+                      rows={5}
+                      rowsMax={5}
+                      value={field.value ? field.value || "" : ""}
+                    />
+                    {errors.company && (
+                      <FormHelperText
+                        error
+                        classes={{ error: classes.textErrorHelper }}
+                      >
+                        Ingrese una Compañía
+                      </FormHelperText>
+                    )}
+                  </FormControl>
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Controller
+                name="patio"
+                control={control}
+                render={({ field }) => (
+                  <FormControl className={classes.formControl}>
+                    <InputLabel>Entregó Equipo</InputLabel>
+                    <Select
+                      {...field}
+                      labelId="patio"
+                      id="patio"
+                      // value={catalog && field.value ? field.value || "" : ""}
+                      value={catalog && field.value ? field.value || "" : ""}
+                    >
+                      {catalog &&
+                        catalog.roleList &&
+                        catalog.roleList.map((item) => {
+                          return (
+                            <MenuItem value={item.id} key={`type-${item.id}`}>
+                              {item.title}
+                            </MenuItem>
+                          );
+                        })}
+                    </Select>
+                    {errors.patio && (
+                      <FormHelperText
+                        error
+                        classes={{ error: classes.textErrorHelper }}
+                      >
+                        Seleccione quién entregó el equipo
+                      </FormHelperText>
+                    )}
+                  </FormControl>
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Controller
+                name="patio"
+                control={control}
+                render={({ field }) => (
+                  <FormControl className={classes.formControl}>
+                    <InputLabel>Recibió Equipo</InputLabel>
+                    <Select
+                      {...field}
+                      labelId="patio"
+                      id="patio"
+                      // value={catalog && field.value ? field.value || "" : ""}
+                      value={catalog && field.value ? field.value || "" : ""}
+                    >
+                      {catalog &&
+                        catalog.roleList &&
+                        catalog.roleList.map((item) => {
+                          return (
+                            <MenuItem value={item.id} key={`type-${item.id}`}>
+                              {item.title}
+                            </MenuItem>
+                          );
+                        })}
+                    </Select>
+                    {errors.patio && (
+                      <FormHelperText
+                        error
+                        classes={{ error: classes.textErrorHelper }}
+                      >
+                        Seleccione quién recibió el equipo
                       </FormHelperText>
                     )}
                   </FormControl>

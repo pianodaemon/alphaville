@@ -2,6 +2,10 @@ import { Action, createAction, ActionFunctionAny } from 'redux-actions';
 import { call, put, takeLatest } from 'redux-saga/effects';
 import { mergeSaga } from 'src/redux-utils/merge-saga';
 import { notificationAction } from 'src/area/main/state/usecase/notification.usecase';
+import {
+  errorCodes,
+  resolveError,
+} from "src/shared/utils/resolve-error.util";
 import { deleteCarrier } from '../../service/carrier.service';
 import { carriersReducer } from '../carriers.reducer';
 import { loadCarriersAction } from './load-carriers.usecase';
@@ -24,6 +28,9 @@ export const deleteCarrierErrorAction: ActionFunctionAny<
 function* deleteCarrierWorker(action: any): Generator<any, any, any> {
   try {
     const result = yield call(deleteCarrier, action.payload);
+    if (result && result.returnCode === errorCodes.GENERIC_ERROR) {
+      throw new Error(result.returnMessage);
+    }
     yield put(deleteCarrierSuccessAction(result));
     yield put(loadCarriersAction());
     yield put(
@@ -32,10 +39,7 @@ function* deleteCarrierWorker(action: any): Generator<any, any, any> {
       }),
     );
   } catch (e) {
-    const message =
-      e.response && e.response.data && e.response.data.message
-        ? e.response.data.message
-        : '¡Error de inesperado! Por favor contacte al Administrador.';
+    const message: string = resolveError(e.response?.data?.message || e.message);
     yield put(deleteCarrierErrorAction());
     yield put(
       notificationAction({

@@ -35,7 +35,7 @@ class Users(users_pb2_grpc.UsersServicer):
             request.disabled,
             request.firstName,
             request.lastName,
-            list(request.authorities)
+            request.authorities
         )
 
         return users_pb2.GeneralResponse(
@@ -367,7 +367,7 @@ class Vouchers(vouchers_pb2_grpc.VouchersServicer):
         print(request)
 
         item_list = []
-        for i in list(request.itemList):
+        for i in request.itemList:
             item_list.append({"equipment": i.equipment, "quantity": i.quantity})
 
         ret_code, ret_message = VouchersPersistence.alter(

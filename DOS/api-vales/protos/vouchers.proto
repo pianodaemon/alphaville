@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package dylk;
+
+// -------------------------------------------------------------------------
+// The Vouchers service definition.
+service Vouchers {
+  rpc AlterVoucher   (Voucher)            returns (VoucherGeneralResponse)  {}
+}
+
+message Item {
+  string equipment = 1;
+  int32 quantity   = 2;
+}
+
+message Voucher {
+  string id                  = 1;
+  string platform            = 2;
+  string carrierCode         = 3;
+  string patioCode           = 4;
+  string observations        = 5;
+  repeated Item itemList     = 6;
+}
+
+message VoucherGeneralResponse {
+  int32 returnCode     = 1;
+  string returnMessage = 2;
+}

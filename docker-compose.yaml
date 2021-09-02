@@ -85,6 +85,9 @@ services:
         image: 'mongo:latest'
         ports:
           - '27100:27017'
+        environment:
+          MONGO_INITDB_ROOT_USERNAME: root
+          MONGO_INITDB_ROOT_PASSWORD: example
         networks:
           - operational_network
 

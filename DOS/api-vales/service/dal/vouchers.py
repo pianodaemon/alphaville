@@ -13,22 +13,28 @@ class VouchersPersistenceError(Exception):
 class VouchersPersistence(object):
 
     @classmethod
-    def alter(cls, doc_id, carrier_code, patio_code, platform, obs, items):
+    def alter(cls, id, platform, carrier_code, patio_code, observations, item_list):
         """
         It creates and edits a voucher
         """
-        client = pymongo.MongoClient("mongodb://nosql_mongo:27100", serverSelectionTimeoutMS=5000)
+        client = pymongo.MongoClient("mongodb://root:example@nosql_mongo:27100", serverSelectionTimeoutMS=5000)
         db = client.vales_dylk_mongo
         collection = db.vouchers
 
-        if doc_id:
-            cls._update(collection, doc_id, carrier_code, patio_code, platform, obs, items)
-        else:
-            doc_id = cls._create(collection, carrier_code, patio_code, platform, obs, items)
+        try:
+            if id:
+                cls._update(collection, id, carrier_code, patio_code, platform, observations, item_list)
+            else:
+                id = cls._create(collection, carrier_code, patio_code, platform, observations, item_list)
+            rc  = 0
+            msg = id
+        except Exception as err:
+            rc  = -1
+            msg = repr(err)
 
         client.close()
 
-        return doc_id
+        return rc, msg
 
     @staticmethod
     def _create(collection, carrier_code, patio_code, platform, obs, items):
@@ -40,11 +46,11 @@ class VouchersPersistence(object):
         # a reference to the newer doc
         doc = collection.insert_one({
             'platform': platform,
+            'carrier_code': carrier_code,
+            'patio_code': patio_code,
             'observations': obs,
-            'carrier': carrier_code,
-            'patio': patio_code,
+            'item_list': items,
             'blocked': False,
-            'items': items,
         })
 
         return str(doc.inserted_id)
@@ -58,11 +64,11 @@ class VouchersPersistence(object):
         # The attributes to update
         atu = {
             'platform': platform,
+            'carrier_code': carrier_code,
+            'patio_code': patio_code,
             'observations': obs,
-            'carrier': carrier_code,
-            'patio': patio_code,
+            'item_list': items,
             'last_touch_time': None,  # this attribute shall contain a unix epoch time stamp
-            'items': items,
         }
 
         collection.update_one({'_id': ObjectId(doc_id) }, {"$set": atu })

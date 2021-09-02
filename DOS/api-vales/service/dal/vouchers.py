@@ -17,9 +17,8 @@ class VouchersPersistence(object):
         """
         It creates and edits a voucher
         """
-        client = pymongo.MongoClient("mongodb://root:example@nosql_mongo:27100", serverSelectionTimeoutMS=5000)
-        db = client.vales_dylk_mongo
-        collection = db.vouchers
+        client = pymongo.MongoClient("mongodb://nosql_mongo:27017", serverSelectionTimeoutMS=5000)
+        collection = client.vales_dylk_mongo.vouchers
 
         try:
             if id:

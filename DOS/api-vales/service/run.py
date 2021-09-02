@@ -12,12 +12,15 @@ import units_pb2
 import units_pb2_grpc
 import carriers_pb2
 import carriers_pb2_grpc
+import vouchers_pb2
+import vouchers_pb2_grpc
 
 from dal import users
 from dal import patios
 from dal import equipments
 from dal import units
 from dal import carriers
+from dal.vouchers import VouchersPersistence
 
 class Users(users_pb2_grpc.UsersServicer):
 
@@ -32,7 +35,7 @@ class Users(users_pb2_grpc.UsersServicer):
             request.disabled,
             request.firstName,
             request.lastName,
-            list(request.authorities)
+            request.authorities
         )
 
         return users_pb2.GeneralResponse(
@@ -358,6 +361,30 @@ class Carriers(carriers_pb2_grpc.CarriersServicer):
         )
 
 
+class Vouchers(vouchers_pb2_grpc.VouchersServicer):
+
+    def AlterVoucher(self, request, context):
+        print(request)
+
+        item_list = []
+        for i in request.itemList:
+            item_list.append({"equipment": i.equipment, "quantity": i.quantity})
+
+        ret_code, ret_message = VouchersPersistence.alter(
+            request.id,
+            request.platform,
+            request.carrierCode,
+            request.patioCode,
+            request.observations,
+            item_list
+        )
+
+        return vouchers_pb2.VoucherGeneralResponse(
+            returnCode=ret_code,
+            returnMessage=ret_message
+        )
+
+
 def _engage():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
 
@@ -366,6 +393,7 @@ def _engage():
     equipments_pb2_grpc.add_EquipmentsServicer_to_server(Equipments(), server)
     units_pb2_grpc.add_UnitsServicer_to_server(Units(), server)
     carriers_pb2_grpc.add_CarriersServicer_to_server(Carriers(), server)
+    vouchers_pb2_grpc.add_VouchersServicer_to_server(Vouchers(), server)
 
     server.add_insecure_port('[::]:10080')
     server.start()

@@ -1,5 +1,5 @@
-from carriers import get_carrier
-from patios import get_patio
+import pymongo
+from bson.objectid import ObjectId
 
 
 class VouchersPersistenceError(Exception):
@@ -13,65 +13,74 @@ class VouchersPersistenceError(Exception):
 class VouchersPersistence(object):
 
     @classmethod
-    def alter(cls, doc_id, carrier_id, patio_id, plat, obs):
+    def alter(cls, id, platform, carrier_code, patio_code, observations, item_list):
         """
         It creates and edits a voucher
         """
-        try:
-            # We search for the business keys for the below entities
-            carrier_bk = get_carrier(carrier_id)['clave']
-            patio_bk = get_patio(patio_id)['clave']
-        except KeyError as e:
-            raise VouchersPersistenceError(e)
+        client = pymongo.MongoClient("mongodb://nosql_mongo:27017", serverSelectionTimeoutMS=5000)
+        collection = client.vales_dylk_mongo.vouchers
 
-        if doc_id:
-            cls._update(col, doc_id, carrier_bk, patio_bk, plat, obs)
-        else:
-            cls._create(col, carrier_bk, patio_bk, plat, obs)
+        try:
+            if id:
+                cls._update(collection, id, carrier_code, patio_code, platform, observations, item_list)
+            else:
+                id = cls._create(collection, carrier_code, patio_code, platform, observations, item_list)
+            rc  = 0
+            msg = id
+        except Exception as err:
+            rc  = -1
+            msg = repr(err)
+
+        client.close()
+
+        return rc, msg
 
     @staticmethod
-    def _create(col, carrier_bk, patio_bk, plat, obs):
+    def _create(collection, carrier_code, patio_code, platform, obs, items):
         """
         It creates a newer voucher
         within the collection
         """
         # After insertion we shall get
         # a reference to the newer doc
-        doc = col.insert_one(            
-            'platform': plat,
+        doc = collection.insert_one({
+            'platform': platform,
+            'carrier_code': carrier_code,
+            'patio_code': patio_code,
             'observations': obs,
-            'carrier': carrier_bk,
-            'patio': patio_bk,
-            'blocked': False
-        )
+            'item_list': items,
+            'blocked': False,
+        })
+
+        return str(doc.inserted_id)
 
     @staticmethod
-    def _update(col, doc_id, carrier_bk, patio_bk, plat, obs):
+    def _update(collection, doc_id, carrier_code, patio_code, platform, obs, items):
         """
         It updates any voucher as per
         its document identifier
         """
         # The attributes to update
         atu = {
-            'platform': plat,
+            'platform': platform,
+            'carrier_code': carrier_code,
+            'patio_code': patio_code,
             'observations': obs,
-            'carrier': carrier_bk,
-            'patio': patio_bk,
+            'item_list': items,
             'last_touch_time': None,  # this attribute shall contain a unix epoch time stamp
-            'blocked': False
         }
 
-        col.update_one({'_id': doc_id }, {"$set": atu })
+        collection.update_one({'_id': ObjectId(doc_id) }, {"$set": atu })
 
     @staticmethod
-    def delete(doc_id):
+    def delete(collection, doc_id):
         """
         It blocks a voucher as
         a kind of logical deletion.
         """
-        col.update_one(
-            {'_id': doc_id },
-            {'$set':{'blocked': True}}
+        collection.update_one(
+            {'_id' : ObjectId(doc_id)},
+            {'$set': {'blocked': True}}
         )
 
     @staticmethod

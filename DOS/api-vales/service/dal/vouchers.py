@@ -1,3 +1,5 @@
+import time
+
 import pymongo
 from bson.objectid import ObjectId
 
@@ -13,7 +15,7 @@ class VouchersPersistenceError(Exception):
 class VouchersPersistence(object):
 
     @classmethod
-    def alter(cls, id, platform, carrier_code, patio_code, observations, item_list):
+    def alter(cls, id, platform, carrier_code, patio_code, observations, unit_code, delivered_by, received_by, item_list):
         """
         It creates and edits a voucher
         """
@@ -22,9 +24,9 @@ class VouchersPersistence(object):
 
         try:
             if id:
-                cls._update(collection, id, carrier_code, patio_code, platform, observations, item_list)
+                cls._update(collection, id, carrier_code, patio_code, platform, observations, unit_code, delivered_by, received_by, item_list)
             else:
-                id = cls._create(collection, carrier_code, patio_code, platform, observations, item_list)
+                id = cls._create(collection, carrier_code, patio_code, platform, observations, unit_code, delivered_by, received_by, item_list)
             rc  = 0
             msg = id
         except Exception as err:
@@ -36,7 +38,7 @@ class VouchersPersistence(object):
         return rc, msg
 
     @staticmethod
-    def _create(collection, carrier_code, patio_code, platform, obs, items):
+    def _create(collection, carrier_code, patio_code, platform, obs, unit_code, delivered_by, received_by, items):
         """
         It creates a newer voucher
         within the collection
@@ -45,17 +47,20 @@ class VouchersPersistence(object):
         # a reference to the newer doc
         doc = collection.insert_one({
             'platform': platform,
-            'carrier_code': carrier_code,
-            'patio_code': patio_code,
+            'carrierCode': carrier_code,
+            'patioCode': patio_code,
             'observations': obs,
-            'item_list': items,
+            'unitCode': unit_code,
+            'deliveredBy': delivered_by,
+            'receivedBy': received_by,
+            'itemList': items,
             'blocked': False,
         })
 
         return str(doc.inserted_id)
 
     @staticmethod
-    def _update(collection, doc_id, carrier_code, patio_code, platform, obs, items):
+    def _update(collection, doc_id, carrier_code, patio_code, platform, obs, unit_code, delivered_by, received_by, items):
         """
         It updates any voucher as per
         its document identifier
@@ -63,11 +68,14 @@ class VouchersPersistence(object):
         # The attributes to update
         atu = {
             'platform': platform,
-            'carrier_code': carrier_code,
-            'patio_code': patio_code,
+            'carrierCode': carrier_code,
+            'patioCode': patio_code,
             'observations': obs,
-            'item_list': items,
-            'last_touch_time': None,  # this attribute shall contain a unix epoch time stamp
+            'unitCode': unit_code,
+            'deliveredBy': delivered_by,
+            'receivedBy': received_by,
+            'itemList': items,
+            'lastTouchTime': time.time(),
         }
 
         collection.update_one({'_id': ObjectId(doc_id) }, {"$set": atu })

@@ -185,7 +185,8 @@ class Equipments(equipments_pb2_grpc.EquipmentsServicer):
         ret_code, ret_message = equipments.alter_equipment(
             request.id,
             request.code,
-            request.title
+            request.title,
+            request.unitCost,
         )
 
         return equipments_pb2.EquipmentGeneralResponse(
@@ -368,7 +369,7 @@ class Vouchers(vouchers_pb2_grpc.VouchersServicer):
 
         item_list = []
         for i in request.itemList:
-            item_list.append({"equipment": i.equipment, "quantity": i.quantity})
+            item_list.append({"equipmentCode": i.equipmentCode, "quantity": i.quantity})
 
         ret_code, ret_message = VouchersPersistence.alter(
             request.id,
@@ -376,6 +377,9 @@ class Vouchers(vouchers_pb2_grpc.VouchersServicer):
             request.carrierCode,
             request.patioCode,
             request.observations,
+            request.unitCode,
+            request.deliveredBy,
+            request.receivedBy,
             item_list
         )
 

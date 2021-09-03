@@ -15,6 +15,7 @@ message Equipment {
   int32 id          = 1;
   string code       = 2;
   string title      = 3;
+  double unitCost   = 4;
 }
 
 message EquipmentId {

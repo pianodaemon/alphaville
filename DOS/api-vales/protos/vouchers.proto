@@ -9,8 +9,8 @@ service Vouchers {
 }
 
 message Item {
-  string equipment = 1;
-  int32 quantity   = 2;
+  string equipmentCode = 1;
+  int32 quantity       = 2;
 }
 
 message Voucher {
@@ -19,7 +19,10 @@ message Voucher {
   string carrierCode         = 3;
   string patioCode           = 4;
   string observations        = 5;
-  repeated Item itemList     = 6;
+  string unitCode            = 6;
+  string deliveredBy         = 7;
+  string receivedBy          = 8;
+  repeated Item itemList     = 9;
 }
 
 message VoucherGeneralResponse {

@@ -122,11 +122,7 @@ ALTER FUNCTION public.alter_user(_user_id integer, _username character varying, 
 
 
 
-CREATE FUNCTION public.alter_equipment(
-    _equipment_id INT,
-    _code character varying,
-    _title character varying
-) RETURNS record
+CREATE FUNCTION public.alter_equipment(_equipment_id integer, _code character varying, _title character varying, _unit_cost numeric) RETURNS record
     LANGUAGE plpgsql
     AS $$
 DECLARE
@@ -150,12 +146,14 @@ BEGIN
             INSERT INTO equipments(
                 code,
                 title,
+				unit_cost,
                 last_touch_time,
                 creation_time,
                 blocked
             )VALUES(
                 _code,
                 _title,
+				_unit_cost,
                 current_moment,
                 current_moment,
                 false
@@ -163,10 +161,10 @@ BEGIN
 
         WHEN _equipment_id > 0 THEN
 
-
             UPDATE equipments
             SET code = _code,
                 title = _title,
+				unit_cost = _unit_cost,
                 last_touch_time = current_moment
             WHERE id = _equipment_id;
             
@@ -174,7 +172,6 @@ BEGIN
         ELSE
 
             RAISE EXCEPTION 'negative equipment identifier % is unsupported', _equipment_id;
-
 
     END CASE;
 
@@ -187,7 +184,6 @@ BEGIN
 
 END;
 $$;
-
 
 
 

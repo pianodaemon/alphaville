@@ -185,7 +185,8 @@ class Equipments(equipments_pb2_grpc.EquipmentsServicer):
         ret_code, ret_message = equipments.alter_equipment(
             request.id,
             request.code,
-            request.title
+            request.title,
+            request.unitCost,
         )
 
         return equipments_pb2.EquipmentGeneralResponse(

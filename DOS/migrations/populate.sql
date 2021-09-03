@@ -54,7 +54,17 @@ COPY public.carriers (id, code, title, disabled, last_touch_time, creation_time,
 -- Data for Name: equipments; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.equipments (id, code, title, last_touch_time, creation_time, blocked) FROM stdin;
+COPY public.equipments (id, code, title, unit_cost, last_touch_time, creation_time, blocked) FROM stdin;
+1	LONA001	LONAS	6000.00	2021-09-02 17:47:40.597295-05	2021-09-02 17:47:40.597295-05	f
+2	CADE001	CADENAS	1300.00	2021-09-02 17:47:40.597295-05	2021-09-02 17:47:40.597295-05	f
+3	GATA001	GATAS	1820.00	2021-09-02 17:47:40.597295-05	2021-09-02 17:47:40.597295-05	f
+4	BAND001	BANDAS 4"	820.00	2021-09-02 17:47:40.597295-05	2021-09-02 17:47:40.597295-05	f
+5	BAND002	BANDAS 2"	650.00	2021-09-02 17:47:40.597295-05	2021-09-02 17:47:40.597295-05	f
+6	WINC001	WINCHE UNIVERSAL	550.00	2021-09-02 17:47:40.597295-05	2021-09-02 17:47:40.597295-05	f
+7	BARR001	BARROTES 4X4	800.00	2021-09-02 17:47:40.597295-05	2021-09-02 17:47:40.597295-05	f
+8	BARR002	BARROTES 6X6	900.00	2021-09-02 17:47:40.597295-05	2021-09-02 17:47:40.597295-05	f
+9	BASE001	BASES STD	550.00	2021-09-02 17:47:40.597295-05	2021-09-02 17:47:40.597295-05	f
+10	HULE001	HULES	550.00	2021-09-02 17:47:40.597295-05	2021-09-02 17:47:40.597295-05	f
 \.
 
 
@@ -136,7 +146,7 @@ SELECT pg_catalog.setval('public.carriers_id_seq', 1, false);
 -- Name: equipments_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.equipments_id_seq', 1, false);
+SELECT pg_catalog.setval('public.equipments_id_seq', 10, true);
 
 
 --

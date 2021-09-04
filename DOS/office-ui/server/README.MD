@@ -25,11 +25,11 @@
     3) copio el file .sql dump a docker y lo ejecuto
 */
 
-docker rm -f rdbms_vales
-docker volume rm alphaville_serv_vales_pg_data
+    docker rm -f rdbms_vales
+    docker volume rm alphaville_serv_vales_pg_data
 
-# Log Docker container
-https://stackoverflow.com/questions/10815218/where-is-nodejs-log-file/41514710#41514710
+    # Log Docker container
+    https://stackoverflow.com/questions/10815218/where-is-nodejs-log-file/41514710#41514710
     docker attach eastern_sea
 
 #yarn add grpc-web
@@ -70,5 +70,7 @@ https://stackoverflow.com/questions/10815218/where-is-nodejs-log-file/41514710#4
     grpc_tools_node_protoc --js_out=import_style=commonjs,binary:./DOS/office-ui/server/grpc --grpc_out=grpc_js:./DOS/office-ui/server/grpc -I="./DOS/api-vales/protos/" units.proto
 
     grpc_tools_node_protoc --js_out=import_style=commonjs,binary:./DOS/office-ui/server/grpc --grpc_out=grpc_js:./DOS/office-ui/server/grpc -I="./DOS/api-vales/protos/" carriers.proto
+
+    grpc_tools_node_protoc --js_out=import_style=commonjs,binary:./DOS/office-ui/server/grpc --grpc_out=grpc_js:./DOS/office-ui/server/grpc -I="./DOS/api-vales/protos/" vouchers.proto
 
     #grpc_tools_node_protoc --js_out=import_style=commonjs,binary:./DOS/office-ui/server/grpc --grpc_out=generate_package_definition:./DOS/office-ui/server/grpc -I="./DOS/api-vales/protos/" users.proto

@@ -22,8 +22,9 @@ import { UnitsTableContainer } from 'src/area/units/views/units-table.container'
 import { UnitsFormContainer } from 'src/area/units/views/unit-form.container';
 import { CarriersTableContainer } from 'src/area/carriers/views/carriers-table.container';
 import { CarriersFormContainer } from 'src/area/carriers/views/carrier-form.container';
-import { ValesFormContainer } from 'src/area/vales/views/vales-form.container';
+import { ValesFormContainer } from 'src/area/vouchers/views/vale-form.container';
 import { ProcessContainer } from 'src/area/catalogs/views/process.container';
+import { ValesTableContainer } from 'src/area/vouchers/views/vales-table.container';
 // import { UsersFormContainer } from 'src/area/patios/views/patios-form.container';
 // import { PERMISSIONS } from 'src/shared/constants/permissions.contants';
 
@@ -141,10 +142,18 @@ const routes: Array<CustomRoute> = [
   },
   {
     props: {
-      path: ['/vale/create', '/vale/:id/edit'],
+      path: ['/voucher/create', '/voucher/:id/edit'],
       exact: true,
     },
     component: <ValesFormContainer />,
+    app: 'USR',
+  },
+  {
+    props: {
+      path: ['/vouchers',],
+      exact: true,
+    },
+    component: <ValesTableContainer />,
     app: 'USR',
   },
   {

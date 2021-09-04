@@ -2,7 +2,10 @@ import { Action, createAction, ActionFunctionAny } from 'redux-actions';
 import { call, put, takeLatest } from 'redux-saga/effects';
 import { mergeSaga } from 'src/redux-utils/merge-saga';
 import { notificationAction } from 'src/area/main/state/usecase/notification.usecase';
-// import { translations } from 'src/shared/translations/translations.util';
+import {
+  errorCodes,
+  resolveError,
+} from "src/shared/utils/resolve-error.util";
 import { updateCarrier } from '../../service/carrier.service';
 import { carriersReducer } from '../carriers.reducer';
 import { loadCarriersAction } from './load-carriers.usecase';
@@ -26,28 +29,21 @@ function* updateCarrierWorker(action: any): Generator<any, any, any> {
   try {
     const { fields, history, id } = action.payload;
     const result = yield call(updateCarrier, id, fields);
+    if (result && result.returnCode === errorCodes.GENERIC_ERROR) {
+      throw new Error(result.returnMessage);
+    }
     yield put(updateCarrierSuccessAction(result));
     yield history.push('/carriers');
     yield put(loadCarriersAction());
     yield put(
       notificationAction({
-        message: `¡Carrier ${id} ha sido actualizada!`,
+        message: `¡Carrier ${id} ha sido actualizado!`,
       }),
     );
   } catch (e) {
-    const { releaseForm } = action.payload;
-    let message: string =
-      e.response && e.response.data && e.response.data.message
-        ? e.response.data.message
-        : '¡Error de inesperado! Por favor contacte al Administrador.';
-    /*
-        message = message.includes(
-      translations.users.error_responses.users_unique_username
-    )
-      ? translations.users.error_responses.users_unique_username_message
-      : message;
-      */
-    yield releaseForm();
+    // const { releaseForm } = action.payload;
+    const message: string = resolveError(e.response?.data?.message || e.message);
+    // yield releaseForm();
     yield put(updateCarrierErrorAction());
     yield put(
       notificationAction({

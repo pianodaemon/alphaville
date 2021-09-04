@@ -2,6 +2,7 @@ import React from "react";
 import { CatalogCard } from "src/shared/components/catalog-card.component";
 import { makeStyles } from "@material-ui/core/styles";
 import { useHistory /*, useParams*/ } from "react-router-dom";
+import { Routes } from 'src/shared/constants/routes.contants';
 
 const useStyles = makeStyles({
   root: {
@@ -22,7 +23,7 @@ export const Process = () => {
     {
       title: "Vales",
       imageURL: "/images/carrier.png",
-      onClick: (e: React.MouseEvent<HTMLElement>) => history.push('/vales'),
+      onClick: (e: React.MouseEvent<HTMLElement>) => history.push(Routes.PROCESSES.VOUCHERS),
     },
   ];
   return (

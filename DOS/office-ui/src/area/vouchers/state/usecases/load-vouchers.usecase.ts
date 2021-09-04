@@ -3,23 +3,23 @@ import { call, put, select, takeLatest } from "redux-saga/effects";
 import { mergeSaga } from "src/redux-utils/merge-saga";
 import { errorCodes, resolveError } from "src/shared/utils/resolve-error.util";
 import { notificationAction } from "src/area/main/state/usecase/notification.usecase";
-import { getEquipments } from "../../service/equipment.service";
-import { equipmentsReducer } from "../equipments.reducer";
-import { pagingSelector } from "../equipments.selectors";
+import { getVouchers } from "../../service/voucher.service";
+import { vouchersReducer } from "../vouchers.reducer";
+import { pagingSelector } from "../vouchers.selectors";
 
 const postfix = "/app";
-const LOAD_EQUIPMENTS = `LOAD_EQUIPMENTS${postfix}`;
-const LOAD_EQUIPMENTS_SUCCESS = `LOAD_EQUIPMENTS_SUCCESS${postfix}`;
-const LOAD_EQUIPMENTS_ERROR = `LOAD_EQUIPMENTS_ERROR${postfix}`;
+const LOAD_VOUCHERS = `LOAD_VOUCHERS${postfix}`;
+const LOAD_VOUCHERS_SUCCESS = `LOAD_VOUCHERS_SUCCESS${postfix}`;
+const LOAD_VOUCHERS_ERROR = `LOAD_VOUCHERS_ERROR${postfix}`;
 
-export const loadEquipmentsAction: ActionFunctionAny<Action<any>> =
-  createAction(LOAD_EQUIPMENTS);
-export const loadEquipmentsSuccessAction: ActionFunctionAny<Action<any>> =
-  createAction(LOAD_EQUIPMENTS_SUCCESS);
-export const loadEquipmentsErrorAction: ActionFunctionAny<Action<any>> =
-  createAction(LOAD_EQUIPMENTS_ERROR);
+export const loadVouchersAction: ActionFunctionAny<Action<any>> =
+  createAction(LOAD_VOUCHERS);
+export const loadVouchersSuccessAction: ActionFunctionAny<Action<any>> =
+  createAction(LOAD_VOUCHERS_SUCCESS);
+export const loadVouchersErrorAction: ActionFunctionAny<Action<any>> =
+  createAction(LOAD_VOUCHERS_ERROR);
 
-function* loadEquipmentsWorker(action?: any): Generator<any, any, any> {
+function* loadVouchersWorker(action?: any): Generator<any, any, any> {
   try {
     const aliases = { id: "id" };
     const { per_page, page, order, order_by, filters } = action.payload || {};
@@ -34,13 +34,13 @@ function* loadEquipmentsWorker(action?: any): Generator<any, any, any> {
       ...filters,
     };
     delete options.filters;
-    const result = yield call(getEquipments, options);
+    const result = yield call(getVouchers, options);
     if (result && result.returnCode === errorCodes.GENERIC_ERROR) {
       throw new Error(result.returnMessage);
     }
     yield put(
-      loadEquipmentsSuccessAction({
-        equipments: result.data,
+      loadVouchersSuccessAction({
+        vouchers: result.data,
         paging: {
           count: parseInt(result.data.totalItems, 10) || 0,
           pages: parseInt(result.data.totalPages, 10) || 0,
@@ -52,11 +52,11 @@ function* loadEquipmentsWorker(action?: any): Generator<any, any, any> {
         filters,
       })
     );
-  } catch (e) {
+  } catch (e: any) {
     const message: string = resolveError(
       e.response?.data?.message || e.message
     );
-    yield put(loadEquipmentsErrorAction());
+    yield put(loadVouchersErrorAction());
     yield put(
       notificationAction({
         message,
@@ -66,34 +66,34 @@ function* loadEquipmentsWorker(action?: any): Generator<any, any, any> {
   }
 }
 
-function* loadEquipmentsWatcher(): Generator<any, any, any> {
-  yield takeLatest(LOAD_EQUIPMENTS, loadEquipmentsWorker);
+function* loadVouchersWatcher(): Generator<any, any, any> {
+  yield takeLatest(LOAD_VOUCHERS, loadVouchersWorker);
 }
 
-const equipmentsReducerHandlers = {
-  [LOAD_EQUIPMENTS]: (state: any, action) => {
+const vouchersReducerHandlers = {
+  [LOAD_VOUCHERS]: (state: any, action) => {
     const { payload } = action || {};
     const { filters } = payload || {};
     return {
       ...state,
       loading: true,
       filters: filters || {},
-      equipment: null,
+      voucher: null,
     };
   },
-  [LOAD_EQUIPMENTS_SUCCESS]: (state: any, action: any) => {
-    const { equipments, paging, filters } = action.payload;
+  [LOAD_VOUCHERS_SUCCESS]: (state: any, action: any) => {
+    const { vouchers, paging, filters } = action.payload;
     return {
       ...state,
       loading: false,
-      equipments: equipments.equipmentList,
+      vouchers: vouchers.voucherList,
       paging: {
         ...paging,
       },
       filters,
     };
   },
-  [LOAD_EQUIPMENTS_ERROR]: (state: any) => {
+  [LOAD_VOUCHERS_ERROR]: (state: any) => {
     return {
       ...state,
       loading: false,
@@ -102,5 +102,5 @@ const equipmentsReducerHandlers = {
   },
 };
 
-mergeSaga(loadEquipmentsWatcher);
-equipmentsReducer.addHandlers(equipmentsReducerHandlers);
+mergeSaga(loadVouchersWatcher);
+vouchersReducer.addHandlers(vouchersReducerHandlers);

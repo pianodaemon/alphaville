@@ -2,7 +2,8 @@ import { useEffect, EffectCallback, DependencyList, useRef } from "react";
 
 /**
  * This hook gets called only when the dependencies change but not during initial render.
- *
+ * @ref https://medium.com/swlh/prevent-useeffects-callback-firing-during-initial-render-the-armchair-critic-f71bc0e03536
+ * 
  * @param {EffectCallback} effect The `useEffect` callback function.
  * @param {DependencyList} deps An array of dependencies.
  *
@@ -12,7 +13,7 @@ import { useEffect, EffectCallback, DependencyList, useRef } from "react";
  *      alert("Dependency changed!");
  * },[dependency]);
  * ```
- * # https://medium.com/swlh/prevent-useeffects-callback-firing-during-initial-render-the-armchair-critic-f71bc0e03536
+ *
  */
 export const useNonInitialEffect = (effect: EffectCallback, deps?: DependencyList) => {
   const initialRender = useRef(true);

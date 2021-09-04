@@ -1,6 +1,11 @@
 import { Action, createAction, ActionFunctionAny } from 'redux-actions';
 import { call, put, takeLatest } from 'redux-saga/effects';
 import { mergeSaga } from 'src/redux-utils/merge-saga';
+import {
+  errorCodes,
+  resolveError,
+} from "src/shared/utils/resolve-error.util";
+import { notificationAction } from "src/area/main/state/usecase/notification.usecase";
 import { readCarrier } from '../../service/carrier.service';
 import { carriersReducer } from '../carriers.reducer';
 
@@ -23,11 +28,22 @@ function* readCarrierWorker(action: any): Generator<any, any, any> {
   try {
     const { id } = action.payload;
     const result = yield call(readCarrier, id);
+    if (result && result.returnCode === errorCodes.GENERIC_ERROR) {
+      throw new Error(result.returnMessage);
+    }
     yield put(readCarrierSuccessAction(result));
   } catch (e) {
     const { history } = action.payload;
+    const message: string = resolveError(e.response?.data?.message || e.message);
+
     yield history.push('/carriers/list');
     yield put(readCarrierErrorAction());
+    yield put(
+      notificationAction({
+        message,
+        type: "error",
+      })
+    );
   }
 }
 

@@ -16,8 +16,11 @@ const errorList: Array<ServerErrorMessage> = [
     en: 'duplicate key value violates unique constraint "equipments_unique_code"',
     es: "El valor del campo Clave ingresado existe actualmente. Asegúrese de ingresar una Clave única.",
   },
+  {
+    en: "InvalidId(\"'0' is not a valid ObjectId, it must be a 12-byte input or a 24-character hex string\")",
+    es: "UUID no válido.",
+  },
 ];
-
 
 const GENERIC_ERROR_MESSAGE_ES =
   "¡Error de inesperado! Por favor contacte al Administrador.";
@@ -31,7 +34,5 @@ export const errorCodes = {
 
 export function resolveError(error: any): string {
   const errorExist = errorList.find((e) => e.en === error);
-  return errorExist
-    ? errorExist.es
-    : GENERIC_ERROR_MESSAGE_ES;
+  return errorExist ? errorExist.es : GENERIC_ERROR_MESSAGE_ES;
 }

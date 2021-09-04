@@ -1,5 +1,5 @@
 /* eslint-disable no-alert */
-import React, { useEffect, /* useState */ } from "react";
+import React, { useEffect /* useState */ } from "react";
 import { useHistory } from "react-router-dom";
 // import { User } from "src/area/users/state/users.reducer";
 import MaterialTable, {
@@ -12,29 +12,31 @@ import Button from "@material-ui/core/Button";
 import PostAddIcon from "@material-ui/icons/PostAdd";
 // import { PERMISSIONS } from 'src/shared/constants/permissions.contants';
 
+/*
 import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import Tooltip from "@material-ui/core/Tooltip";
 import FilterListIcon from "@material-ui/icons/FilterList";
+*/
 
 type Props = {
-  // users: Array<User>,
-  users: any;
-  loadUsersAction: Function;
-  deleteUserAction: Function,
+  vouchers: any;
+  loadVouchersAction: Function;
+  deleteVoucherAction: Function;
   loading: boolean;
   paging: any;
   // isAllowed: Function,
   filters: any;
 };
 
-export const PrintValeTable = (props: Props) => {
+export const ValesTable = (props: Props) => {
   const {
-    users,
-    loadUsersAction,
-    deleteUserAction,
+    vouchers,
+    loadVouchersAction,
+    deleteVoucherAction,
     loading,
-    paging /* isAllowed */,
+    paging,
+    // isAllowed,
     filters,
   } = props;
   const { count, page, per_page, order } = paging;
@@ -46,8 +48,8 @@ export const PrintValeTable = (props: Props) => {
   const sorting: boolean = false;
   const columns = [
     {
-      title: "Vale",
-      field: "vale",
+      title: "ID",
+      field: "id",
       // customSort,
       customFilterAndSearch,
       sorting: !sorting,
@@ -55,16 +57,8 @@ export const PrintValeTable = (props: Props) => {
       defaultSort: "asc",
     },
     {
-      title: "Operador",
-      field: "operador",
-      sorting: !sorting,
-      customFilterAndSearch,
-      filtering: false,
-      defaultSort: "asc",
-    },
-    {
-      title: "Unidad",
-      field: "firstName",
+      title: "Compañía",
+      field: "carrierCode",
       sorting: !sorting,
       customFilterAndSearch,
       filtering: false,
@@ -75,10 +69,34 @@ export const PrintValeTable = (props: Props) => {
       sorting: !sorting,
       customFilterAndSearch,
       filtering: false,
+      defaultSort: "asc",
     },
     {
-      title: "Carrier",
-      field: "roleId_str",
+      title: "Unidad",
+      field: "unitCode",
+      sorting: !sorting,
+      customFilterAndSearch,
+      filtering: false,
+    },
+    {
+      title: "Patio",
+      field: "patioCode",
+      sorting: !sorting,
+      // customSort,
+      customFilterAndSearch,
+      filtering: false,
+    },
+    {
+      title: "Entregó equipo",
+      field: "deliveredBy",
+      sorting: !sorting,
+      // customSort,
+      customFilterAndSearch,
+      filtering: false,
+    },
+    {
+      title: "Recibió equipo",
+      field: "receivedBy",
       sorting: !sorting,
       // customSort,
       customFilterAndSearch,
@@ -88,7 +106,7 @@ export const PrintValeTable = (props: Props) => {
   const getColumnNameByIndex = (columnId: number) =>
     columns.map((column) => column.field)[columnId];
   useEffect(() => {
-    loadUsersAction({ per_page: paging.per_page, order });
+    loadVouchersAction({ per_page: paging.per_page, order });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
@@ -96,14 +114,14 @@ export const PrintValeTable = (props: Props) => {
       title=""
       onOrderChange={(orderBy: number, orderDirection: "asc" | "desc") => {
         console.log(orderBy, orderDirection);
-        loadUsersAction({
+        loadVouchersAction({
           //...paging,
           order: orderDirection,
           order_by: getColumnNameByIndex(orderBy),
         });
       }}
       columns={columns as any}
-      data={users || []}
+      data={vouchers || []}
       options={{
         draggable,
         initialPage: 1, // @todo include this settings value in a CONSTANTS file
@@ -112,6 +130,12 @@ export const PrintValeTable = (props: Props) => {
         thirdSortClick: false,
         actionsColumnIndex: columns.length, // @todo this shouldn't be hardcoded, calculate using columns.lenght
         filtering: true,
+
+        rowStyle: (_data: any, index: number, _level: number) => {
+          return index % 2 
+            ? { backgroundColor: 'rgba(227,27,35,0.1)' }
+            : {};
+        },
       }}
       components={{
         // FilterRow: props => <><MTableFilterRow {...props}  /><div>asassa</div></>,
@@ -124,7 +148,7 @@ export const PrintValeTable = (props: Props) => {
               rowsPerPage={per_page}
               rowsPerPageOptions={[5, 10, 25, 50, 100]}
               onChangePage={(event, currentPage: number) => {
-                loadUsersAction({
+                loadVouchersAction({
                   per_page,
                   page: currentPage + 1,
                   order,
@@ -134,7 +158,7 @@ export const PrintValeTable = (props: Props) => {
               }}
               onChangeRowsPerPage={(event: any) => {
                 componentProps.onChangeRowsPerPage(event);
-                loadUsersAction({
+                loadVouchersAction({
                   per_page: event.target.value,
                 });
               }}
@@ -151,7 +175,7 @@ export const PrintValeTable = (props: Props) => {
                   color="primary"
                   startIcon={<PostAddIcon />}
                   size="medium"
-                  onClick={() => history.push("/user/create")}
+                  onClick={() => history.push("/voucher/create")}
                 >
                   Agregar Vale
                 </Button>
@@ -165,7 +189,7 @@ export const PrintValeTable = (props: Props) => {
             onFilterChanged={(columnId: number, value: string) => {
               // console.log(columnId, value, getColumnNameByIndex(columnId));
               bodyProps.onFilterChanged(columnId, value);
-              loadUsersAction({
+              loadVouchersAction({
                 filters: {
                   ...filters,
                   [getColumnNameByIndex(columnId)]: value,
@@ -182,6 +206,28 @@ export const PrintValeTable = (props: Props) => {
           onClick: (event, rowData: any) =>
             history.push(`/user/${rowData.id}/edit`),
           // disabled: !isAllowed('USR', PERMISSIONS.UPDATE),
+        },
+        {
+          icon: "edit",
+          tooltip: "Editar",
+          onClick: (event, rowData: any) =>
+            history.push(`/voucher/${rowData.id}/edit`),
+          // disabled: !isAllowed('USR', PERMISSIONS.UPDATE),
+        },
+        {
+          icon: "delete",
+          tooltip: "Eliminar Usuario",
+          onClick: (event, rowData: any) => {
+            if (
+              // eslint-disable-next-line no-restricted-globals
+              confirm(
+                `¿Realmente quieres eliminar el Voucher ${rowData.id}?\n Esta acción es irreversible`
+              )
+            ) {
+              deleteVoucherAction(rowData.id);
+            }
+          },
+          // disabled: !isAllowed('USR', PERMISSIONS.DELETE),
         },
       ]}
       isLoading={loading}

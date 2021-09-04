@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { useForm, Controller } from "react-hook-form";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
-import MenuItem from "@material-ui/core/MenuItem";
+// import MenuItem from "@material-ui/core/MenuItem";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormHelperText from "@material-ui/core/FormHelperText";
@@ -14,22 +14,23 @@ import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 // import Checkbox from "@material-ui/core/Checkbox";
 // import FormControlLabel from "@material-ui/core/FormControlLabel";
-import { Typography } from "@material-ui/core";
+// import { Typography } from "@material-ui/core";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import mxLocale from "date-fns/locale/es";
 import DateFnsUtils from "@date-io/date-fns";
 // import { CheckboxesGroup } from "src/shared/components/select-multiple.component";
-import { CustomDatePicker } from "src/shared/components/custom-date-picker.component";
-import { Catalog /*User*/ } from "../../users/state/users.reducer";
+// import { CustomDatePicker } from "src/shared/components/custom-date-picker.component";
+import { Voucher } from "../state/vouchers.reducer";
+import Table from "./table.component";
 
 type Props = {
-  createUserAction: Function;
-  readUserAction: Function;
-  updateUserAction: Function;
-  loadUsersCatalogAction: Function;
-  catalog: Catalog | null;
-  user: any | null;
+  createVoucherAction: Function;
+  readVoucherAction: Function;
+  updateVoucherAction: Function;
+  // loadUsersCatalogAction: Function;
+  // catalog: Catalog | null;
+  voucher: any | null;
 };
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -122,57 +123,70 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const schema = yup.object().shape({
-  username: yup.string().required(),
-  firstName: yup.string().required(),
-  lastName: yup.string().required(),
-  disabled: yup.boolean(),
+  //carrierCode: yup.string().required(),
+  //deliveredBy: yup.string().required(),
+  //observations: yup.string().required(),
+  //patioCode: yup.string().required(),
+  //platform: yup.string().required(),
+  //receivedBy: yup.string().required(),
+  //unitCode: yup.string().required(),
 });
 
 export const ValesForm = (props: Props) => {
   const {
-    catalog,
-    createUserAction,
-    readUserAction,
-    updateUserAction,
-    loadUsersCatalogAction,
-    user,
+    // catalog,
+    createVoucherAction,
+    readVoucherAction,
+    updateVoucherAction,
+    // loadUsersCatalogAction,
+    voucher,
   } = props;
-  const initialValues = {
-    number: "",
-    date: "",
+  const initialValues: Voucher = {
+    carrierCode: "",
+    deliveredBy: "",
+    id: "",
+    observations: "",
+    patioCode: "",
     platform: "",
-    company: "",
-    unit: "",
-    patio: "",
+    receivedBy: "",
+    unitCode: "",
+    itemList: [],
   };
   const {
     control,
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
-    // getValues,
-    setValue,
+    getValues,
+    // setValue,
   } = useForm({
     defaultValues: initialValues,
     resolver: yupResolver(schema),
   });
+  const { fields, /*append, prepend, remove, swap, move, insert*/ } = useFieldArray(
+    {
+      control, // control props comes from useForm (optional: if you are using FormContext)
+      name: "itemList", // unique name for your Field Array
+      // keyName: "id", default to "id", you can change the key name
+    }
+  );
   const classes = useStyles();
   const history = useHistory();
   const { id } = useParams<any>();
   useEffect(() => {
-    loadUsersCatalogAction();
+    // loadUsersCatalogAction();
     if (id) {
-      readUserAction({ id, history });
+      readVoucherAction({ id, history });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    if (user) {
-      reset(user || {});
+    if (voucher) {
+      reset(voucher || {});
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, [voucher]);
   const onSubmit = (fields) => {
     /*
     const releaseForm: () => void = () => setSubmitting(false);
@@ -183,9 +197,9 @@ export const ValesForm = (props: Props) => {
     */
     if (id) {
       delete fields.id;
-      updateUserAction({ id, fields, history /* releaseForm */ });
+      updateVoucherAction({ id, fields, history /* releaseForm */ });
     } else {
-      createUserAction({ fields, history /* releaseForm */ });
+      createVoucherAction({ fields, history /* releaseForm */ });
     }
   };
   return (
@@ -197,17 +211,17 @@ export const ValesForm = (props: Props) => {
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
               <Controller
-                name="number"
+                name="id"
                 control={control}
                 render={({ field }) => (
                   <FormControl className={classes.formControl}>
                     <TextField
                       {...field}
-                      id="number"
+                      id="id"
                       label="#"
                       value={field.value ? field.value || "" : ""}
                     />
-                    {errors.number && (
+                    {errors.id && (
                       <FormHelperText
                         error
                         classes={{ error: classes.textErrorHelper }}
@@ -219,9 +233,10 @@ export const ValesForm = (props: Props) => {
                 )}
               />
             </Grid>
+            {/*
             <Grid item xs={12} sm={6}>
               <Controller
-                name="date"
+                name="fecha"
                 control={control}
                 render={({ field }) => (
                   <FormControl className={classes.formControl}>
@@ -232,7 +247,7 @@ export const ValesForm = (props: Props) => {
                         setValue,
                       }}
                     />
-                    {errors.date && (
+                    {errors.fecha && (
                       <FormHelperText
                         error
                         classes={{ error: classes.textErrorHelper }}
@@ -244,6 +259,7 @@ export const ValesForm = (props: Props) => {
                 )}
               />
             </Grid>
+                    */}
             <Grid item xs={12} sm={6}>
               <Controller
                 name="platform"
@@ -270,17 +286,17 @@ export const ValesForm = (props: Props) => {
             </Grid>
             <Grid item xs={12} sm={6}>
               <Controller
-                name="company"
+                name="carrierCode"
                 control={control}
                 render={({ field }) => (
                   <FormControl className={classes.formControl}>
                     <TextField
                       {...field}
-                      id="company"
+                      id="carrier"
                       label="Compañía"
                       value={field.value ? field.value || "" : ""}
                     />
-                    {errors.company && (
+                    {errors.carrierCode && (
                       <FormHelperText
                         error
                         classes={{ error: classes.textErrorHelper }}
@@ -294,19 +310,18 @@ export const ValesForm = (props: Props) => {
             </Grid>
             <Grid item xs={12} sm={6}>
               <Controller
-                name="unit"
+                name="unitCode"
                 control={control}
                 render={({ field }) => (
                   <FormControl className={classes.formControl}>
                     <InputLabel>Unidad</InputLabel>
                     <Select
                       {...field}
-                      labelId="unit"
-                      id="unit"
+                      labelId="unitCode"
+                      id="unitCode"
                       // value={catalog && field.value ? field.value || "" : ""}
-                      value={catalog && field.value ? field.value || "" : ""}
                     >
-                      {catalog &&
+                      {/*catalog &&
                         catalog.roleList &&
                         catalog.roleList.map((item) => {
                           return (
@@ -314,9 +329,9 @@ export const ValesForm = (props: Props) => {
                               {item.title}
                             </MenuItem>
                           );
-                        })}
+                        })*/}
                     </Select>
-                    {errors.unit && (
+                    {errors.unitCode && (
                       <FormHelperText
                         error
                         classes={{ error: classes.textErrorHelper }}
@@ -330,19 +345,18 @@ export const ValesForm = (props: Props) => {
             </Grid>
             <Grid item xs={12} sm={6}>
               <Controller
-                name="patio"
+                name="patioCode"
                 control={control}
                 render={({ field }) => (
                   <FormControl className={classes.formControl}>
                     <InputLabel>Patio</InputLabel>
                     <Select
                       {...field}
-                      labelId="patio"
-                      id="patio"
+                      labelId="patioCode"
+                      id="patioCode"
                       // value={catalog && field.value ? field.value || "" : ""}
-                      value={catalog && field.value ? field.value || "" : ""}
                     >
-                      {catalog &&
+                      {/*catalog &&
                         catalog.roleList &&
                         catalog.roleList.map((item) => {
                           return (
@@ -350,9 +364,9 @@ export const ValesForm = (props: Props) => {
                               {item.title}
                             </MenuItem>
                           );
-                        })}
+                        })*/}
                     </Select>
-                    {errors.patio && (
+                    {errors.patioCode && (
                       <FormHelperText
                         error
                         classes={{ error: classes.textErrorHelper }}
@@ -366,29 +380,38 @@ export const ValesForm = (props: Props) => {
             </Grid>
           </Grid>
 
-          <fieldset className={classes.fieldset}>
-            <legend
-              className={classes.containerLegend}
-              style={{ width: "335px" }}
-            >
-              <Typography
-                variant="body2"
-                align="center"
-                classes={{ root: classes.legend }}
-              >
-                {/* <Icon> attach_money </Icon> */}
-                EQUIPO
-              </Typography>
-            </legend>
-            <Grid container spacing={3}>
-              <Grid item xs={12}></Grid>
+          <Grid container spacing={3}>
+            <Grid item xs={12}>
+              {/*
+              <fieldset className={classes.fieldset}>
+                <legend
+                  className={classes.containerLegend}
+                  style={{ width: "335px" }}
+                >
+                  <Typography
+                    variant="body2"
+                    align="center"
+                    classes={{ root: classes.legend }}
+                  >
+                    EQUIPO
+                  </Typography>
+                </legend>
+              </fieldset>
+              */}
+              <div style={{
+                display: "flex",
+                maxHeight: "30vh",
+              }}>
+                <Table {...{fields, control, getValues}} />
+
+              </div>
             </Grid>
-          </fieldset>
+          </Grid>
 
           <Grid container spacing={3}>
             <Grid item sm={12}>
               <Controller
-                name="company"
+                name="observations"
                 control={control}
                 render={({ field }) => (
                   <FormControl className={classes.formControlFull}>
@@ -397,11 +420,11 @@ export const ValesForm = (props: Props) => {
                       id="observations"
                       label="Observaciones"
                       multiline
-                      rows={5}
-                      rowsMax={5}
+                      minRows={5}
+                      maxRows={5}
                       value={field.value ? field.value || "" : ""}
                     />
-                    {errors.company && (
+                    {errors.observations && (
                       <FormHelperText
                         error
                         classes={{ error: classes.textErrorHelper }}
@@ -415,19 +438,18 @@ export const ValesForm = (props: Props) => {
             </Grid>
             <Grid item xs={12} sm={6}>
               <Controller
-                name="patio"
+                name="deliveredBy"
                 control={control}
                 render={({ field }) => (
                   <FormControl className={classes.formControl}>
                     <InputLabel>Entregó Equipo</InputLabel>
                     <Select
                       {...field}
-                      labelId="patio"
-                      id="patio"
+                      labelId="deliveredBy"
+                      id="deliveredBy"
                       // value={catalog && field.value ? field.value || "" : ""}
-                      value={catalog && field.value ? field.value || "" : ""}
                     >
-                      {catalog &&
+                      {/*catalog &&
                         catalog.roleList &&
                         catalog.roleList.map((item) => {
                           return (
@@ -435,9 +457,9 @@ export const ValesForm = (props: Props) => {
                               {item.title}
                             </MenuItem>
                           );
-                        })}
+                        })*/}
                     </Select>
-                    {errors.patio && (
+                    {errors.deliveredBy && (
                       <FormHelperText
                         error
                         classes={{ error: classes.textErrorHelper }}
@@ -451,19 +473,18 @@ export const ValesForm = (props: Props) => {
             </Grid>
             <Grid item xs={12} sm={6}>
               <Controller
-                name="patio"
+                name="receivedBy"
                 control={control}
                 render={({ field }) => (
                   <FormControl className={classes.formControl}>
                     <InputLabel>Recibió Equipo</InputLabel>
                     <Select
                       {...field}
-                      labelId="patio"
-                      id="patio"
+                      labelId="receivedBy"
+                      id="receivedBy"
                       // value={catalog && field.value ? field.value || "" : ""}
-                      value={catalog && field.value ? field.value || "" : ""}
                     >
-                      {catalog &&
+                      {/*catalog &&
                         catalog.roleList &&
                         catalog.roleList.map((item) => {
                           return (
@@ -471,9 +492,9 @@ export const ValesForm = (props: Props) => {
                               {item.title}
                             </MenuItem>
                           );
-                        })}
+                        })*/}
                     </Select>
-                    {errors.patio && (
+                    {errors.receivedBy && (
                       <FormHelperText
                         error
                         classes={{ error: classes.textErrorHelper }}

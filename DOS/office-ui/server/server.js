@@ -38,6 +38,13 @@ const {
   deleteCarrier,
   listCarriers,
 } = require("./carriers");
+const {
+  createVoucher,
+  readVoucher,
+  updateVoucher,
+  deleteVoucher,
+  listVouchers,
+} = require("./vouchers");
 
 var cors = require("cors");
 
@@ -259,7 +266,6 @@ router.delete("/units/:id", cors(corsOptionsDelegate), function (req, res) {
     .catch((err) => res.status(500).json(err));
 });
 
-
 /**
  *
  * Carriers
@@ -267,41 +273,82 @@ router.delete("/units/:id", cors(corsOptionsDelegate), function (req, res) {
  * ---------------------------------------------------------------------------------------------------
  * ---------------------------------------------------------------------------------------------------
  */
- app.options("/carriers", cors(corsOptionsDelegate));
+app.options("/carriers", cors(corsOptionsDelegate));
 
- // enable pre-flight request for DELETE request
- app.options("/carriers/:id", cors(corsOptionsDelegate));
- 
- router.get("/carriers", cors(corsOptionsDelegate), function (req, res) {
-   listCarriers(req.query)
-     .then((data) => res.json(data))
-     .catch((err) => res.status(500).json(err));
- });
- 
- router.post("/carriers", cors(corsOptionsDelegate), function (req, res) {
-   createCarrier(req.body)
-     .then((data) => res.json(data))
-     .catch((err) => res.status(500).json(err));
- });
- 
- router.get("/carriers/:id", cors(corsOptionsDelegate), function (req, res) {
-   readCarrier(req.params.id)
-     .then((data) => res.json(data))
-     .catch((err) => res.status(500).json(err));
- });
- 
- router.put("/carriers/:id", cors(corsOptionsDelegate), function (req, res) {
-   updateCarrier(req.params.id, req.body)
-     .then((data) => res.json(data))
-     .catch((err) => res.status(500).json(err));
- });
- 
- router.delete("/carriers/:id", cors(corsOptionsDelegate), function (req, res) {
-   deleteCarrier(req.params.id)
-     .then((data) => res.json(data))
-     .catch((err) => res.status(500).json(err));
- });
+// enable pre-flight request for DELETE request
+app.options("/carriers/:id", cors(corsOptionsDelegate));
 
+router.get("/carriers", cors(corsOptionsDelegate), function (req, res) {
+  listCarriers(req.query)
+    .then((data) => res.json(data))
+    .catch((err) => res.status(500).json(err));
+});
+
+router.post("/carriers", cors(corsOptionsDelegate), function (req, res) {
+  createCarrier(req.body)
+    .then((data) => res.json(data))
+    .catch((err) => res.status(500).json(err));
+});
+
+router.get("/carriers/:id", cors(corsOptionsDelegate), function (req, res) {
+  readCarrier(req.params.id)
+    .then((data) => res.json(data))
+    .catch((err) => res.status(500).json(err));
+});
+
+router.put("/carriers/:id", cors(corsOptionsDelegate), function (req, res) {
+  updateCarrier(req.params.id, req.body)
+    .then((data) => res.json(data))
+    .catch((err) => res.status(500).json(err));
+});
+
+router.delete("/carriers/:id", cors(corsOptionsDelegate), function (req, res) {
+  deleteCarrier(req.params.id)
+    .then((data) => res.json(data))
+    .catch((err) => res.status(500).json(err));
+});
+
+/**
+ *
+ * Vouchers
+ * ---------------------------------------------------------------------------------------------------
+ * ---------------------------------------------------------------------------------------------------
+ * ---------------------------------------------------------------------------------------------------
+ */
+app.options("/vouchers", cors(corsOptionsDelegate));
+
+// enable pre-flight request for DELETE request
+app.options("/vouchers/:id", cors(corsOptionsDelegate));
+
+router.get("/vouchers", cors(corsOptionsDelegate), function (req, res) {
+  listVouchers(req.query)
+    .then((data) => res.json(data))
+    .catch((err) => res.status(500).json(err));
+});
+
+router.post("/vouchers", cors(corsOptionsDelegate), function (req, res) {
+  createVoucher(req.body)
+    .then((data) => res.json(data))
+    .catch((err) => res.status(500).json(err));
+});
+
+router.get("/vouchers/:id", cors(corsOptionsDelegate), function (req, res) {
+  readVoucher(req.params.id)
+    .then((data) => res.json(data))
+    .catch((err) => res.status(500).json(err));
+});
+
+router.put("/vouchers/:id", cors(corsOptionsDelegate), function (req, res) {
+  updateVoucher(req.params.id, req.body)
+    .then((data) => res.json(data))
+    .catch((err) => res.status(500).json(err));
+});
+
+router.delete("/vouchers/:id", cors(corsOptionsDelegate), function (req, res) {
+  deleteVoucher(req.params.id)
+    .then((data) => res.json(data))
+    .catch((err) => res.status(500).json(err));
+});
 
 app.use(router);
 

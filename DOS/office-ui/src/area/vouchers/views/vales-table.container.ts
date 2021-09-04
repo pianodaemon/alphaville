@@ -1,23 +1,23 @@
 import { connect } from 'react-redux';
-import { PrintValeTable } from './print-vale-table.component';
-import { loadUsersAction } from '../../users/state/usecases/load-users.usecase';
-import { deleteUserAction } from '../../users/state/usecases/delete-user.usecase';
+import { ValesTable } from './vales-table.component';
+import { loadVouchersAction } from '../state/usecases/load-vouchers.usecase';
+import { deleteVoucherAction } from '../state/usecases/delete-voucher.usecase';
 // import { permissionSelector } from 'src/area/auth/state/auth.selectors';
 import {
   isLoadingSelector,
-  usersCatalogSelector,
+  vouchersCatalogSelector,
   pagingSelector,
   filtersSelector
-} from '../../users/state/users.selectors';
+} from '../state/vouchers.selectors';
 
 const mapDispatchToProps = {
-  loadUsersAction,
-  deleteUserAction,
+  loadVouchersAction,
+  deleteVoucherAction,
 };
 
 function mapStateToProps(state: any) {
   return {
-    users: usersCatalogSelector(state),
+    vouchers: vouchersCatalogSelector(state),
     loading: isLoadingSelector(state),
     paging: pagingSelector(state),
     // isAllowed: permissionSelector(state),
@@ -25,7 +25,7 @@ function mapStateToProps(state: any) {
   };
 }
 
-export const PrintValeTableContainer = connect(
+export const ValesTableContainer = connect(
   mapStateToProps,
   mapDispatchToProps
-)(PrintValeTable);
+)(ValesTable);

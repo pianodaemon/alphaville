@@ -1,0 +1,61 @@
+syntax = "proto3";
+
+package dylk;
+
+// -------------------------------------------------------------------------
+// The Vouchers service definition.
+service Vouchers {
+  rpc AlterVoucher   (Voucher)            returns (VoucherGeneralResponse)  {}
+  rpc ListVouchers   (VoucherParams)      returns (VoucherListResponse)     {}
+  rpc GetVoucher     (VoucherId)          returns (VoucherResponse)         {}
+}
+
+message Item {
+  string equipmentCode = 1;
+  int32 quantity       = 2;
+}
+
+message Voucher {
+  string id                  = 1;
+  string platform            = 2;
+  string carrierCode         = 3;
+  string patioCode           = 4;
+  string observations        = 5;
+  string unitCode            = 6;
+  string deliveredBy         = 7;
+  string receivedBy          = 8;
+  repeated Item itemList     = 9;
+}
+
+message VoucherId {
+  string id = 1;
+}
+
+message VoucherParam {
+  string name  = 1;
+  string value = 2;
+}
+
+message VoucherParams {
+  repeated VoucherParam paramList     = 1;
+  repeated VoucherParam pageParamList = 2;
+}
+
+message VoucherResponse {
+  int32 returnCode       = 1;
+  string returnMessage   = 2;
+  Voucher voucher        = 3;
+}
+
+message VoucherListResponse {
+  int32 returnCode             = 1;
+  string returnMessage         = 2;
+  repeated Voucher voucherList = 3;
+  int32 totalItems             = 4;
+  int32 totalPages             = 5;
+}
+
+message VoucherGeneralResponse {
+  int32 returnCode     = 1;
+  string returnMessage = 2;
+}

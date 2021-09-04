@@ -2,6 +2,7 @@ import React from "react";
 import { CatalogCard } from "src/shared/components/catalog-card.component";
 import { makeStyles } from "@material-ui/core/styles";
 import { useHistory /*, useParams*/ } from "react-router-dom";
+import { Routes } from 'src/shared/constants/routes.contants';
 
 const useStyles = makeStyles({
   root: {
@@ -22,32 +23,32 @@ export const Catalogs = () => {
     {
       title: "Carriers",
       imageURL: "/images/carrier.png",
-      onClick: (e: React.MouseEvent<HTMLElement>) => history.push('/carriers'),
+      onClick: (e: React.MouseEvent<HTMLElement>) => history.push(Routes.CATALOGS.CARRIERS),
     },
     {
       title: "Equipos",
       imageURL: "/images/equipos.png",
-      onClick: (e: React.MouseEvent<HTMLElement>) => history.push('/equipments'),
+      onClick: (e: React.MouseEvent<HTMLElement>) => history.push(Routes.CATALOGS.EQUIPMENT),
     },
     {
       title: "Patios",
       imageURL: "/images/patios.png",
-      onClick: (e: React.MouseEvent<HTMLElement>) => history.push('/patios'),
+      onClick: (e: React.MouseEvent<HTMLElement>) => history.push(Routes.CATALOGS.PATIOS),
     },
     {
       title: "Puestos",
       imageURL: "/images/carrier.png",
-      onClick: (e: React.MouseEvent<HTMLElement>) => history.push('/puestos'),
+      onClick: (e: React.MouseEvent<HTMLElement>) => history.push(Routes.CATALOGS.PUESTOS),
     },
     {
       title: "Unidades",
       imageURL: "/images/carrier.png",
-      onClick: (e: React.MouseEvent<HTMLElement>) => history.push('/units'),
+      onClick: (e: React.MouseEvent<HTMLElement>) => history.push(Routes.CATALOGS.UNITS),
     },
     {
       title: "Usuarios",
       imageURL: "/images/carrier.png",
-      onClick: (e: React.MouseEvent<HTMLElement>) => history.push('/users'),
+      onClick: (e: React.MouseEvent<HTMLElement>) => history.push(Routes.CATALOGS.USERS),
     },
   ];
   return (

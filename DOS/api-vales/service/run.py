@@ -389,6 +389,37 @@ class Vouchers(vouchers_pb2_grpc.VouchersServicer):
         )
 
 
+    def ListVouchers(self, request, context):
+        print(request)
+
+        ret_code, ret_message, voucher_list, total_items, total_pages = VouchersPersistence.list_vouchers(
+            request.paramList,
+            request.pageParamList
+        )
+
+        return vouchers_pb2.VoucherListResponse(
+            returnCode=ret_code,
+            returnMessage=ret_message,
+            voucherList=voucher_list,
+            totalItems=total_items,
+            totalPages=total_pages
+        )
+
+
+    def GetVoucher(self, request, context):
+        print(request)
+
+        ret_code, ret_message, voucher_data = VouchersPersistence.get_voucher(
+            request.id
+        )
+
+        return vouchers_pb2.VoucherResponse(
+            returnCode=ret_code,
+            returnMessage=ret_message,
+            voucher=voucher_data
+        )
+
+
 def _engage():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
 

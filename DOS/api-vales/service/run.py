@@ -187,6 +187,7 @@ class Equipments(equipments_pb2_grpc.EquipmentsServicer):
             request.code,
             request.title,
             request.unitCost,
+            request.regular,
         )
 
         return equipments_pb2.EquipmentGeneralResponse(

@@ -3,7 +3,7 @@ import math
 from misc.helperpg import run_stored_procedure, exec_steady, update_steady, EmptySetError
 from .entity import count_entities
 
-def alter_equipment(id, code, title, unit_cost):
+def alter_equipment(id, code, title, unit_cost, regular):
     """Calls database function in order to create/update an equipment"""
 
     sql = """
@@ -11,13 +11,15 @@ def alter_equipment(id, code, title, unit_cost):
                 {}::integer,
                 '{}'::character varying,
                 '{}'::character varying,
-                {}::numeric
+                {}::numeric,
+                {}::boolean
             ) AS (rc integer, msg text);
             """.format(
                 id,
                 code.replace("'", "''"),
                 title.replace("'", "''"),
                 unit_cost,
+                regular,
             )
 
     return run_stored_procedure(sql)
@@ -81,7 +83,8 @@ def list_equipments(param_list, page_param_list):
         SELECT id,
                code,
                title,
-               unit_cost as "unitCost"
+               unit_cost as "unitCost",
+               regular
           FROM equipments
          WHERE NOT blocked
            {}
@@ -123,7 +126,8 @@ def get_equipment(id):
         SELECT id,
                code,
                title,
-               unit_cost as "unitCost"
+               unit_cost as "unitCost",
+               regular
           FROM equipments
          WHERE id = {}
            AND NOT blocked;

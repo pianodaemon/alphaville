@@ -138,6 +138,7 @@ CREATE TABLE public.equipments (
     code character varying NOT NULL,
     title character varying NOT NULL,
     unit_cost numeric NOT NULL,
+    regular boolean DEFAULT false NOT NULL,
     last_touch_time timestamp with time zone NOT NULL,
     creation_time timestamp with time zone NOT NULL,
     blocked boolean DEFAULT false NOT NULL

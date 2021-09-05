@@ -122,7 +122,11 @@ ALTER FUNCTION public.alter_user(_user_id integer, _username character varying, 
 
 
 
-CREATE FUNCTION public.alter_equipment(_equipment_id integer, _code character varying, _title character varying, _unit_cost numeric) RETURNS record
+--
+-- Name: alter_equipment(integer, character varying, character varying, numeric, boolean); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.alter_equipment(_equipment_id integer, _code character varying, _title character varying, _unit_cost numeric, _regular boolean) RETURNS record
     LANGUAGE plpgsql
     AS $$
 DECLARE
@@ -147,6 +151,7 @@ BEGIN
                 code,
                 title,
 				unit_cost,
+				regular,
                 last_touch_time,
                 creation_time,
                 blocked
@@ -154,6 +159,7 @@ BEGIN
                 _code,
                 _title,
 				_unit_cost,
+				_regular,
                 current_moment,
                 current_moment,
                 false
@@ -165,6 +171,7 @@ BEGIN
             SET code = _code,
                 title = _title,
 				unit_cost = _unit_cost,
+				regular = _regular,
                 last_touch_time = current_moment
             WHERE id = _equipment_id;
             
@@ -184,6 +191,9 @@ BEGIN
 
 END;
 $$;
+
+
+ALTER FUNCTION public.alter_equipment(_equipment_id integer, _code character varying, _title character varying, _unit_cost numeric, _regular boolean) OWNER TO postgres;
 
 
 

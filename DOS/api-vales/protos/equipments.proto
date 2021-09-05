@@ -16,6 +16,7 @@ message Equipment {
   string code       = 2;
   string title      = 3;
   double unitCost   = 4;
+  bool regular      = 5;
 }
 
 message EquipmentId {

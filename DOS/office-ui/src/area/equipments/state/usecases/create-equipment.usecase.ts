@@ -35,7 +35,7 @@ function* createEquipmentWorker(action: any): Generator<any, any, any> {
         type: "success",
       })
     );
-  } catch (e) {
+  } catch (e: any) {
     // const { releaseForm } = action.payload;
     const message: string = resolveError(
       e.response?.data?.message || e.message

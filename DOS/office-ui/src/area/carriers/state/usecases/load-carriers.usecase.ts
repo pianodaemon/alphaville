@@ -52,7 +52,7 @@ function* loadCarriersWorker(action?: any): Generator<any, any, any> {
         filters,
       })
     );
-  } catch (e) {
+  } catch (e: any) {
     const message: string = resolveError(
       e.response?.data?.message || e.message
     );

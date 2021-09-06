@@ -32,7 +32,7 @@ function* deleteEquipmentWorker(action: any): Generator<any, any, any> {
         message: `¡Equipment ${action.payload} ha sido eliminado!`,
       })
     );
-  } catch (e) {
+  } catch (e: any) {
     const message: string = resolveError(
       e.response?.data?.message || e.message
     );

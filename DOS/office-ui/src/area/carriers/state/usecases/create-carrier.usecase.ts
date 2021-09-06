@@ -2,10 +2,7 @@ import { Action, createAction, ActionFunctionAny } from "redux-actions";
 import { call, put, takeLatest } from "redux-saga/effects";
 import { mergeSaga } from "src/redux-utils/merge-saga";
 import { notificationAction } from "src/area/main/state/usecase/notification.usecase";
-import {
-  errorCodes,
-  resolveError,
-} from "src/shared/utils/resolve-error.util";
+import { errorCodes, resolveError } from "src/shared/utils/resolve-error.util";
 import { createCarrier } from "../../service/carrier.service";
 import { carriersReducer } from "../carriers.reducer";
 import { loadCarriersAction } from "./load-carriers.usecase";
@@ -38,9 +35,11 @@ function* createCarrierWorker(action: any): Generator<any, any, any> {
         type: "success",
       })
     );
-  } catch (e) {
+  } catch (e: any) {
     // const { releaseForm } = action.payload;
-    const message: string = resolveError(e.response?.data?.message || e.message);
+    const message: string = resolveError(
+      e.response?.data?.message || e.message
+    );
 
     // yield releaseForm();
     yield put(createCarrierErrorAction());

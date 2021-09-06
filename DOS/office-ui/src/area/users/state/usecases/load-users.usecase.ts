@@ -1,29 +1,28 @@
-import { Action, createAction, ActionFunctionAny } from 'redux-actions';
-import { call, put, select, takeLatest } from 'redux-saga/effects';
-import { mergeSaga } from 'src/redux-utils/merge-saga';
-import { getUsers } from '../../service/user.service';
-import { usersReducer } from '../users.reducer';
-import { pagingSelector } from '../users.selectors';
-import { loadUsersCatalogAction } from './load-users-catalog.usecase';
+import { Action, createAction, ActionFunctionAny } from "redux-actions";
+import { call, put, select, takeLatest } from "redux-saga/effects";
+import { mergeSaga } from "src/redux-utils/merge-saga";
+import { errorCodes, resolveError } from "src/shared/utils/resolve-error.util";
+import { notificationAction } from "src/area/main/state/usecase/notification.usecase";
+import { getUsers } from "../../service/user.service";
+import { usersReducer } from "../users.reducer";
+import { pagingSelector } from "../users.selectors";
+import { loadUsersCatalogAction } from "./load-users-catalog.usecase";
 
-const postfix = '/app';
+const postfix = "/app";
 const LOAD_USERS = `LOAD_USERS${postfix}`;
 const LOAD_USERS_SUCCESS = `LOAD_USERS_SUCCESS${postfix}`;
 const LOAD_USERS_ERROR = `LOAD_USERS_ERROR${postfix}`;
 
-export const loadUsersAction: ActionFunctionAny<Action<any>> = createAction(
-  LOAD_USERS
-);
-export const loadUsersSuccessAction: ActionFunctionAny<
-  Action<any>
-> = createAction(LOAD_USERS_SUCCESS);
-export const loadUsersErrorAction: ActionFunctionAny<
-  Action<any>
-> = createAction(LOAD_USERS_ERROR);
+export const loadUsersAction: ActionFunctionAny<Action<any>> =
+  createAction(LOAD_USERS);
+export const loadUsersSuccessAction: ActionFunctionAny<Action<any>> =
+  createAction(LOAD_USERS_SUCCESS);
+export const loadUsersErrorAction: ActionFunctionAny<Action<any>> =
+  createAction(LOAD_USERS_ERROR);
 
 function* loadUsersWorker(action?: any): Generator<any, any, any> {
   try {
-    const aliases = {userId: "id", username: 'username'};
+    const aliases = { userId: "id", username: "username" };
     const { per_page, page, order, order_by, filters } = action.payload || {};
     const paging = yield select(pagingSelector);
     const options = {
@@ -32,11 +31,14 @@ function* loadUsersWorker(action?: any): Generator<any, any, any> {
       page: page || paging.page,
       pages: paging.pages,
       order: order || paging.order,
-      order_by: aliases[order_by] || aliases[paging.order_by] || 'id',
+      order_by: aliases[order_by] || aliases[paging.order_by] || "id",
       ...filters,
     };
     delete options.filters;
     const result = yield call(getUsers, options);
+    if (result && result.returnCode === errorCodes.GENERIC_ERROR) {
+      throw new Error(result.returnMessage);
+    }
     yield put(loadUsersCatalogAction());
     yield put(
       loadUsersSuccessAction({
@@ -50,10 +52,20 @@ function* loadUsersWorker(action?: any): Generator<any, any, any> {
           order_by: order_by || paging.order_by,
         },
         filters,
-      }),
+      })
     );
-  } catch (e) {
+  } catch (e: any) {
+    const message: string = resolveError(
+      e.response?.data?.message || e.message
+    );
+
     yield put(loadUsersErrorAction());
+    yield put(
+      notificationAction({
+        message,
+        type: "error",
+      })
+    );
   }
 }
 

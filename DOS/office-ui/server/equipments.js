@@ -91,8 +91,7 @@ async function createEquipment(fields) {
   const promisifiedClient = setupEquipmentClient("alterEquipment");
   const equipment = {
     id: 0,
-    code: fields.code,
-    title: fields.title,
+    ...fields,
   };
   try {
     const call_service = async (req, service) => {
@@ -135,8 +134,7 @@ async function updateEquipment(id, fields) {
   const promisifiedClient = setupEquipmentClient("alterEquipment");
   const equipment = {
     id,
-    code: fields.code,
-    title: fields.title,
+    ...fields,
   };
   try {
     const call_service = async (req, service) => {

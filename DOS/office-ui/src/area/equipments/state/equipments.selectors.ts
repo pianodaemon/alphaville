@@ -26,6 +26,7 @@ export const equipmentsCatalogSelector = createSelector(
     slice.equipments.map((equipment: Equipment) => {
       return {
         ...equipment,
+        regular_str: equipment.regular ? 'Sí' : 'No',
       };
     })
 );

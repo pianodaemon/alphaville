@@ -3,7 +3,9 @@ import { createAndMergeSliceReducer } from 'src/redux-utils/create-and-merge-sli
 export interface Equipment {
   id: number;
   code: string;
+  regular: boolean;
   title: string;
+  unitCost: number;
 }
 
 export interface EquipmentSlice {

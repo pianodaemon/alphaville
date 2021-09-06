@@ -14,6 +14,7 @@ import PostAddIcon from "@material-ui/icons/PostAdd";
 // import InputAdornment from "@material-ui/core/InputAdornment";
 // import Tooltip from "@material-ui/core/Tooltip";
 // import FilterListIcon from "@material-ui/icons/FilterList";
+import NumberFormat from 'react-number-format';
 
 type Props = {
   equipments: any;
@@ -62,6 +63,23 @@ export const EquipmentsTable = (props: Props) => {
     {
       title: "Descripción",
       field: "title",
+      sorting: !sorting,
+      customFilterAndSearch,
+      filtering: false,
+    },
+    {
+      title: "Costo",
+      field: "unitCost",
+      sorting: !sorting,
+      customFilterAndSearch,
+      filtering: false,
+      render: (rowData: any) => {
+        return <NumberFormat value={rowData.unitCost} displayType={'text'} thousandSeparator={true} prefix={'$ '} />;
+      },
+    },
+    {
+      title: "Mostrar por defecto",
+      field: "regular_str",
       sorting: !sorting,
       customFilterAndSearch,
       filtering: false,

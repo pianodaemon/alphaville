@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
+import * as yup from "yup";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
@@ -8,8 +9,11 @@ import FormControl from "@material-ui/core/FormControl";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import Checkbox from "@material-ui/core/Checkbox";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
+import { NumberFormatCustom } from 'src/shared/components/number-format-custom.component';
 import { Equipment } from "../state/equipments.reducer";
 
 type Props = {
@@ -103,6 +107,8 @@ const useStyles = makeStyles((theme: Theme) =>
 const schema = yup.object().shape({
   code: yup.string().required(),
   title: yup.string().required(),
+  unitCost: yup.number().required(),
+  regular: yup.boolean().required(),
 });
 
 export const EquipmentForm = (props: Props) => {
@@ -112,9 +118,12 @@ export const EquipmentForm = (props: Props) => {
     updateEquipmentAction,
     equipment,
   } = props;
-  const initialValues = {
+  const initialValues: Equipment = {
+    id: 0,
     code: "",
     title: "",
+    unitCost: 0,
+    regular: false,
   };
   const {
     control,
@@ -206,6 +215,56 @@ export const EquipmentForm = (props: Props) => {
                       Ingrese un Descripción
                     </FormHelperText>
                   )}
+                </FormControl>
+              )}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Controller
+              name="unitCost"
+              control={control}
+              render={({ field }) => (
+                <FormControl className={classes.formControl}>
+                  <TextField
+                    {...field}
+                    InputProps={{
+                      inputComponent: NumberFormatCustom as any,
+                      startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                    }}
+                    id="unitCost"
+                    label="Costo"
+                    value={field.value ? field.value || "" : ""}
+                  />
+                  {errors.unitCost && (
+                    <FormHelperText
+                      error
+                      classes={{ error: classes.textErrorHelper }}
+                    >
+                      Ingrese una Clave
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              )}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Controller
+              name="regular"
+              control={control}
+              render={({ field }) => (
+                <FormControl className={classes.formControl}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        {...field}
+                        color="primary"
+                        // checked={values.disabled || false}
+                        // onChange={handleChange("disabled")}
+                        checked={field.value ? field.value || false : false}
+                      />
+                    }
+                    label="Mostrar por defecto"
+                  />
                 </FormControl>
               )}
             />

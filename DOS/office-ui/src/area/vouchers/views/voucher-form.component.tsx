@@ -132,7 +132,7 @@ const schema = yup.object().shape({
   //unitCode: yup.string().required(),
 });
 
-export const ValesForm = (props: Props) => {
+export const VoucherForm = (props: Props) => {
   const {
     // catalog,
     createVoucherAction,

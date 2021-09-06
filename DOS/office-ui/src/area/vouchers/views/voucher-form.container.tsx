@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { ValesForm } from './vale-form.component';
+import { VoucherForm } from './voucher-form.component';
 import { createVoucherAction } from '../state/usecases/create-voucher.usecase';
 import { readVoucherAction } from '../state/usecases/read-voucher.usecase';
 import { updateVoucherAction } from '../state/usecases/update-voucher.usecate';
@@ -23,7 +23,7 @@ function mapStateToProps(state: any) {
   };
 }
 
-export const ValesFormContainer = connect(
+export const VourcherFormContainer = connect(
   mapStateToProps,
   mapDispatchToProps
-)(ValesForm);
+)(VoucherForm);

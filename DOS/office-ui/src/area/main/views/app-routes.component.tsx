@@ -22,9 +22,9 @@ import { UnitsTableContainer } from 'src/area/units/views/units-table.container'
 import { UnitsFormContainer } from 'src/area/units/views/unit-form.container';
 import { CarriersTableContainer } from 'src/area/carriers/views/carriers-table.container';
 import { CarriersFormContainer } from 'src/area/carriers/views/carrier-form.container';
-import { ValesFormContainer } from 'src/area/vouchers/views/vale-form.container';
+import { VourcherFormContainer } from 'src/area/vouchers/views/voucher-form.container';
 import { ProcessContainer } from 'src/area/catalogs/views/process.container';
-import { ValesTableContainer } from 'src/area/vouchers/views/vales-table.container';
+import { VouchersTableContainer } from 'src/area/vouchers/views/vouchers-table.container';
 // import { UsersFormContainer } from 'src/area/patios/views/patios-form.container';
 // import { PERMISSIONS } from 'src/shared/constants/permissions.contants';
 
@@ -145,7 +145,7 @@ const routes: Array<CustomRoute> = [
       path: ['/voucher/create', '/voucher/:id/edit'],
       exact: true,
     },
-    component: <ValesFormContainer />,
+    component: <VourcherFormContainer />,
     app: 'USR',
   },
   {
@@ -153,7 +153,7 @@ const routes: Array<CustomRoute> = [
       path: ['/vouchers',],
       exact: true,
     },
-    component: <ValesTableContainer />,
+    component: <VouchersTableContainer />,
     app: 'USR',
   },
   {

@@ -42,6 +42,11 @@ export const usersCatalogSelector = createSelector(
     })
 );
 
+export const userCatalogSelector = createSelector(
+  sliceSelector,
+  (slice: UserSlice) => slice.usersCatalog
+);
+
 export const pagingSelector = createSelector(
   sliceSelector,
   (slice: UserSlice) => slice.paging

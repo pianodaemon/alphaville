@@ -10,6 +10,7 @@ export interface Carrier {
 export interface CarrierSlice {
   carrier: Carrier | null;
   carriers: Array<Carrier> | null;
+  carriersCatalog: Array<Carrier> | null;
   loading: boolean;
   paging: {
     count: number,
@@ -25,6 +26,7 @@ export interface CarrierSlice {
 const initialState: CarrierSlice = {
   carrier: null,
   carriers: null,
+  carriersCatalog: null,
   loading: false,
   paging: {
     count: 0,

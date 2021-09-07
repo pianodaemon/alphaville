@@ -11,13 +11,11 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-
 import TextField from "@material-ui/core/TextField";
 import FormControl from "@material-ui/core/FormControl";
-// import FormHelperText from "@material-ui/core/FormHelperText";
-
 import { Controller } from "react-hook-form";
 import { splitToBulks } from "src/shared/utils/split-to-bulks.util";
+import { NumberFormatCustom } from "src/shared/components/number-format-custom.component";
 
 const StyledTableCell = withStyles((theme: Theme) =>
   createStyles({
@@ -49,15 +47,30 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up("md")]: {
       minWidth: 700,
     },
-    "& thead th": {
-      textAlign: "center",
+    "& thead:not(:first-child) th": {
+      textAlign: "right",
+    },
+    "& tbody td input": {
+      textAlign: "right",
     },
   },
 }));
 
-export default function CustomizedTables(props) {
+type Props = {
+  control: any;
+  equipments: any[];
+  getValues: Function;
+  setValue: Function;
+};
+
+export default function CustomizedTables(props: Props) {
   const classes = useStyles();
-  const fieldChunks = splitToBulks(props.fields);
+  const { control, getValues, equipments, setValue } = props;
+  const filteredEquipments = Array.isArray(equipments)
+    ? equipments.filter((equipment: any) => equipment.regular)
+    : [];
+  const equipmentChunks = splitToBulks(filteredEquipments || []);
+  let fieldIndex = 0;
   return (
     <TableContainer component={Paper}>
       <Table
@@ -83,44 +96,73 @@ export default function CustomizedTables(props) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {fieldChunks.map((chunk, index) => (
-            <StyledTableRow key={index}>
-              {chunk.map((item, index) => (
-                <>
-                  <StyledTableCell component="th" scope="row">
-                    {props.getValues(`itemList.${index}.equipmentCode`)}
-                  </StyledTableCell>
-                  <StyledTableCell align="right">
-                    <Controller
-                      name={`itemList.${index}.quantity`}
-                      control={props.control}
-                      render={({ field }) => (
+          {equipmentChunks.map((chunk, i) => {
+            return (
+              <StyledTableRow key={i}>
+                {chunk.map((item, index) => {
+                  const code = getValues(`itemList.${fieldIndex}.equipmentCode`);
+                  const quantity = equipments.find(
+                    (field) => field.equipmentCode === code
+                  )?.quantity;
+                  setValue(`itemList.${fieldIndex}.equipmentCode`, item.code);
+                  return (
+                    <>
+                      <StyledTableCell component="th" scope="row">
+                        {item.code}
+                      </StyledTableCell>
+                      <StyledTableCell align="right">
+                        <Controller
+                          name={`itemList.${fieldIndex}.quantity`}
+                          control={control}
+                          render={({ field }) => (
+                            <FormControl>
+                              <TextField
+                                {...field}
+                                defaultValue={quantity ? quantity || "" : ""}
+                                id={`itemList.${fieldIndex}.quantity`}
+                                inputProps={{ type: "number" }}
+                                label=""
+                                variant="filled"
+                              />
+                            </FormControl>
+                          )}
+                        />
+                      </StyledTableCell>
+                      <StyledTableCell align="right">
                         <FormControl>
                           <TextField
-                            id={`itemList.${index}.equipmentCode`}
+                            {...item}
+                            id="precio"
+                            inputProps={{ readOnly: true, disabled: true }}
+                            InputProps={{
+                              inputComponent: NumberFormatCustom as any,
+                              startAdornment: "$",
+                            }}
                             label=""
-                            value={field.value ? field.value || "" : ""}
+                            value={item.unitCost}
+                            variant="filled"
                           />
                         </FormControl>
-                      )}
-                    />
-                  </StyledTableCell>
-                  <StyledTableCell align="right">
-                    <FormControl>
-                      <TextField
-                        id="precio"
-                        // label="precio"
-                        //multiline
-                        //minRows={5}
-                        // maxRows={5}
-                        // value={field.value ? field.value || "" : ""}
-                      />
-                    </FormControl>
-                  </StyledTableCell>
-                </>
-              ))}
-            </StyledTableRow>
-          ))}
+                      </StyledTableCell>
+                      {++fieldIndex && null}
+                    </>
+                  );
+                })}
+                {equipments &&
+                  filteredEquipments.length % 2 !== 0 &&
+                  equipmentChunks.length - 1 === i && (
+                    <>
+                      <StyledTableCell
+                        component="th"
+                        scope="row"
+                      ></StyledTableCell>
+                      <StyledTableCell align="right"></StyledTableCell>
+                      <StyledTableCell align="right"></StyledTableCell>
+                    </>
+                  )}
+              </StyledTableRow>
+            );
+          })}
         </TableBody>
       </Table>
     </TableContainer>

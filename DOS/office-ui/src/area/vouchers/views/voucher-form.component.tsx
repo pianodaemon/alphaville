@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { Controller, useFieldArray, useForm } from "react-hook-form";
+import { Controller, /* useFieldArray,*/ useForm } from "react-hook-form";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
-// import MenuItem from "@material-ui/core/MenuItem";
+import MenuItem from "@material-ui/core/MenuItem";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormHelperText from "@material-ui/core/FormHelperText";
@@ -28,9 +28,17 @@ type Props = {
   createVoucherAction: Function;
   readVoucherAction: Function;
   updateVoucherAction: Function;
-  // loadUsersCatalogAction: Function;
-  // catalog: Catalog | null;
+  loadEquipmentsCatalogAction: Function;
+  loadCarriersCatalogAction: Function;
+  loadPatiosCatalogAction: Function;
+  loadUnitsCatalogAction: Function;
+  loadUsersAsCatalogAction: Function;
+  equipments: any;
   voucher: any | null;
+  carriers: any;
+  patios: any;
+  units: any;
+  users: any;
 };
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -138,8 +146,17 @@ export const VoucherForm = (props: Props) => {
     createVoucherAction,
     readVoucherAction,
     updateVoucherAction,
-    // loadUsersCatalogAction,
+    loadEquipmentsCatalogAction,
+    loadCarriersCatalogAction,
+    loadPatiosCatalogAction,
+    loadUnitsCatalogAction,
+    loadUsersAsCatalogAction,
+    equipments,
     voucher,
+    carriers,
+    patios,
+    units,
+    users,
   } = props;
   const initialValues: Voucher = {
     carrierCode: "",
@@ -158,23 +175,38 @@ export const VoucherForm = (props: Props) => {
     formState: { errors, isSubmitting },
     reset,
     getValues,
-    // setValue,
+    setValue,
   } = useForm({
     defaultValues: initialValues,
     resolver: yupResolver(schema),
   });
-  const { fields, /*append, prepend, remove, swap, move, insert*/ } = useFieldArray(
-    {
+  /*
+  const { fields, append, prepend, remove, swap, move, insert } =
+    useFieldArray({
       control, // control props comes from useForm (optional: if you are using FormContext)
       name: "itemList", // unique name for your Field Array
-      // keyName: "id", default to "id", you can change the key name
-    }
-  );
+      keyName: "equipmentCode", // default to "id", you can change the key name
+    });
+  */
   const classes = useStyles();
   const history = useHistory();
   const { id } = useParams<any>();
   useEffect(() => {
-    // loadUsersCatalogAction();
+    loadUsersAsCatalogAction({
+      per_page: Number.MAX_SAFE_INTEGER,
+    });
+    loadUnitsCatalogAction({
+      per_page: Number.MAX_SAFE_INTEGER,
+    });
+    loadPatiosCatalogAction({
+      per_page: Number.MAX_SAFE_INTEGER,
+    });
+    loadCarriersCatalogAction({
+      per_page: Number.MAX_SAFE_INTEGER,
+    });
+    loadEquipmentsCatalogAction({
+      per_page: Number.MAX_SAFE_INTEGER,
+    });
     if (id) {
       readVoucherAction({ id, history });
     }
@@ -197,9 +229,9 @@ export const VoucherForm = (props: Props) => {
     */
     if (id) {
       delete fields.id;
-      updateVoucherAction({ id, fields, history /* releaseForm */ });
+      updateVoucherAction({ id, fields, history });
     } else {
-      createVoucherAction({ fields, history /* releaseForm */ });
+      createVoucherAction({ fields, history });
     }
   };
   return (
@@ -290,18 +322,29 @@ export const VoucherForm = (props: Props) => {
                 control={control}
                 render={({ field }) => (
                   <FormControl className={classes.formControl}>
-                    <TextField
+                    <InputLabel>Compañía</InputLabel>
+                    <Select
                       {...field}
-                      id="carrier"
+                      id="carrierCode"
                       label="Compañía"
-                      value={field.value ? field.value || "" : ""}
-                    />
-                    {errors.carrierCode && (
+                      labelId="carrierCode"
+                      // value={catalog && field.value ? field.value || "" : ""}
+                    >
+                      {carriers &&
+                        carriers.map((item) => {
+                          return (
+                            <MenuItem value={item.code} key={`type-${item.id}`}>
+                              {item.title}
+                            </MenuItem>
+                          );
+                        })}
+                    </Select>
+                    {errors.receivedBy && (
                       <FormHelperText
                         error
                         classes={{ error: classes.textErrorHelper }}
                       >
-                        Ingrese una Compañía
+                        Seleccione quién recibió el equipo
                       </FormHelperText>
                     )}
                   </FormControl>
@@ -319,17 +362,16 @@ export const VoucherForm = (props: Props) => {
                       {...field}
                       labelId="unitCode"
                       id="unitCode"
-                      // value={catalog && field.value ? field.value || "" : ""}
+                      // value={field.value ? field.value || "" : ""}
                     >
-                      {/*catalog &&
-                        catalog.roleList &&
-                        catalog.roleList.map((item) => {
+                      {units &&
+                        units.map((item) => {
                           return (
-                            <MenuItem value={item.id} key={`type-${item.id}`}>
-                              {item.title}
+                            <MenuItem value={item.code} key={`type-${item.id}`}>
+                              {item.code}
                             </MenuItem>
                           );
-                        })*/}
+                        })}
                     </Select>
                     {errors.unitCode && (
                       <FormHelperText
@@ -356,15 +398,14 @@ export const VoucherForm = (props: Props) => {
                       id="patioCode"
                       // value={catalog && field.value ? field.value || "" : ""}
                     >
-                      {/*catalog &&
-                        catalog.roleList &&
-                        catalog.roleList.map((item) => {
+                      {patios &&
+                        patios.map((item) => {
                           return (
-                            <MenuItem value={item.id} key={`type-${item.id}`}>
+                            <MenuItem value={item.code} key={`type-${item.id}`}>
                               {item.title}
                             </MenuItem>
                           );
-                        })*/}
+                        })}
                     </Select>
                     {errors.patioCode && (
                       <FormHelperText
@@ -398,12 +439,13 @@ export const VoucherForm = (props: Props) => {
                 </legend>
               </fieldset>
               */}
-              <div style={{
-                display: "flex",
-                maxHeight: "30vh",
-              }}>
-                <Table {...{fields, control, getValues}} />
-
+              <div
+                style={{
+                  display: "flex",
+                  maxHeight: "30vh",
+                }}
+              >
+                <Table {...{ control, equipments, getValues, setValue }} />
               </div>
             </Grid>
           </Grid>
@@ -449,15 +491,14 @@ export const VoucherForm = (props: Props) => {
                       id="deliveredBy"
                       // value={catalog && field.value ? field.value || "" : ""}
                     >
-                      {/*catalog &&
-                        catalog.roleList &&
-                        catalog.roleList.map((item) => {
+                      {users &&
+                        users.map((item) => {
                           return (
-                            <MenuItem value={item.id} key={`type-${item.id}`}>
-                              {item.title}
+                            <MenuItem value={item.username} key={`type-${item.userId}`}>
+                              {item.username}
                             </MenuItem>
                           );
-                        })*/}
+                        })}
                     </Select>
                     {errors.deliveredBy && (
                       <FormHelperText
@@ -484,15 +525,14 @@ export const VoucherForm = (props: Props) => {
                       id="receivedBy"
                       // value={catalog && field.value ? field.value || "" : ""}
                     >
-                      {/*catalog &&
-                        catalog.roleList &&
-                        catalog.roleList.map((item) => {
+                      {users &&
+                        users.map((item) => {
                           return (
-                            <MenuItem value={item.id} key={`type-${item.id}`}>
-                              {item.title}
+                            <MenuItem value={item.username} key={`type-${item.userId}`}>
+                              {item.username}
                             </MenuItem>
                           );
-                        })*/}
+                        })}
                     </Select>
                     {errors.receivedBy && (
                       <FormHelperText

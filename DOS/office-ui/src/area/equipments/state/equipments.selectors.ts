@@ -31,6 +31,11 @@ export const equipmentsCatalogSelector = createSelector(
     })
 );
 
+export const catalogSelector = createSelector(
+  sliceSelector,
+  (slice: EquipmentSlice) => slice.equipmentCatalog
+);
+
 export const pagingSelector = createSelector(
   sliceSelector,
   (slice: EquipmentSlice) => slice.paging

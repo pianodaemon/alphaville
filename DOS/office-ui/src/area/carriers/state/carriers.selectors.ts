@@ -31,6 +31,11 @@ export const carriersCatalogSelector = createSelector(
     })
 );
 
+export const catalogSelector = createSelector(
+  sliceSelector,
+  (slice: CarrierSlice): Carrier[] | null => slice.carriersCatalog,
+);
+
 export const pagingSelector = createSelector(
   sliceSelector,
   (slice: CarrierSlice) => slice.paging

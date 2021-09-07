@@ -10,7 +10,7 @@ export interface PatioSlice {
   patio: Patio | null;
   patios: Array<Patio> | null;
   loading: boolean;
-  // catalog: Catalog | null;
+  patiosCatalog: Patio[] | null;
   paging: {
     count: number,
     pages: number,
@@ -37,6 +37,7 @@ type CatalogItem = {
 const initialState: PatioSlice = {
   patio: null,
   patios: null,
+  patiosCatalog: null,
   loading: false,
   // catalog: null,
   paging: {

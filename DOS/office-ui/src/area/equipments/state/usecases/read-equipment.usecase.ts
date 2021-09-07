@@ -26,7 +26,7 @@ function* readEquipmentWorker(action: any): Generator<any, any, any> {
       throw new Error(result.returnMessage);
     }
     yield put(readEquipmentSuccessAction(result));
-  } catch (e) {
+  } catch (e: any) {
     const { history } = action.payload;
     const message: string = resolveError(
       e.response?.data?.message || e.message

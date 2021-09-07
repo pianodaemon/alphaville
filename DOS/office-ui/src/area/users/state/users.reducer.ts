@@ -14,6 +14,7 @@ export interface User {
 export interface UserSlice {
   user: User | null;
   users: Array<User> | null;
+  usersCatalog: Array<User> | null;
   loading: boolean;
   catalog: Catalog | null;
   paging: {
@@ -45,6 +46,7 @@ type Authorities = CatalogItem;
 const initialState: UserSlice = {
   user: null,
   users: null,
+  usersCatalog: null,
   loading: false,
   catalog: null,
   paging: {

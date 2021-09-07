@@ -34,7 +34,7 @@ function* updateEquipmentWorker(action: any): Generator<any, any, any> {
         message: `¡Equipo ${id} ha sido actualizado!`,
       })
     );
-  } catch (e) {
+  } catch (e: any) {
     // const { releaseForm } = action.payload;
     const message: string = resolveError(
       e.response?.data?.message || e.message

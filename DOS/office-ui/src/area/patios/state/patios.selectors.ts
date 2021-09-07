@@ -30,6 +30,11 @@ export const patiosCatalogSelector = createSelector(
     })
 );
 
+export const catalogSelector = createSelector(
+  sliceSelector,
+  (slice: PatioSlice): Patio[] | null => slice.patiosCatalog,
+);
+
 export const pagingSelector = createSelector(
   sliceSelector,
   (slice: PatioSlice) => slice.paging

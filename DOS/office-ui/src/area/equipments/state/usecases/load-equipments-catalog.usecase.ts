@@ -8,18 +8,18 @@ import { equipmentsReducer } from "../equipments.reducer";
 import { pagingSelector } from "../equipments.selectors";
 
 const postfix = "/app";
-const LOAD_EQUIPMENTS = `LOAD_EQUIPMENTS${postfix}`;
-const LOAD_EQUIPMENTS_SUCCESS = `LOAD_EQUIPMENTS_SUCCESS${postfix}`;
-const LOAD_EQUIPMENTS_ERROR = `LOAD_EQUIPMENTS_ERROR${postfix}`;
+const LOAD_EQUIPMENTS_CATALOG = `LOAD_EQUIPMENTS_CATALOG${postfix}`;
+const LOAD_EQUIPMENTS_CATALOG_SUCCESS = `LOAD_EQUIPMENTS_CATALOG_SUCCESS${postfix}`;
+const LOAD_EQUIPMENTS_CATALOG_ERROR = `LOAD_EQUIPMENTS_CATALOG_ERROR${postfix}`;
 
-export const loadEquipmentsAction: ActionFunctionAny<Action<any>> =
-  createAction(LOAD_EQUIPMENTS);
-export const loadEquipmentsSuccessAction: ActionFunctionAny<Action<any>> =
-  createAction(LOAD_EQUIPMENTS_SUCCESS);
-export const loadEquipmentsErrorAction: ActionFunctionAny<Action<any>> =
-  createAction(LOAD_EQUIPMENTS_ERROR);
+export const loadEquipmentsCatalogAction: ActionFunctionAny<Action<any>> =
+  createAction(LOAD_EQUIPMENTS_CATALOG);
+export const loadEquipmentsCatalogSuccessAction: ActionFunctionAny<Action<any>> =
+  createAction(LOAD_EQUIPMENTS_CATALOG_SUCCESS);
+export const loadEquipmentsCatalogErrorAction: ActionFunctionAny<Action<any>> =
+  createAction(LOAD_EQUIPMENTS_CATALOG_ERROR);
 
-function* loadEquipmentsWorker(action?: any): Generator<any, any, any> {
+function* loadEquipmentsCatalogWorker(action?: any): Generator<any, any, any> {
   try {
     const aliases = { id: "id" };
     const { per_page, page, order, order_by, filters } = action.payload || {};
@@ -39,7 +39,7 @@ function* loadEquipmentsWorker(action?: any): Generator<any, any, any> {
       throw new Error(result.returnMessage);
     }
     yield put(
-      loadEquipmentsSuccessAction({
+      loadEquipmentsCatalogSuccessAction({
         equipments: result.data,
         paging: {
           count: parseInt(result.data.totalItems, 10) || 0,
@@ -56,7 +56,7 @@ function* loadEquipmentsWorker(action?: any): Generator<any, any, any> {
     const message: string = resolveError(
       e.response?.data?.message || e.message
     );
-    yield put(loadEquipmentsErrorAction());
+    yield put(loadEquipmentsCatalogErrorAction());
     yield put(
       notificationAction({
         message,
@@ -67,36 +67,34 @@ function* loadEquipmentsWorker(action?: any): Generator<any, any, any> {
 }
 
 function* loadEquipmentsWatcher(): Generator<any, any, any> {
-  yield takeLatest(LOAD_EQUIPMENTS, loadEquipmentsWorker);
+  yield takeLatest(LOAD_EQUIPMENTS_CATALOG, loadEquipmentsCatalogWorker);
 }
 
 const equipmentsReducerHandlers = {
-  [LOAD_EQUIPMENTS]: (state: any, action) => {
-    const { payload } = action || {};
-    const { filters } = payload || {};
+  [LOAD_EQUIPMENTS_CATALOG]: (state: any, action) => {
+    // const { payload } = action || {};
+    // const { filters } = payload || {};
     return {
       ...state,
-      loading: true,
-      filters: filters || {},
-      equipment: null,
+      // loading: true,
+      // filters: filters || {},
+      equipmentCatalog: null,
     };
   },
-  [LOAD_EQUIPMENTS_SUCCESS]: (state: any, action: any) => {
-    const { equipments, paging, filters } = action.payload;
+  [LOAD_EQUIPMENTS_CATALOG_SUCCESS]: (state: any, action: any) => {
+    const { equipments, /* paging, filters */ } = action.payload;
     return {
       ...state,
-      loading: false,
-      equipments: equipments.equipmentList,
-      paging: {
-        ...paging,
-      },
-      filters,
+      // loading: false,
+      equipmentCatalog: equipments.equipmentList,
+      // paging: { ...paging, },
+      // filters,
     };
   },
-  [LOAD_EQUIPMENTS_ERROR]: (state: any) => {
+  [LOAD_EQUIPMENTS_CATALOG_ERROR]: (state: any) => {
     return {
       ...state,
-      loading: false,
+      // loading: false,
       error: true,
     };
   },

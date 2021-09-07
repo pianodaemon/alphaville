@@ -8,18 +8,18 @@ import { carriersReducer } from "../carriers.reducer";
 import { pagingSelector } from "../carriers.selectors";
 
 const postfix = "/app";
-const LOAD_CARRIERS = `LOAD_CARRIERS${postfix}`;
-const LOAD_CARRIERS_SUCCESS = `LOAD_CARRIERS_SUCCESS${postfix}`;
-const LOAD_CARRIERS_ERROR = `LOAD_CARRIERS_ERROR${postfix}`;
+const LOAD_CARRIERS_CATALOG = `LOAD_CARRIERS_CATALOG${postfix}`;
+const LOAD_CARRIERS_CATALOG_SUCCESS = `LOAD_CARRIERS_CATALOG_SUCCESS${postfix}`;
+const LOAD_CARRIERS_CATALOG_ERROR = `LOAD_CARRIERS_CATALOG_ERROR${postfix}`;
 
-export const loadCarriersAction: ActionFunctionAny<Action<any>> =
-  createAction(LOAD_CARRIERS);
-export const loadCarriersSuccessAction: ActionFunctionAny<Action<any>> =
-  createAction(LOAD_CARRIERS_SUCCESS);
-export const loadCarriersErrorAction: ActionFunctionAny<Action<any>> =
-  createAction(LOAD_CARRIERS_ERROR);
+export const loadCarriersCatalogAction: ActionFunctionAny<Action<any>> =
+  createAction(LOAD_CARRIERS_CATALOG);
+export const loadCarriersCatalogSuccessAction: ActionFunctionAny<Action<any>> =
+  createAction(LOAD_CARRIERS_CATALOG_SUCCESS);
+export const loadCarriersCatalogErrorAction: ActionFunctionAny<Action<any>> =
+  createAction(LOAD_CARRIERS_CATALOG_ERROR);
 
-function* loadCarriersWorker(action?: any): Generator<any, any, any> {
+function* loadCarriersCatalogWorker(action?: any): Generator<any, any, any> {
   try {
     const aliases = { id: "id" };
     const { per_page, page, order, order_by, filters } = action.payload || {};
@@ -39,7 +39,7 @@ function* loadCarriersWorker(action?: any): Generator<any, any, any> {
       throw new Error(result.returnMessage);
     }
     yield put(
-      loadCarriersSuccessAction({
+      loadCarriersCatalogSuccessAction({
         carriers: result.data,
         paging: {
           count: parseInt(result.data.totalItems, 10) || 0,
@@ -56,7 +56,7 @@ function* loadCarriersWorker(action?: any): Generator<any, any, any> {
     const message: string = resolveError(
       e.response?.data?.message || e.message
     );
-    yield put(loadCarriersErrorAction());
+    yield put(loadCarriersCatalogErrorAction());
     yield put(
       notificationAction({
         message,
@@ -66,41 +66,39 @@ function* loadCarriersWorker(action?: any): Generator<any, any, any> {
   }
 }
 
-function* loadCarriersWatcher(): Generator<any, any, any> {
-  yield takeLatest(LOAD_CARRIERS, loadCarriersWorker);
+function* loadCarriersCatalogWatcher(): Generator<any, any, any> {
+  yield takeLatest(LOAD_CARRIERS_CATALOG, loadCarriersCatalogWorker);
 }
 
 const carriersReducerHandlers = {
-  [LOAD_CARRIERS]: (state: any, action) => {
-    const { payload } = action || {};
-    const { filters } = payload || {};
+  [LOAD_CARRIERS_CATALOG]: (state: any) => {
+    // const { payload } = action || {};
+    // const { filters } = payload || {};
     return {
       ...state,
-      loading: true,
-      filters: filters || {},
-      carrier: null,
+      // loading: true,
+      // filters: filters || {},
+      carriersCatalog: null,
     };
   },
-  [LOAD_CARRIERS_SUCCESS]: (state: any, action: any) => {
-    const { carriers, paging, filters } = action.payload;
+  [LOAD_CARRIERS_CATALOG_SUCCESS]: (state: any, action: any) => {
+    const { carriers, /* paging, filters */ } = action.payload;
     return {
       ...state,
-      loading: false,
-      carriers: carriers.carrierList,
-      paging: {
-        ...paging,
-      },
-      filters,
+      // loading: false,
+      carriersCatalog: carriers.carrierList,
+      // paging: {...paging,},
+      // filters,
     };
   },
-  [LOAD_CARRIERS_ERROR]: (state: any) => {
+  [LOAD_CARRIERS_CATALOG_ERROR]: (state: any) => {
     return {
       ...state,
-      loading: false,
-      error: true,
+      // loading: false,
+      // error: true,
     };
   },
 };
 
-mergeSaga(loadCarriersWatcher);
+mergeSaga(loadCarriersCatalogWatcher);
 carriersReducer.addHandlers(carriersReducerHandlers);

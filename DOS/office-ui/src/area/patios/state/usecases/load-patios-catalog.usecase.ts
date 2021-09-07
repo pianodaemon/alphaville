@@ -8,18 +8,18 @@ import { patiosReducer } from "../patios.reducer";
 import { pagingSelector } from "../patios.selectors";
 
 const postfix = "/app";
-const LOAD_PATIOS = `LOAD_PATIOS${postfix}`;
-const LOAD_PATIOS_SUCCESS = `LOAD_PATIOS_SUCCESS${postfix}`;
-const LOAD_PATIOS_ERROR = `LOAD_PATIOS_ERROR${postfix}`;
+const LOAD_PATIOS_CATALOG = `LOAD_PATIOS_CATALOG${postfix}`;
+const LOAD_PATIOS_CATALOG_SUCCESS = `LOAD_PATIOS_CATALOG_SUCCESS${postfix}`;
+const LOAD_PATIOS_CATALOG_ERROR = `LOAD_PATIOS_CATALOG_ERROR${postfix}`;
 
-export const loadPatiosAction: ActionFunctionAny<Action<any>> =
-  createAction(LOAD_PATIOS);
-export const loadPatiosSuccessAction: ActionFunctionAny<Action<any>> =
-  createAction(LOAD_PATIOS_SUCCESS);
-export const loadPatiosErrorAction: ActionFunctionAny<Action<any>> =
-  createAction(LOAD_PATIOS_ERROR);
+export const loadPatiosCatalogAction: ActionFunctionAny<Action<any>> =
+  createAction(LOAD_PATIOS_CATALOG);
+export const loadPatiosCatalogSuccessAction: ActionFunctionAny<Action<any>> =
+  createAction(LOAD_PATIOS_CATALOG_SUCCESS);
+export const loadPatiosCatalogErrorAction: ActionFunctionAny<Action<any>> =
+  createAction(LOAD_PATIOS_CATALOG_ERROR);
 
-function* loadPatiosWorker(action?: any): Generator<any, any, any> {
+function* loadPatiosCatalogWorker(action?: any): Generator<any, any, any> {
   try {
     const aliases = { id: "id" };
     const { per_page, page, order, order_by, filters } = action.payload || {};
@@ -39,7 +39,7 @@ function* loadPatiosWorker(action?: any): Generator<any, any, any> {
       throw new Error(result.returnMessage);
     }
     yield put(
-      loadPatiosSuccessAction({
+      loadPatiosCatalogSuccessAction({
         patios: result.data,
         paging: {
           count: parseInt(result.data.totalItems, 10) || 0,
@@ -56,7 +56,7 @@ function* loadPatiosWorker(action?: any): Generator<any, any, any> {
     const message: string = resolveError(
       e.response?.data?.message || e.message
     );
-    yield put(loadPatiosErrorAction());
+    yield put(loadPatiosCatalogErrorAction());
     yield put(
       notificationAction({
         message,
@@ -66,41 +66,39 @@ function* loadPatiosWorker(action?: any): Generator<any, any, any> {
   }
 }
 
-function* loadPatiosWatcher(): Generator<any, any, any> {
-  yield takeLatest(LOAD_PATIOS, loadPatiosWorker);
+function* loadPatiosCatalogWatcher(): Generator<any, any, any> {
+  yield takeLatest(LOAD_PATIOS_CATALOG, loadPatiosCatalogWorker);
 }
 
 const patiosReducerHandlers = {
-  [LOAD_PATIOS]: (state: any, action) => {
-    const { payload } = action || {};
-    const { filters } = payload || {};
+  [LOAD_PATIOS_CATALOG]: (state: any) => {
+    // const { payload } = action || {};
+    // const { filters } = payload || {};
     return {
       ...state,
-      loading: true,
-      filters: filters || {},
-      patio: null,
+      // loading: true,
+      // filters: filters || {},
+      patiosCatalog: null,
     };
   },
-  [LOAD_PATIOS_SUCCESS]: (state: any, action: any) => {
-    const { patios, paging, filters } = action.payload;
+  [LOAD_PATIOS_CATALOG_SUCCESS]: (state: any, action: any) => {
+    const { patios, /* paging, filters */ } = action.payload;
     return {
       ...state,
-      loading: false,
-      patios: patios.patioList,
-      paging: {
-        ...paging,
-      },
-      filters,
+      // loading: false,
+      patiosCatalog: patios.patioList,
+      // paging: { ...paging, },
+      // filters,
     };
   },
-  [LOAD_PATIOS_ERROR]: (state: any) => {
+  [LOAD_PATIOS_CATALOG_ERROR]: (state: any) => {
     return {
       ...state,
-      loading: false,
+      // loading: false,
       error: true,
     };
   },
 };
 
-mergeSaga(loadPatiosWatcher);
+mergeSaga(loadPatiosCatalogWatcher);
 patiosReducer.addHandlers(patiosReducerHandlers);

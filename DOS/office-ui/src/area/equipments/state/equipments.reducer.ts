@@ -12,6 +12,7 @@ export interface EquipmentSlice {
   equipment: Equipment | null;
   equipments: Array<Equipment> | null;
   loading: boolean;
+  equipmentCatalog: Array<Equipment> | null;
   // catalog: Catalog | null;
   paging: {
     count: number,
@@ -39,6 +40,7 @@ type CatalogItem = {
 const initialState: EquipmentSlice = {
   equipment: null,
   equipments: null,
+  equipmentCatalog: null,
   loading: false,
   // catalog: null,
   paging: {

@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { ValesTable } from './vales-table.component';
+import { ValesTable } from './vouchers-table.component';
 import { loadVouchersAction } from '../state/usecases/load-vouchers.usecase';
 import { deleteVoucherAction } from '../state/usecases/delete-voucher.usecase';
 // import { permissionSelector } from 'src/area/auth/state/auth.selectors';
@@ -25,7 +25,7 @@ function mapStateToProps(state: any) {
   };
 }
 
-export const ValesTableContainer = connect(
+export const VouchersTableContainer = connect(
   mapStateToProps,
   mapDispatchToProps
 )(ValesTable);

@@ -6,21 +6,20 @@ import { notificationAction } from "src/area/main/state/usecase/notification.use
 import { getUsers } from "../../service/user.service";
 import { usersReducer } from "../users.reducer";
 import { pagingSelector } from "../users.selectors";
-import { loadUsersCatalogAction } from "./load-users-catalog.usecase";
 
 const postfix = "/app";
-const LOAD_USERS = `LOAD_USERS${postfix}`;
-const LOAD_USERS_SUCCESS = `LOAD_USERS_SUCCESS${postfix}`;
-const LOAD_USERS_ERROR = `LOAD_USERS_ERROR${postfix}`;
+const LOAD_USERS_AS_CATALOG = `LOAD_USERS_AS_CATALOG${postfix}`;
+const LOAD_USERS_AS_CATALOG_SUCCESS = `LOAD_USERS_AS_CATALOG_SUCCESS${postfix}`;
+const LOAD_USERS_AS_CATALOG_ERROR = `LOAD_USERS_AS_CATALOG_ERROR${postfix}`;
 
-export const loadUsersAction: ActionFunctionAny<Action<any>> =
-  createAction(LOAD_USERS);
-export const loadUsersSuccessAction: ActionFunctionAny<Action<any>> =
-  createAction(LOAD_USERS_SUCCESS);
-export const loadUsersErrorAction: ActionFunctionAny<Action<any>> =
-  createAction(LOAD_USERS_ERROR);
+export const loadUsersAsCatalogAction: ActionFunctionAny<Action<any>> =
+  createAction(LOAD_USERS_AS_CATALOG);
+export const loadUsersAsCatalogASuccessAction: ActionFunctionAny<Action<any>> =
+  createAction(LOAD_USERS_AS_CATALOG_SUCCESS);
+export const loadUsersAsCatalogErrorAction: ActionFunctionAny<Action<any>> =
+  createAction(LOAD_USERS_AS_CATALOG_ERROR);
 
-function* loadUsersWorker(action?: any): Generator<any, any, any> {
+function* loadUsersAsCatalogWorker(action?: any): Generator<any, any, any> {
   try {
     const aliases = { userId: "id", username: "username" };
     const { per_page, page, order, order_by, filters } = action.payload || {};
@@ -39,9 +38,8 @@ function* loadUsersWorker(action?: any): Generator<any, any, any> {
     if (result && result.returnCode === errorCodes.GENERIC_ERROR) {
       throw new Error(result.returnMessage);
     }
-    yield put(loadUsersCatalogAction());
     yield put(
-      loadUsersSuccessAction({
+      loadUsersAsCatalogASuccessAction({
         users: result.data,
         paging: {
           count: parseInt(result.data.totalItems, 10) || 0,
@@ -59,7 +57,7 @@ function* loadUsersWorker(action?: any): Generator<any, any, any> {
       e.response?.data?.message || e.message
     );
 
-    yield put(loadUsersErrorAction());
+    yield put(loadUsersAsCatalogErrorAction());
     yield put(
       notificationAction({
         message,
@@ -69,41 +67,39 @@ function* loadUsersWorker(action?: any): Generator<any, any, any> {
   }
 }
 
-function* loadUsersWatcher(): Generator<any, any, any> {
-  yield takeLatest(LOAD_USERS, loadUsersWorker);
+function* loadUsersAsCatalogWatcher(): Generator<any, any, any> {
+  yield takeLatest(LOAD_USERS_AS_CATALOG, loadUsersAsCatalogWorker);
 }
 
 const usersReducerHandlers = {
-  [LOAD_USERS]: (state: any, action) => {
-    const { payload } = action || {};
-    const { filters } = payload || {};
+  [LOAD_USERS_AS_CATALOG]: (state: any, action) => {
+    // const { payload } = action || {};
+    // const { filters } = payload || {};
     return {
       ...state,
-      loading: true,
-      filters: filters || {},
-      user: null,
+      // loading: true,
+      // filters: filters || {},
+      usersCatalog: null,
     };
   },
-  [LOAD_USERS_SUCCESS]: (state: any, action: any) => {
-    const { users, paging, filters } = action.payload;
+  [LOAD_USERS_AS_CATALOG_SUCCESS]: (state: any, action: any) => {
+    const { users, /* paging, filters */ } = action.payload;
     return {
       ...state,
-      loading: false,
-      users: users.userList,
-      paging: {
-        ...paging,
-      },
-      filters,
+      // loading: false,
+      usersCatalog: users.userList,
+      // paging: { ...paging, },
+      // filters,
     };
   },
-  [LOAD_USERS_ERROR]: (state: any) => {
+  [LOAD_USERS_AS_CATALOG_ERROR]: (state: any) => {
     return {
       ...state,
-      loading: false,
+      // loading: false,
       error: true,
     };
   },
 };
 
-mergeSaga(loadUsersWatcher);
+mergeSaga(loadUsersAsCatalogWatcher);
 usersReducer.addHandlers(usersReducerHandlers);

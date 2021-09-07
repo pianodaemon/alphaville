@@ -30,6 +30,11 @@ export const unitsCatalogSelector = createSelector(
     })
 );
 
+export const catalogSelector = createSelector(
+  sliceSelector,
+  (slice: UnitSlice) => slice.unitsCatalog
+);
+
 export const pagingSelector = createSelector(
   sliceSelector,
   (slice: UnitSlice) => slice.paging

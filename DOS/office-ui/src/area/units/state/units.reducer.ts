@@ -9,8 +9,8 @@ export interface Unit {
 export interface UnitSlice {
   unit: Unit | null;
   units: Array<Unit> | null;
+  unitsCatalog: Array<Unit> | null;
   loading: boolean;
-  // catalog: Catalog | null;
   paging: {
     count: number,
     pages: number,
@@ -37,8 +37,8 @@ type CatalogItem = {
 const initialState: UnitSlice = {
   unit: null,
   units: null,
+  unitsCatalog: null,
   loading: false,
-  // catalog: null,
   paging: {
     count: 0,
     pages: 0,

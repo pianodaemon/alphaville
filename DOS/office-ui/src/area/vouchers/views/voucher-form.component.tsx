@@ -250,6 +250,9 @@ export const VoucherForm = (props: Props) => {
                     <TextField
                       {...field}
                       id="id"
+                      inputProps={{
+                        disabled: true,
+                      }}
                       label="#"
                       value={field.value ? field.value || "" : ""}
                     />

@@ -43,6 +43,9 @@ const StyledTableRow = withStyles((theme: Theme) =>
 
 const useStyles = makeStyles((theme) => ({
   table: {
+    '& .MuiTableCell-sizeSmall': {
+      padding: '0px',
+    },
     minWidth: "100%",
     [theme.breakpoints.up("md")]: {
       minWidth: 700,
@@ -50,8 +53,22 @@ const useStyles = makeStyles((theme) => ({
     "& thead:not(:first-child) th": {
       textAlign: "right",
     },
+    "& tbody td": {
+      minWidth: theme.spacing(20),
+    },
     "& tbody td input": {
       textAlign: "right",
+      '&::-webkit-outer-spin-button, &::-webkit-inner-spin-button': {
+        appearance: 'none',
+      },
+      '&[type=number]': {
+        appearance: 'textfield',
+      }
+    },
+    "& tbody tr :nth-child(4)": {
+      [theme.breakpoints.down("md")]: {
+        paddingLeft: theme.spacing(8),
+      },
     },
   },
 }));
@@ -81,7 +98,7 @@ export default function CustomizedTables(props: Props) {
         <TableHead>
           <TableRow>
             <StyledTableCell align="center" colSpan={6}>
-              EQUIPOS
+              EQUIPOS DE AMARRE
             </StyledTableCell>
           </TableRow>
 
@@ -108,7 +125,7 @@ export default function CustomizedTables(props: Props) {
                   return (
                     <>
                       <StyledTableCell component="th" scope="row">
-                        {item.code}
+                        {item.title}
                       </StyledTableCell>
                       <StyledTableCell align="right">
                         <Controller
@@ -121,8 +138,10 @@ export default function CustomizedTables(props: Props) {
                                 defaultValue={quantity ? quantity || "" : ""}
                                 id={`itemList.${fieldIndex}.quantity`}
                                 inputProps={{ type: "number" }}
+                                style={{
+                                  'appearance': 'none'
+                                }}
                                 label=""
-                                variant="filled"
                               />
                             </FormControl>
                           )}
@@ -132,6 +151,7 @@ export default function CustomizedTables(props: Props) {
                         <FormControl>
                           <TextField
                             {...item}
+                            disabled
                             id="precio"
                             inputProps={{ readOnly: true, disabled: true }}
                             InputProps={{
@@ -140,7 +160,6 @@ export default function CustomizedTables(props: Props) {
                             }}
                             label=""
                             value={item.unitCost}
-                            variant="filled"
                           />
                         </FormControl>
                       </StyledTableCell>

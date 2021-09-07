@@ -91,7 +91,7 @@ async function createVoucher(fields) {
   const promisifiedClient = setupVoucherClient("alterVoucher");
   const voucher = {
     ...fields,
-    id: 0,
+    id: "",
   };
   try {
     const call_service = async (req, service) => {

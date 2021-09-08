@@ -131,13 +131,18 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const schema = yup.object().shape({
-  //carrierCode: yup.string().required(),
-  //deliveredBy: yup.string().required(),
-  //observations: yup.string().required(),
-  //patioCode: yup.string().required(),
-  //platform: yup.string().required(),
-  //receivedBy: yup.string().required(),
-  //unitCode: yup.string().required(),
+  carrierCode: yup.string().required(),
+  deliveredBy: yup.string().required(),
+  observations: yup.string(),
+  patioCode: yup.string().required(),
+  platform: yup.string().required(),
+  receivedBy: yup.string().required(),
+  unitCode: yup.string().required(),
+  itemList: yup
+    .array()
+    .test("test", "at least one item with quantity > 0", (value: any) => {
+      return value && value.some((val) => val.quantity > 0);
+    }),
 });
 
 export const VoucherForm = (props: Props) => {
@@ -261,7 +266,7 @@ export const VoucherForm = (props: Props) => {
                         error
                         classes={{ error: classes.textErrorHelper }}
                       >
-                        Ingrese un Número
+                        Ingrese un ID
                       </FormHelperText>
                     )}
                   </FormControl>
@@ -343,12 +348,12 @@ export const VoucherForm = (props: Props) => {
                           );
                         })}
                     </Select>
-                    {errors.receivedBy && (
+                    {errors.carrierCode && (
                       <FormHelperText
                         error
                         classes={{ error: classes.textErrorHelper }}
                       >
-                        Seleccione quién recibió el equipo
+                        Seleccione una Compañía
                       </FormHelperText>
                     )}
                   </FormControl>
@@ -427,22 +432,6 @@ export const VoucherForm = (props: Props) => {
 
           <Grid container spacing={3}>
             <Grid item xs={12}>
-              {/*
-              <fieldset className={classes.fieldset}>
-                <legend
-                  className={classes.containerLegend}
-                  style={{ width: "335px" }}
-                >
-                  <Typography
-                    variant="body2"
-                    align="center"
-                    classes={{ root: classes.legend }}
-                  >
-                    EQUIPO
-                  </Typography>
-                </legend>
-              </fieldset>
-              */}
               <div
                 style={{
                   display: "flex",
@@ -451,6 +440,14 @@ export const VoucherForm = (props: Props) => {
               >
                 <Table {...{ control, equipments, getValues, setValue }} />
               </div>
+              {errors.itemList && (
+                <FormHelperText
+                  error
+                  classes={{ error: classes.textErrorHelper }}
+                >
+                  Ingrese al menos un Equipo
+                </FormHelperText>
+              )}
             </Grid>
           </Grid>
 
@@ -476,7 +473,7 @@ export const VoucherForm = (props: Props) => {
                         error
                         classes={{ error: classes.textErrorHelper }}
                       >
-                        Ingrese una Compañía
+                        Ingrese Observaciones
                       </FormHelperText>
                     )}
                   </FormControl>

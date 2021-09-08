@@ -135,9 +135,12 @@ export default function CustomizedTables(props: Props) {
                             <FormControl>
                               <TextField
                                 {...field}
-                                defaultValue={quantity ? quantity || "" : ""}
+                                defaultValue={quantity ? quantity || "0" : "0"}
                                 id={`itemList.${fieldIndex}.quantity`}
-                                inputProps={{ type: "number" }}
+                                // inputProps={{ type: "number", min: "0" }}
+                                InputProps={{
+                                  inputComponent: NumberFormatCustom as any,
+                                }}
                                 style={{
                                   'appearance': 'none'
                                 }}

@@ -10,7 +10,6 @@ const useStyles = makeStyles((theme) => ({
       boxShadow: "0 0 0 50px rgba(277, 27, 35, .0)",
     },
     "100%": {
-      transform: "scale(0.5)",
       boxShadow: "0 0 0 0 rgba(277, 27, 35, .0)",
     },
   },
@@ -24,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
     animationName: "$pulse",
     animationFillMode: "forwards",
     animationDuration: "2.9s",
-    animationIterationCount: "infinite",
+    animationIterationCount: 1,
     border: 'none',
     // borderRadius: '50%',
     boxShadow: "0 0 0 0 rgba(277, 27, 35, .5)",

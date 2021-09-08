@@ -31,7 +31,7 @@ function* createVoucherWorker(action: any): Generator<any, any, any> {
     yield put(loadVouchersAction());
     yield put(
       notificationAction({
-        message: `¡Equipo ${result.returnCode} ha sido creado!`,
+        message: `¡Equipo ${result.returnMessage} ha sido creado!`,
         type: "success",
       })
     );

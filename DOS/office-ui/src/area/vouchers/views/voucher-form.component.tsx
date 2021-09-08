@@ -241,7 +241,7 @@ export const VoucherForm = (props: Props) => {
         <hr className={classes.hrDivider} />
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={3}>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={4}>
               <Controller
                 name="id"
                 control={control}
@@ -250,6 +250,9 @@ export const VoucherForm = (props: Props) => {
                     <TextField
                       {...field}
                       id="id"
+                      inputProps={{
+                        disabled: true,
+                      }}
                       label="#"
                       value={field.value ? field.value || "" : ""}
                     />
@@ -291,8 +294,8 @@ export const VoucherForm = (props: Props) => {
                 )}
               />
             </Grid>
-                    */}
-            <Grid item xs={12} sm={6}>
+            */}
+            <Grid item xs={12} sm={4}>
               <Controller
                 name="platform"
                 control={control}
@@ -316,7 +319,8 @@ export const VoucherForm = (props: Props) => {
                 )}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={4}></Grid>
+            <Grid item xs={12} sm={4}>
               <Controller
                 name="carrierCode"
                 control={control}
@@ -351,7 +355,7 @@ export const VoucherForm = (props: Props) => {
                 )}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={4}>
               <Controller
                 name="unitCode"
                 control={control}
@@ -385,7 +389,7 @@ export const VoucherForm = (props: Props) => {
                 )}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={4}>
               <Controller
                 name="patioCode"
                 control={control}
@@ -442,7 +446,7 @@ export const VoucherForm = (props: Props) => {
               <div
                 style={{
                   display: "flex",
-                  maxHeight: "30vh",
+                  maxHeight: "50vh",
                 }}
               >
                 <Table {...{ control, equipments, getValues, setValue }} />
@@ -451,7 +455,7 @@ export const VoucherForm = (props: Props) => {
           </Grid>
 
           <Grid container spacing={3}>
-            <Grid item sm={12}>
+            <Grid item xs={12}>
               <Controller
                 name="observations"
                 control={control}
@@ -459,11 +463,12 @@ export const VoucherForm = (props: Props) => {
                   <FormControl className={classes.formControlFull}>
                     <TextField
                       {...field}
+                      fullWidth
                       id="observations"
                       label="Observaciones"
                       multiline
-                      minRows={5}
-                      maxRows={5}
+                      minRows={2}
+                      maxRows={2}
                       value={field.value ? field.value || "" : ""}
                     />
                     {errors.observations && (
@@ -478,7 +483,7 @@ export const VoucherForm = (props: Props) => {
                 )}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={4}>
               <Controller
                 name="deliveredBy"
                 control={control}
@@ -494,7 +499,10 @@ export const VoucherForm = (props: Props) => {
                       {users &&
                         users.map((item) => {
                           return (
-                            <MenuItem value={item.username} key={`type-${item.userId}`}>
+                            <MenuItem
+                              value={item.username}
+                              key={`type-${item.userId}`}
+                            >
                               {item.username}
                             </MenuItem>
                           );
@@ -512,7 +520,7 @@ export const VoucherForm = (props: Props) => {
                 )}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={4}>
               <Controller
                 name="receivedBy"
                 control={control}
@@ -528,7 +536,10 @@ export const VoucherForm = (props: Props) => {
                       {users &&
                         users.map((item) => {
                           return (
-                            <MenuItem value={item.username} key={`type-${item.userId}`}>
+                            <MenuItem
+                              value={item.username}
+                              key={`type-${item.userId}`}
+                            >
                               {item.username}
                             </MenuItem>
                           );
@@ -546,16 +557,17 @@ export const VoucherForm = (props: Props) => {
                 )}
               />
             </Grid>
+            <Grid item xs={12} sm={4}>
+              <Button
+                variant="contained"
+                className={classes.submitInput}
+                disabled={isSubmitting}
+                type="submit"
+              >
+                {!id ? "Crear" : "Actualizar"}
+              </Button>
+            </Grid>
           </Grid>
-
-          <Button
-            variant="contained"
-            className={classes.submitInput}
-            disabled={isSubmitting}
-            type="submit"
-          >
-            {!id ? "Crear" : "Actualizar"}
-          </Button>
         </form>
       </Paper>
     </MuiPickersUtilsProvider>

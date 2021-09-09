@@ -1,18 +1,21 @@
-import React from 'react';
-import NumberFormat from 'react-number-format';
+import React from "react";
+import NumberFormat, { NumberFormatProps } from "react-number-format";
 
 interface NumberFormatCustomProps {
   inputRef: (instance: NumberFormat | null) => void;
-  onChange: (event: { target: { name: string, value: string } }) => void;
+  onChange: (event: { target: { name: string; value: string } }) => void;
   name: string;
   allowNegatives: boolean;
+  formatProps?: NumberFormatProps;
 }
 
 export function NumberFormatCustom(props: NumberFormatCustomProps) {
-  const { inputRef, onChange, allowNegatives, ...other } = props;
+  const { allowNegatives, inputRef, onChange, ...formatProps } = props;
 
   return (
     <NumberFormat
+      fixedDecimalScale
+      decimalScale={2}
       getInputRef={inputRef}
       onValueChange={(values) => {
         onChange({
@@ -26,7 +29,7 @@ export function NumberFormatCustom(props: NumberFormatCustomProps) {
       isNumericString
       prefix=""
       allowNegative={allowNegatives || false}
-      {...other}
+      {...formatProps}
     />
   );
 }

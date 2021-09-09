@@ -20,7 +20,7 @@ import { NumberFormatCustom } from "src/shared/components/number-format-custom.c
 const StyledTableCell = withStyles((theme: Theme) =>
   createStyles({
     head: {
-      backgroundColor: "rgba(129,130,133,1)",
+      backgroundColor: "rgba(63, 81, 181, 1)",
       color: theme.palette.common.white,
       // width: "33.33%",
     },
@@ -43,8 +43,29 @@ const StyledTableRow = withStyles((theme: Theme) =>
 
 const useStyles = makeStyles((theme) => ({
   table: {
-    '& .MuiTableCell-sizeSmall': {
-      padding: '0px',
+    "& .MuiTableCell-sizeSmall": {
+      padding: "0px",
+      "&:nth-child(4)": {
+        paddingRight: "15px",
+        borderLeft: "2px solid #ccc",
+        /*"&::before": {
+          // left: "-6px",
+          top: "10px",
+          width: "10px",
+          height: "10px",
+          content: '" "',
+          display: "block",
+          // position: "relative",
+          borderRadius: "50%",
+          verticalAlign: "middle",
+          borderLeft: "2px solid blue",
+          borderRight: "2px solid blue",
+          margin: "0",
+        },*/
+      },
+      "&:nth-child(3)": {
+        paddingRight: "100px",
+      },
     },
     minWidth: "100%",
     [theme.breakpoints.up("md")]: {
@@ -53,17 +74,26 @@ const useStyles = makeStyles((theme) => ({
     "& thead:not(:first-child) th": {
       textAlign: "right",
     },
+    "& thead th:last-child": {
+      paddingRight: theme.spacing(4),
+    },
+    "& tbody td:last-child": {
+      paddingRight: theme.spacing(4),
+    },
     "& tbody td": {
       minWidth: theme.spacing(20),
     },
     "& tbody td input": {
       textAlign: "right",
-      '&::-webkit-outer-spin-button, &::-webkit-inner-spin-button': {
-        appearance: 'none',
+      "&::-webkit-outer-spin-button, &::-webkit-inner-spin-button": {
+        appearance: "none",
       },
-      '&[type=number]': {
-        appearance: 'textfield',
-      }
+      "&[type=number]": {
+        appearance: "textfield",
+      },
+      "&[disabled]": {
+        color: "rgba(63, 81, 181, 1)",
+      },
     },
     "& tbody tr :nth-child(4)": {
       [theme.breakpoints.down("md")]: {
@@ -97,7 +127,11 @@ export default function CustomizedTables(props: Props) {
       >
         <TableHead>
           <TableRow>
-            <StyledTableCell align="center" colSpan={6}>
+            <StyledTableCell
+              style={{ backgroundColor: "rgba(63, 81, 181, 1)" }}
+              align="center"
+              colSpan={6}
+            >
               EQUIPOS DE AMARRE
             </StyledTableCell>
           </TableRow>
@@ -117,7 +151,9 @@ export default function CustomizedTables(props: Props) {
             return (
               <StyledTableRow key={i}>
                 {chunk.map((item, index) => {
-                  const code = getValues(`itemList.${fieldIndex}.equipmentCode`);
+                  const code = getValues(
+                    `itemList.${fieldIndex}.equipmentCode`
+                  );
                   const quantity = equipments.find(
                     (field) => field.equipmentCode === code
                   )?.quantity;
@@ -142,7 +178,7 @@ export default function CustomizedTables(props: Props) {
                                   inputComponent: NumberFormatCustom as any,
                                 }}
                                 style={{
-                                  'appearance': 'none'
+                                  appearance: "none",
                                 }}
                                 label=""
                               />

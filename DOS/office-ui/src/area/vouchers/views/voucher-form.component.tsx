@@ -44,10 +44,13 @@ type Props = {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      flexGrow: 1,
+      // flexGrow: 1,
+      '& .Mui-focused input, .Mui-focused textarea': {
+        backgroundColor: 'rgba(63, 81, 181, 0.1)',
+      }
     },
     paper: {
-      padding: "38px",
+      padding: theme.spacing(2),
       // textAlign: 'center',
       color: theme.palette.text.secondary,
     },
@@ -185,14 +188,6 @@ export const VoucherForm = (props: Props) => {
     defaultValues: initialValues,
     resolver: yupResolver(schema),
   });
-  /*
-  const { fields, append, prepend, remove, swap, move, insert } =
-    useFieldArray({
-      control, // control props comes from useForm (optional: if you are using FormContext)
-      name: "itemList", // unique name for your Field Array
-      keyName: "equipmentCode", // default to "id", you can change the key name
-    });
-  */
   const classes = useStyles();
   const history = useHistory();
   const { id } = useParams<any>();
@@ -242,9 +237,9 @@ export const VoucherForm = (props: Props) => {
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils} locale={mxLocale}>
       <Paper className={classes.paper}>
-        <h1 style={{ color: "#E31B23" }}>Vales</h1>
+        <h1 style={{ color: "#E31B23", textAlign: "center" }}>Vales</h1>
         <hr className={classes.hrDivider} />
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)} className={classes.root}>
           <Grid container spacing={3}>
             <Grid item xs={12} sm={4}>
               <Controller

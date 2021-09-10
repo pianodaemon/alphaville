@@ -14,6 +14,8 @@ export function NumberFormatCustom(props: NumberFormatCustomProps) {
 
   return (
     <NumberFormat
+      fixedDecimalScale
+      decimalScale={2}
       getInputRef={inputRef}
       onValueChange={(values) => {
         onChange({

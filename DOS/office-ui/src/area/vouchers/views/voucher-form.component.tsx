@@ -12,15 +12,12 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 import Select from "@material-ui/core/Select";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
-// import Checkbox from "@material-ui/core/Checkbox";
-// import FormControlLabel from "@material-ui/core/FormControlLabel";
-// import { Typography } from "@material-ui/core";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import mxLocale from "date-fns/locale/es";
 import DateFnsUtils from "@date-io/date-fns";
-// import { CheckboxesGroup } from "src/shared/components/select-multiple.component";
-// import { CustomDatePicker } from "src/shared/components/custom-date-picker.component";
+import { add, mul } from "src/shared/utils/math/add.util";
+import { NumberFormatCustom } from "src/shared/components/number-format-custom.component";
 import { Voucher } from "../state/vouchers.reducer";
 import Table from "./table.component";
 
@@ -45,9 +42,9 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       // flexGrow: 1,
-      '& .Mui-focused input, .Mui-focused textarea': {
-        backgroundColor: 'rgba(63, 81, 181, 0.1)',
-      }
+      "& .Mui-focused input, .Mui-focused textarea": {
+        backgroundColor: "rgba(63, 81, 181, 0.1)",
+      },
     },
     paper: {
       padding: theme.spacing(2),
@@ -61,33 +58,6 @@ const useStyles = makeStyles((theme: Theme) =>
         minWidth: "100%",
         display: "flex",
       },
-    },
-    fieldset: {
-      borderRadius: 3,
-      // borderWidth: 0,
-      borderColor: "#DDD",
-      borderStyle: "solid",
-      margin: "20px 0px",
-    },
-    containerLegend: {
-      background: "transparent",
-      display: "block",
-      // margin: "0px auto",
-      padding: "0 1em",
-      // position: "relative",
-      // textAlign: "center",
-      // top: "-30px",
-      width: "auto !important",
-      [theme.breakpoints.down("sm")]: {
-        margin: "0 auto",
-        width: "auto !important",
-      },
-    },
-    legend: {
-      fontWeight: "bolder",
-      color: "#E31B23",
-      fontSize: "1rem",
-      background: "#FFF",
     },
     textErrorHelper: { color: theme.palette.error.light },
     submitInput: {
@@ -118,10 +88,6 @@ const useStyles = makeStyles((theme: Theme) =>
       overflow: "hidden",
       marginTop: "27px",
     },
-    hrSpacer: {
-      height: "25px",
-      border: "none",
-    },
     formControlFull: {
       margin: theme.spacing(1),
       minWidth: 350,
@@ -130,6 +96,15 @@ const useStyles = makeStyles((theme: Theme) =>
         display: "flex",
       },
     },
+    alignRight: {
+        textAlign: "right",
+    },
+    rootInput: {
+      '& .MuiInputBase-root input': {
+        color: "rgba(63, 81, 181, 1)",
+        textAlign: "right",
+      },
+    }
   })
 );
 
@@ -184,10 +159,12 @@ export const VoucherForm = (props: Props) => {
     reset,
     getValues,
     setValue,
+    watch,
   } = useForm({
     defaultValues: initialValues,
     resolver: yupResolver(schema),
   });
+  const watchItemList = watch("itemList");
   const classes = useStyles();
   const history = useHistory();
   const { id } = useParams<any>();
@@ -233,6 +210,22 @@ export const VoucherForm = (props: Props) => {
     } else {
       createVoucherAction({ fields, history });
     }
+  };
+  const totalUnitCost = () => {
+    return watchItemList.length
+      ? add(
+          watchItemList.map((item: any) =>
+            mul(
+              item.quantity || 0,
+              equipments
+                ? equipments.find(
+                    (equipment) => equipment.code === item.equipmentCode
+                  )?.unitCost || 0
+                : 0
+            )
+          )
+        )
+      : 0;
   };
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils} locale={mxLocale}>
@@ -332,7 +325,7 @@ export const VoucherForm = (props: Props) => {
                       id="carrierCode"
                       label="Compañía"
                       labelId="carrierCode"
-                      // value={catalog && field.value ? field.value || "" : ""}
+                      value={carriers && field.value ? field.value || "" : ""}
                     >
                       {carriers &&
                         carriers.map((item) => {
@@ -366,7 +359,7 @@ export const VoucherForm = (props: Props) => {
                       {...field}
                       labelId="unitCode"
                       id="unitCode"
-                      // value={field.value ? field.value || "" : ""}
+                      value={units && field.value ? field.value || "" : ""}
                     >
                       {units &&
                         units.map((item) => {
@@ -400,7 +393,7 @@ export const VoucherForm = (props: Props) => {
                       {...field}
                       labelId="patioCode"
                       id="patioCode"
-                      // value={catalog && field.value ? field.value || "" : ""}
+                      value={patios && field.value ? field.value || "" : ""}
                     >
                       {patios &&
                         patios.map((item) => {
@@ -447,6 +440,32 @@ export const VoucherForm = (props: Props) => {
           </Grid>
 
           <Grid container spacing={3}>
+            <Grid item xs={4}></Grid>
+            <Grid item xs={4}></Grid>
+            <Grid item xs={4} className={classes.alignRight}>
+              <FormControl>
+                <TextField
+                  disabled
+                  id="precio"
+                  inputProps={{
+                    readOnly: true,
+                    disabled: true,
+                    fixedDecimalScale: true,
+                    decimalScale: 2,
+                  }}
+                  InputProps={{
+                    inputComponent: NumberFormatCustom as any,
+                    startAdornment: "$",
+                  }}
+                  classes={{root: classes.rootInput}}
+                  label="Total"
+                  value= {watchItemList && totalUnitCost()}
+                />
+              </FormControl>
+            </Grid>
+          </Grid>
+
+          <Grid container spacing={3}>
             <Grid item xs={12}>
               <Controller
                 name="observations"
@@ -486,7 +505,7 @@ export const VoucherForm = (props: Props) => {
                       {...field}
                       labelId="deliveredBy"
                       id="deliveredBy"
-                      // value={catalog && field.value ? field.value || "" : ""}
+                      value={users && field.value ? field.value || "" : ""}
                     >
                       {users &&
                         users.map((item) => {
@@ -523,7 +542,7 @@ export const VoucherForm = (props: Props) => {
                       {...field}
                       labelId="receivedBy"
                       id="receivedBy"
-                      // value={catalog && field.value ? field.value || "" : ""}
+                      value={users && field.value ? field.value || "" : ""}
                     >
                       {users &&
                         users.map((item) => {

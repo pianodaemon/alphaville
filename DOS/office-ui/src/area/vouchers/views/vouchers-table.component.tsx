@@ -111,7 +111,7 @@ export const ValesTable = (props: Props) => {
   }, []);
   return (
     <MaterialTable
-      title=""
+      title="Vales"
       onOrderChange={(orderBy: number, orderDirection: "asc" | "desc") => {
         console.log(orderBy, orderDirection);
         loadVouchersAction({

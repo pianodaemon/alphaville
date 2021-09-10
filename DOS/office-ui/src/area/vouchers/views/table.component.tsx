@@ -1,3 +1,4 @@
+import React, { useEffect } from "react";
 import {
   withStyles,
   Theme,
@@ -118,6 +119,16 @@ export default function CustomizedTables(props: Props) {
     : [];
   const equipmentChunks = splitToBulks(filteredEquipments || []);
   let fieldIndex = 0;
+  useEffect(() => {
+    let index = 0;
+    equipmentChunks.forEach((chunk) => {
+      chunk.forEach((item) => {
+        setValue(`itemList.${index}.equipmentCode`, item.code);
+        index++;
+      });
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <TableContainer component={Paper}>
       <Table
@@ -149,7 +160,7 @@ export default function CustomizedTables(props: Props) {
         <TableBody>
           {equipmentChunks.map((chunk, i) => {
             return (
-              <StyledTableRow key={i}>
+              <StyledTableRow key={`${i + 1}-row`}>
                 {chunk.map((item, index) => {
                   const code = getValues(
                     `itemList.${fieldIndex}.equipmentCode`
@@ -157,9 +168,8 @@ export default function CustomizedTables(props: Props) {
                   const quantity = equipments.find(
                     (field) => field.equipmentCode === code
                   )?.quantity;
-                  setValue(`itemList.${fieldIndex}.equipmentCode`, item.code);
                   return (
-                    <>
+                    <React.Fragment key={`${index}-cell`}>
                       <StyledTableCell component="th" scope="row">
                         {item.title}
                       </StyledTableCell>
@@ -173,7 +183,7 @@ export default function CustomizedTables(props: Props) {
                                 {...field}
                                 defaultValue={quantity ? quantity || "0" : "0"}
                                 id={`itemList.${fieldIndex}.quantity`}
-                                // inputProps={{ type: "number", min: "0" }}
+                                inputProps={{ decimalSeparator: false }}
                                 InputProps={{
                                   inputComponent: NumberFormatCustom as any,
                                 }}
@@ -189,10 +199,14 @@ export default function CustomizedTables(props: Props) {
                       <StyledTableCell align="right">
                         <FormControl>
                           <TextField
-                            {...item}
                             disabled
                             id="precio"
-                            inputProps={{ readOnly: true, disabled: true }}
+                            inputProps={{
+                              readOnly: true,
+                              disabled: true,
+                              fixedDecimalScale: true,
+                              decimalScale: 2,
+                            }}
                             InputProps={{
                               inputComponent: NumberFormatCustom as any,
                               startAdornment: "$",
@@ -203,7 +217,7 @@ export default function CustomizedTables(props: Props) {
                         </FormControl>
                       </StyledTableCell>
                       {++fieldIndex && null}
-                    </>
+                    </React.Fragment>
                   );
                 })}
                 {equipments &&

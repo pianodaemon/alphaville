@@ -183,7 +183,7 @@ export default function CustomizedTables(props: Props) {
                                 {...field}
                                 defaultValue={quantity ? quantity || "0" : "0"}
                                 id={`itemList.${fieldIndex}.quantity`}
-                                // inputProps={{ type: "number", min: "0" }}
+                                inputProps={{ decimalSeparator: false }}
                                 InputProps={{
                                   inputComponent: NumberFormatCustom as any,
                                 }}

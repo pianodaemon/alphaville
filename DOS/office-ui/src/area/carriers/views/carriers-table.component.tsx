@@ -82,7 +82,7 @@ export const CarriersTable = (props: Props) => {
   }, []);
   return (
     <MaterialTable
-      title=""
+      title="Carriers"
       onOrderChange={(orderBy: number, orderDirection: "asc" | "desc") => {
         loadCarriersAction({
           //...paging,
@@ -163,6 +163,13 @@ export const CarriersTable = (props: Props) => {
         ),
       }}
       actions={[
+        {
+          icon: 'search',
+          tooltip: 'Visualizar Carrier',
+          onClick: (event, rowData: any) =>
+            history.push(`/carrier/${rowData.id}/view`),
+          // disabled: !isAllowed('ASER', PERMISSIONS.READ),
+        },
         {
           icon: "edit",
           tooltip: "Editar Carrier",

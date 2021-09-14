@@ -86,7 +86,7 @@ const routes: Array<CustomRoute> = [
   },
   {
     props: {
-      path: ['/patio/create', '/patio/:id/edit'],
+      path: ['/patio/create', '/patio/:id/:action(edit|view)'],
       exact: true,
     },
     component: <PatiosFormContainer />,
@@ -102,7 +102,7 @@ const routes: Array<CustomRoute> = [
   },
   {
     props: {
-      path: ['/equipment/create', '/equipment/:id/edit'],
+      path: ['/equipment/create', '/equipment/:id/:action(edit|view)'],
       exact: true,
     },
     component: <EquipmentsFormContainer />,
@@ -118,7 +118,7 @@ const routes: Array<CustomRoute> = [
   },
   {
     props: {
-      path: ['/unit/create', '/unit/:id/edit'],
+      path: ['/unit/create', '/unit/:id/:action(edit|view)'],
       exact: true,
     },
     component: <UnitsFormContainer />,
@@ -134,7 +134,7 @@ const routes: Array<CustomRoute> = [
   },
   {
     props: {
-      path: ['/carrier/create', '/carrier/:id/edit'],
+      path: ['/carrier/create', '/carrier/:id/:action(edit|view)'],
       exact: true,
     },
     component: <CarriersFormContainer />,
@@ -142,7 +142,7 @@ const routes: Array<CustomRoute> = [
   },
   {
     props: {
-      path: ['/voucher/create', '/voucher/:id/edit'],
+      path: ['/voucher/create', '/voucher/:id/:action(edit|view)'],
       exact: true,
     },
     component: <VourcherFormContainer />,

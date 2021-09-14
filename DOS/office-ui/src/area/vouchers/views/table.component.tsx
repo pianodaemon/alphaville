@@ -108,27 +108,36 @@ type Props = {
   control: any;
   equipments: any[];
   getValues: Function;
+  readonly: boolean;
   setValue: Function;
 };
 
 export default function CustomizedTables(props: Props) {
   const classes = useStyles();
-  const { control, getValues, equipments, setValue } = props;
+  const { control, getValues, equipments, readonly, setValue } = props;
   const filteredEquipments = Array.isArray(equipments)
     ? equipments.filter((equipment: any) => equipment.regular)
     : [];
   const equipmentChunks = splitToBulks(filteredEquipments || []);
   let fieldIndex = 0;
+  let renders = 0;
+  let index = 0;
   useEffect(() => {
-    let index = 0;
-    equipmentChunks.forEach((chunk) => {
-      chunk.forEach((item) => {
-        setValue(`itemList.${index}.equipmentCode`, item.code);
-        index++;
+    if (equipments && equipments.length > 0 && renders === 0) {
+      equipmentChunks.forEach((chunk) => {
+        chunk.forEach((item) => {
+          const quantity = getValues("itemList").find((equipment) => {
+            return equipment.equipmentCode === item.code;
+          })?.quantity;
+          setValue(`newList.${index}.equipmentCode`, item.code);
+          setValue(`newList.${index}.quantity`, quantity);
+          ++index;
+        });
       });
-    });
+      renders++;
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [equipments]);
   return (
     <TableContainer component={Paper}>
       <Table
@@ -150,11 +159,15 @@ export default function CustomizedTables(props: Props) {
           <TableRow>
             <StyledTableCell></StyledTableCell>
             <StyledTableCell align="right">Unidad</StyledTableCell>
-            <StyledTableCell align="right">Costo Unitario</StyledTableCell>
+            <StyledTableCell align="right">
+              Costo Unitario (USD)
+            </StyledTableCell>
 
             <StyledTableCell></StyledTableCell>
             <StyledTableCell align="right">Unidad</StyledTableCell>
-            <StyledTableCell align="right">Costo Unitario</StyledTableCell>
+            <StyledTableCell align="right">
+              Costo Unitario (USD)
+            </StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -162,12 +175,9 @@ export default function CustomizedTables(props: Props) {
             return (
               <StyledTableRow key={`${i + 1}-row`}>
                 {chunk.map((item, index) => {
-                  const code = getValues(
-                    `itemList.${fieldIndex}.equipmentCode`
-                  );
-                  const quantity = equipments.find(
-                    (field) => field.equipmentCode === code
-                  )?.quantity;
+                  const quantity = (getValues("newList") || []).find((equipment) => {
+                    return equipment.equipmentCode === item.code;
+                  })?.quantity;
                   return (
                     <React.Fragment key={`${index}-cell`}>
                       <StyledTableCell component="th" scope="row">
@@ -175,14 +185,15 @@ export default function CustomizedTables(props: Props) {
                       </StyledTableCell>
                       <StyledTableCell align="right">
                         <Controller
-                          name={`itemList.${fieldIndex}.quantity`}
+                          name={`newList.${fieldIndex}.quantity`}
                           control={control}
                           render={({ field }) => (
                             <FormControl>
                               <TextField
                                 {...field}
                                 defaultValue={quantity ? quantity || "0" : "0"}
-                                id={`itemList.${fieldIndex}.quantity`}
+                                disabled={readonly}
+                                id={`newList.${fieldIndex}.quantity`}
                                 inputProps={{ decimalSeparator: false }}
                                 InputProps={{
                                   inputComponent: NumberFormatCustom as any,

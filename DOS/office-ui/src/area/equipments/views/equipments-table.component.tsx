@@ -93,7 +93,7 @@ export const EquipmentsTable = (props: Props) => {
   }, []);
   return (
     <MaterialTable
-      title=""
+      title="Equipos"
       onOrderChange={(orderBy: number, orderDirection: "asc" | "desc") => {
         loadEquipmentsAction({
           //...paging,
@@ -174,6 +174,13 @@ export const EquipmentsTable = (props: Props) => {
         ),
       }}
       actions={[
+        {
+          icon: 'search',
+          tooltip: 'Visualizar Equipo',
+          onClick: (event, rowData: any) =>
+            history.push(`/equipment/${rowData.id}/view`),
+          // disabled: !isAllowed('ASER', PERMISSIONS.READ),
+        },
         {
           icon: "edit",
           tooltip: "Editar Equipo",

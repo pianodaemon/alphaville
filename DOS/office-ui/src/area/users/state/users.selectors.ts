@@ -44,7 +44,15 @@ export const usersCatalogSelector = createSelector(
 
 export const userCatalogSelector = createSelector(
   sliceSelector,
-  (slice: UserSlice) => slice.usersCatalog
+  (slice: UserSlice) =>
+  slice.usersCatalog &&
+  Array.isArray(slice.usersCatalog) &&
+  slice.usersCatalog.map((user: User) => {
+    return {
+      ...user,
+      displayName: `${user.firstName} ${user.lastName}`,
+    };
+  })
 );
 
 export const pagingSelector = createSelector(

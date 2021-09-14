@@ -18,8 +18,9 @@ import mxLocale from "date-fns/locale/es";
 import DateFnsUtils from "@date-io/date-fns";
 import { add, mul } from "src/shared/utils/math/add.util";
 import { NumberFormatCustom } from "src/shared/components/number-format-custom.component";
-import { Voucher } from "../state/vouchers.reducer";
+import { Voucher, Item } from "../state/vouchers.reducer";
 import Table from "./table.component";
+import { AutoCompleteDropdown } from "src/shared/components/autocomplete-dropdown.component";
 
 type Props = {
   createVoucherAction: Function;
@@ -37,6 +38,8 @@ type Props = {
   units: any;
   users: any;
 };
+
+type VoucherMutable = Voucher & { newList: Array<Item> };
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -97,14 +100,14 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     alignRight: {
-        textAlign: "right",
+      textAlign: "right",
     },
     rootInput: {
-      '& .MuiInputBase-root input': {
+      "& .MuiInputBase-root input": {
         color: "rgba(63, 81, 181, 1)",
         textAlign: "right",
       },
-    }
+    },
   })
 );
 
@@ -141,9 +144,10 @@ export const VoucherForm = (props: Props) => {
     units,
     users,
   } = props;
-  const initialValues: Voucher = {
+  const initialValues: VoucherMutable = {
     carrierCode: "",
     deliveredBy: "",
+    fecha: new Date().toISOString(),
     id: "",
     observations: "",
     patioCode: "",
@@ -151,6 +155,7 @@ export const VoucherForm = (props: Props) => {
     receivedBy: "",
     unitCode: "",
     itemList: [],
+    newList: [], // mutable itemList, not a part of the Voucher interface
   };
   const {
     control,
@@ -164,10 +169,11 @@ export const VoucherForm = (props: Props) => {
     defaultValues: initialValues,
     resolver: yupResolver(schema),
   });
-  const watchItemList = watch("itemList");
+  const watchItemList = watch("newList");
   const classes = useStyles();
   const history = useHistory();
-  const { id } = useParams<any>();
+  const { action, id } = useParams<any>();
+  const viewOnlyModeOn = action === "view";
   useEffect(() => {
     loadUsersAsCatalogAction({
       per_page: Number.MAX_SAFE_INTEGER,
@@ -196,7 +202,7 @@ export const VoucherForm = (props: Props) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [voucher]);
-  const onSubmit = (fields) => {
+  const onSubmit = (fields: VoucherMutable) => {
     /*
     const releaseForm: () => void = () => setSubmitting(false);
     const fields: any = values;
@@ -204,8 +210,10 @@ export const VoucherForm = (props: Props) => {
       Number(authId)
     );
     */
+    fields.itemList = fields.newList.filter(
+      (item: any) => parseInt(item.quantity, 10) > 0
+    );
     if (id) {
-      delete fields.id;
       updateVoucherAction({ id, fields, history });
     } else {
       createVoucherAction({ fields, history });
@@ -242,11 +250,12 @@ export const VoucherForm = (props: Props) => {
                   <FormControl className={classes.formControl}>
                     <TextField
                       {...field}
+                      disabled={viewOnlyModeOn}
                       id="id"
                       inputProps={{
                         disabled: true,
                       }}
-                      label="#"
+                      label="ID #"
                       value={field.value ? field.value || "" : ""}
                     />
                     {errors.id && (
@@ -261,33 +270,32 @@ export const VoucherForm = (props: Props) => {
                 )}
               />
             </Grid>
-            {/*
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={4}>
               <Controller
                 name="fecha"
                 control={control}
                 render={({ field }) => (
                   <FormControl className={classes.formControl}>
-                    <CustomDatePicker
-                      field={field}
+                    <TextField
+                      {...field}
+                      disabled={viewOnlyModeOn}
+                      id="fecha"
+                      inputProps={{ readOnly: true }}
                       label="Fecha"
-                      form={{
-                        setValue,
-                      }}
+                      value={field.value ? field.value || "" : ""}
                     />
                     {errors.fecha && (
                       <FormHelperText
                         error
                         classes={{ error: classes.textErrorHelper }}
                       >
-                        Ingrese una Contraseña
+                        Ingrese una Fecha
                       </FormHelperText>
                     )}
                   </FormControl>
                 )}
               />
             </Grid>
-            */}
             <Grid item xs={12} sm={4}>
               <Controller
                 name="platform"
@@ -296,6 +304,7 @@ export const VoucherForm = (props: Props) => {
                   <FormControl className={classes.formControl}>
                     <TextField
                       {...field}
+                      disabled={viewOnlyModeOn}
                       id="platform"
                       label="Plataforma"
                       value={field.value ? field.value || "" : ""}
@@ -312,18 +321,18 @@ export const VoucherForm = (props: Props) => {
                 )}
               />
             </Grid>
-            <Grid item xs={12} sm={4}></Grid>
             <Grid item xs={12} sm={4}>
               <Controller
                 name="carrierCode"
                 control={control}
                 render={({ field }) => (
                   <FormControl className={classes.formControl}>
-                    <InputLabel>Compañía</InputLabel>
+                    <InputLabel>Carrier</InputLabel>
                     <Select
                       {...field}
+                      disabled={viewOnlyModeOn}
                       id="carrierCode"
-                      label="Compañía"
+                      label="Carrier"
                       labelId="carrierCode"
                       value={carriers && field.value ? field.value || "" : ""}
                     >
@@ -341,7 +350,7 @@ export const VoucherForm = (props: Props) => {
                         error
                         classes={{ error: classes.textErrorHelper }}
                       >
-                        Seleccione una Compañía
+                        Seleccione un Carrier
                       </FormHelperText>
                     )}
                   </FormControl>
@@ -357,8 +366,9 @@ export const VoucherForm = (props: Props) => {
                     <InputLabel>Unidad</InputLabel>
                     <Select
                       {...field}
-                      labelId="unitCode"
+                      disabled={viewOnlyModeOn}
                       id="unitCode"
+                      labelId="unitCode"
                       value={units && field.value ? field.value || "" : ""}
                     >
                       {units &&
@@ -391,8 +401,9 @@ export const VoucherForm = (props: Props) => {
                     <InputLabel>Patio</InputLabel>
                     <Select
                       {...field}
-                      labelId="patioCode"
+                      disabled={viewOnlyModeOn}
                       id="patioCode"
+                      labelId="patioCode"
                       value={patios && field.value ? field.value || "" : ""}
                     >
                       {patios &&
@@ -426,7 +437,15 @@ export const VoucherForm = (props: Props) => {
                   maxHeight: "50vh",
                 }}
               >
-                <Table {...{ control, equipments, getValues, setValue }} />
+                <Table
+                  {...{
+                    control,
+                    equipments,
+                    getValues,
+                    setValue,
+                    readonly: viewOnlyModeOn,
+                  }}
+                />
               </div>
               {errors.itemList && (
                 <FormHelperText
@@ -457,9 +476,9 @@ export const VoucherForm = (props: Props) => {
                     inputComponent: NumberFormatCustom as any,
                     startAdornment: "$",
                   }}
-                  classes={{root: classes.rootInput}}
-                  label="Total"
-                  value= {watchItemList && totalUnitCost()}
+                  classes={{ root: classes.rootInput }}
+                  label="Total (USD)"
+                  value={watchItemList && totalUnitCost()}
                 />
               </FormControl>
             </Grid>
@@ -474,6 +493,7 @@ export const VoucherForm = (props: Props) => {
                   <FormControl className={classes.formControlFull}>
                     <TextField
                       {...field}
+                      disabled={viewOnlyModeOn}
                       fullWidth
                       id="observations"
                       label="Observaciones"
@@ -495,88 +515,72 @@ export const VoucherForm = (props: Props) => {
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <Controller
-                name="deliveredBy"
-                control={control}
-                render={({ field }) => (
-                  <FormControl className={classes.formControl}>
-                    <InputLabel>Entregó Equipo</InputLabel>
-                    <Select
-                      {...field}
-                      labelId="deliveredBy"
-                      id="deliveredBy"
-                      value={users && field.value ? field.value || "" : ""}
-                    >
-                      {users &&
-                        users.map((item) => {
-                          return (
-                            <MenuItem
-                              value={item.username}
-                              key={`type-${item.userId}`}
-                            >
-                              {item.username}
-                            </MenuItem>
-                          );
-                        })}
-                    </Select>
-                    {errors.deliveredBy && (
-                      <FormHelperText
-                        error
-                        classes={{ error: classes.textErrorHelper }}
-                      >
-                        Seleccione quién entregó el equipo
-                      </FormHelperText>
-                    )}
-                  </FormControl>
+              <FormControl className={classes.formControl}>
+                <AutoCompleteDropdown
+                  disabled={viewOnlyModeOn}
+                  fieldLabel="displayName"
+                  fieldValue="username"
+                  label="Entregó Equipo"
+                  name="deliveredBy"
+                  onChange={(value: any) => {
+                    return setValue("deliveredBy", value);
+                  }}
+                  options={users || []}
+                  value={
+                    users && getValues("deliveredBy")
+                      ? getValues("deliveredBy") || ""
+                      : ""
+                  }
+                />
+                {errors.deliveredBy && (
+                  <FormHelperText
+                    error
+                    classes={{ error: classes.textErrorHelper }}
+                  >
+                    Seleccione quién entregó el equipo
+                  </FormHelperText>
                 )}
-              />
+              </FormControl>
             </Grid>
             <Grid item xs={12} sm={4}>
-              <Controller
-                name="receivedBy"
-                control={control}
-                render={({ field }) => (
-                  <FormControl className={classes.formControl}>
-                    <InputLabel>Recibió Equipo</InputLabel>
-                    <Select
-                      {...field}
-                      labelId="receivedBy"
-                      id="receivedBy"
-                      value={users && field.value ? field.value || "" : ""}
-                    >
-                      {users &&
-                        users.map((item) => {
-                          return (
-                            <MenuItem
-                              value={item.username}
-                              key={`type-${item.userId}`}
-                            >
-                              {item.username}
-                            </MenuItem>
-                          );
-                        })}
-                    </Select>
-                    {errors.receivedBy && (
-                      <FormHelperText
-                        error
-                        classes={{ error: classes.textErrorHelper }}
-                      >
-                        Seleccione quién recibió el equipo
-                      </FormHelperText>
-                    )}
-                  </FormControl>
+              <FormControl className={classes.formControl}>
+                <AutoCompleteDropdown
+                  disabled={viewOnlyModeOn}
+                  fieldLabel="displayName"
+                  fieldValue="username"
+                  label="Recibió Equipo"
+                  name="receivedBy"
+                  onChange={(value: any) => {
+                    return setValue("receivedBy", value);
+                  }}
+                  options={users || []}
+                  value={
+                    users && getValues("receivedBy")
+                      ? getValues("receivedBy") || ""
+                      : ""
+                  }
+                />
+                {errors.receivedBy && (
+                  <FormHelperText
+                    error
+                    classes={{ error: classes.textErrorHelper }}
+                  >
+                    Seleccione quién recibió el equipo
+                  </FormHelperText>
                 )}
-              />
+              </FormControl>
             </Grid>
             <Grid item xs={12} sm={4}>
-              <Button
-                variant="contained"
-                className={classes.submitInput}
-                disabled={isSubmitting}
-                type="submit"
-              >
-                {!id ? "Crear" : "Actualizar"}
-              </Button>
+              {!viewOnlyModeOn && (
+                <Button
+                  variant="contained"
+                  className={classes.submitInput}
+                  disabled={isSubmitting}
+                  type="submit"
+                >
+                  {!id ? "Crear" : "Actualizar"}
+                </Button>
+              )}
             </Grid>
           </Grid>
         </form>

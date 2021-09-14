@@ -13,7 +13,7 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { NumberFormatCustom } from 'src/shared/components/number-format-custom.component';
+import { NumberFormatCustom } from "src/shared/components/number-format-custom.component";
 import { Equipment } from "../state/equipments.reducer";
 
 type Props = {
@@ -136,7 +136,8 @@ export const EquipmentForm = (props: Props) => {
   });
   const classes = useStyles();
   const history = useHistory();
-  const { id } = useParams<any>();
+  const { action, id } = useParams<any>();
+  const viewOnlyModeOn = action === "view";
   useEffect(() => {
     if (id) {
       readEquipmentAction({ id, history });
@@ -167,7 +168,7 @@ export const EquipmentForm = (props: Props) => {
   };
   return (
     <Paper className={classes.paper}>
-      <h1 style={{ color: "#128aba" }}>Equipos</h1>
+      <h1 style={{ color: "#E31B23", textAlign: "center" }}>Equipos</h1>
       <hr className={classes.hrDivider} />
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid container spacing={3}>
@@ -179,6 +180,7 @@ export const EquipmentForm = (props: Props) => {
                 <FormControl className={classes.formControl}>
                   <TextField
                     {...field}
+                    disabled={viewOnlyModeOn}
                     id="code"
                     label="Clave"
                     value={field.value ? field.value || "" : ""}
@@ -203,6 +205,7 @@ export const EquipmentForm = (props: Props) => {
                 <FormControl className={classes.formControl}>
                   <TextField
                     {...field}
+                    disabled={viewOnlyModeOn}
                     id="title"
                     label="Descripción"
                     value={field.value ? field.value || "" : ""}
@@ -227,11 +230,14 @@ export const EquipmentForm = (props: Props) => {
                 <FormControl className={classes.formControl}>
                   <TextField
                     {...field}
+                    disabled={viewOnlyModeOn}
+                    id="unitCost"
                     InputProps={{
                       inputComponent: NumberFormatCustom as any,
-                      startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                      startAdornment: (
+                        <InputAdornment position="start">$</InputAdornment>
+                      ),
                     }}
-                    id="unitCost"
                     label="Costo"
                     value={field.value ? field.value || "" : ""}
                   />
@@ -257,10 +263,9 @@ export const EquipmentForm = (props: Props) => {
                     control={
                       <Checkbox
                         {...field}
-                        color="primary"
-                        // checked={values.disabled || false}
-                        // onChange={handleChange("disabled")}
                         checked={field.value ? field.value || false : false}
+                        color="primary"
+                        disabled={viewOnlyModeOn}
                       />
                     }
                     label="Mostrar por defecto"
@@ -270,14 +275,16 @@ export const EquipmentForm = (props: Props) => {
             />
           </Grid>
         </Grid>
-        <Button
-          variant="contained"
-          className={classes.submitInput}
-          disabled={/*isSubmitting*/ false}
-          type="submit"
-        >
-          {!id ? "Crear" : "Actualizar"}
-        </Button>
+        {!viewOnlyModeOn && (
+          <Button
+            variant="contained"
+            className={classes.submitInput}
+            disabled={/*isSubmitting*/ false}
+            type="submit"
+          >
+            {!id ? "Crear" : "Actualizar"}
+          </Button>
+        )}
       </form>
     </Paper>
   );

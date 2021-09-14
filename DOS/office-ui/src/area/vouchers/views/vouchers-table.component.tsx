@@ -204,8 +204,15 @@ export const ValesTable = (props: Props) => {
           icon: "print",
           tooltip: "Imprimir",
           onClick: (event, rowData: any) =>
-            history.push(`/user/${rowData.id}/edit`),
+            history.push(`/voucher/${rowData.id}/edit`),
           // disabled: !isAllowed('USR', PERMISSIONS.UPDATE),
+        },
+        {
+          icon: 'search',
+          tooltip: 'Visualizar Vale',
+          onClick: (event, rowData: any) =>
+            history.push(`/voucher/${rowData.id}/view`),
+          // disabled: !isAllowed('ASER', PERMISSIONS.READ),
         },
         {
           icon: "edit",

@@ -75,7 +75,7 @@ export const PatiosTable = (props: Props) => {
   }, []);
   return (
     <MaterialTable
-      title=""
+      title="Patio"
       onOrderChange={(orderBy: number, orderDirection: "asc" | "desc") => {
         loadPatiosAction({
           //...paging,
@@ -156,6 +156,13 @@ export const PatiosTable = (props: Props) => {
         ),
       }}
       actions={[
+        {
+          icon: 'search',
+          tooltip: 'Visualizar Patio',
+          onClick: (event, rowData: any) =>
+            history.push(`/patio/${rowData.id}/view`),
+          // disabled: !isAllowed('ASER', PERMISSIONS.READ),
+        },
         {
           icon: "edit",
           tooltip: "Editar Patio",

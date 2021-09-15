@@ -75,7 +75,7 @@ export const UnitsTable = (props: Props) => {
   }, []);
   return (
     <MaterialTable
-      title=""
+      title="Unidades"
       onOrderChange={(orderBy: number, orderDirection: "asc" | "desc") => {
         loadUnitsAction({
           //...paging,
@@ -156,6 +156,13 @@ export const UnitsTable = (props: Props) => {
         ),
       }}
       actions={[
+        {
+          icon: 'search',
+          tooltip: 'Visualizar Unidad',
+          onClick: (event, rowData: any) =>
+            history.push(`/unit/${rowData.id}/view`),
+          // disabled: !isAllowed('ASER', PERMISSIONS.READ),
+        },
         {
           icon: "edit",
           tooltip: "Editar Unidad",

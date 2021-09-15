@@ -4,6 +4,7 @@ export interface Voucher {
   carrierCode: string;
   deliveredBy: string;
   id: string;
+  fecha: string; // @todo to be defined at gRPC service
   itemList: Item[];
   observations: string;
   patioCode: string;
@@ -27,7 +28,7 @@ export interface VoucherSlice {
   filters: {[key: string]: string} | null,
 }
 
-type Item = {
+export type Item = {
   equipmentCode: string,
   quantity: number,
 };

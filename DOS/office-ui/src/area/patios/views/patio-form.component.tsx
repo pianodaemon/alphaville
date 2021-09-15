@@ -106,12 +106,8 @@ const schema = yup.object().shape({
 });
 
 export const PatioForm = (props: Props) => {
-  const {
-    createPatioAction,
-    readPatioAction,
-    updatePatioAction,
-    patio,
-  } = props;
+  const { createPatioAction, readPatioAction, updatePatioAction, patio } =
+    props;
   const initialValues = {
     code: "",
     title: "",
@@ -127,7 +123,8 @@ export const PatioForm = (props: Props) => {
   });
   const classes = useStyles();
   const history = useHistory();
-  const { id } = useParams<any>();
+  const { action, id } = useParams<any>();
+  const viewOnlyModeOn = action === "view";
   useEffect(() => {
     if (id) {
       readPatioAction({ id, history });
@@ -158,7 +155,7 @@ export const PatioForm = (props: Props) => {
   };
   return (
     <Paper className={classes.paper}>
-      <h1 style={{ color: "#128aba" }}>Patios</h1>
+      <h1 style={{ color: "#E31B23", textAlign: "center" }}>Patios</h1>
       <hr className={classes.hrDivider} />
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid container spacing={3}>
@@ -170,6 +167,7 @@ export const PatioForm = (props: Props) => {
                 <FormControl className={classes.formControl}>
                   <TextField
                     {...field}
+                    disabled={viewOnlyModeOn}
                     id="code"
                     label="Clave"
                     value={field.value ? field.value || "" : ""}
@@ -194,6 +192,7 @@ export const PatioForm = (props: Props) => {
                 <FormControl className={classes.formControl}>
                   <TextField
                     {...field}
+                    disabled={viewOnlyModeOn}
                     id="title"
                     label="Descripción"
                     value={field.value ? field.value || "" : ""}
@@ -211,14 +210,16 @@ export const PatioForm = (props: Props) => {
             />
           </Grid>
         </Grid>
-        <Button
-          variant="contained"
-          className={classes.submitInput}
-          disabled={/*isSubmitting*/ false}
-          type="submit"
-        >
-          {!id ? "Crear" : "Actualizar"}
-        </Button>
+        {!viewOnlyModeOn && (
+          <Button
+            variant="contained"
+            className={classes.submitInput}
+            disabled={/*isSubmitting*/ false}
+            type="submit"
+          >
+            {!id ? "Crear" : "Actualizar"}
+          </Button>
+        )}
       </form>
     </Paper>
   );

@@ -106,12 +106,7 @@ const schema = yup.object().shape({
 });
 
 export const UnitForm = (props: Props) => {
-  const {
-    createUnitAction,
-    readUnitAction,
-    updateUnitAction,
-    unit,
-  } = props;
+  const { createUnitAction, readUnitAction, updateUnitAction, unit } = props;
   const initialValues = {
     code: "",
     title: "",
@@ -127,7 +122,8 @@ export const UnitForm = (props: Props) => {
   });
   const classes = useStyles();
   const history = useHistory();
-  const { id } = useParams<any>();
+  const { action, id } = useParams<any>();
+  const viewOnlyModeOn = action === "view";
   useEffect(() => {
     if (id) {
       readUnitAction({ id, history });
@@ -158,7 +154,7 @@ export const UnitForm = (props: Props) => {
   };
   return (
     <Paper className={classes.paper}>
-      <h1 style={{ color: "#128aba" }}>Unidades</h1>
+      <h1 style={{ color: "#E31B23", textAlign: "center" }}>Unidades</h1>
       <hr className={classes.hrDivider} />
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid container spacing={3}>
@@ -170,6 +166,7 @@ export const UnitForm = (props: Props) => {
                 <FormControl className={classes.formControl}>
                   <TextField
                     {...field}
+                    disabled={viewOnlyModeOn}
                     id="code"
                     label="Clave"
                     value={field.value ? field.value || "" : ""}
@@ -194,6 +191,7 @@ export const UnitForm = (props: Props) => {
                 <FormControl className={classes.formControl}>
                   <TextField
                     {...field}
+                    disabled={viewOnlyModeOn}
                     id="title"
                     label="Descripción"
                     value={field.value ? field.value || "" : ""}
@@ -211,14 +209,16 @@ export const UnitForm = (props: Props) => {
             />
           </Grid>
         </Grid>
-        <Button
-          variant="contained"
-          className={classes.submitInput}
-          disabled={/*isSubmitting*/ false}
-          type="submit"
-        >
-          {!id ? "Crear" : "Actualizar"}
-        </Button>
+        {!viewOnlyModeOn && (
+          <Button
+            variant="contained"
+            className={classes.submitInput}
+            disabled={/*isSubmitting*/ false}
+            type="submit"
+          >
+            {!id ? "Crear" : "Actualizar"}
+          </Button>
+        )}
       </form>
     </Paper>
   );

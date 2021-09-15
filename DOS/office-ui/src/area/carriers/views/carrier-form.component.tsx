@@ -131,7 +131,8 @@ export const CarrierForm = (props: Props) => {
   });
   const classes = useStyles();
   const history = useHistory();
-  const { id } = useParams<any>();
+  const { action, id } = useParams<any>();
+  const viewOnlyModeOn = action === "view";
   useEffect(() => {
     if (id) {
       readCarrierAction({ id, history });
@@ -162,7 +163,7 @@ export const CarrierForm = (props: Props) => {
   };
   return (
     <Paper className={classes.paper}>
-      <h1 style={{ color: "#128aba" }}>Carriers</h1>
+      <h1 style={{ color: "#E31B23", textAlign: "center" }}>Carriers</h1>
       <hr className={classes.hrDivider} />
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid container spacing={3}>
@@ -174,6 +175,7 @@ export const CarrierForm = (props: Props) => {
                 <FormControl className={classes.formControl}>
                   <TextField
                     {...field}
+                    disabled={viewOnlyModeOn}
                     id="code"
                     label="Clave"
                     value={field.value ? field.value || "" : ""}
@@ -198,6 +200,7 @@ export const CarrierForm = (props: Props) => {
                 <FormControl className={classes.formControl}>
                   <TextField
                     {...field}
+                    disabled={viewOnlyModeOn}
                     id="title"
                     label="Descripción"
                     value={field.value ? field.value || "" : ""}
@@ -224,10 +227,9 @@ export const CarrierForm = (props: Props) => {
                     control={
                       <Checkbox
                         {...field}
-                        color="primary"
-                        // checked={values.disabled || false}
-                        // onChange={handleChange("disabled")}
                         checked={field.value ? field.value || false : false}
+                        color="primary"
+                        disabled={viewOnlyModeOn}
                       />
                     }
                     label="Desactivado"
@@ -237,14 +239,16 @@ export const CarrierForm = (props: Props) => {
             />
           </Grid>
         </Grid>
-        <Button
-          variant="contained"
-          className={classes.submitInput}
-          disabled={/*isSubmitting*/ false}
-          type="submit"
-        >
-          {!id ? "Crear" : "Actualizar"}
-        </Button>
+        {!viewOnlyModeOn && (
+          <Button
+            variant="contained"
+            className={classes.submitInput}
+            disabled={/*isSubmitting*/ false}
+            type="submit"
+          >
+            {!id ? "Crear" : "Actualizar"}
+          </Button>
+        )}
       </form>
     </Paper>
   );

@@ -119,7 +119,7 @@ const schema = yup.object().shape({
   platform: yup.string().required(),
   receivedBy: yup.string().required(),
   unitCode: yup.string().required(),
-  itemList: yup
+  newList: yup
     .array()
     .test("test", "at least one item with quantity > 0", (value: any) => {
       return value && value.some((val) => val.quantity > 0);
@@ -447,7 +447,7 @@ export const VoucherForm = (props: Props) => {
                   }}
                 />
               </div>
-              {errors.itemList && (
+              {errors.newList && (
                 <FormHelperText
                   error
                   classes={{ error: classes.textErrorHelper }}

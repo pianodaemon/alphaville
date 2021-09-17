@@ -20,24 +20,26 @@ import FilterListIcon from "@material-ui/icons/FilterList";
 */
 
 type Props = {
-  vouchers: any;
-  loadVouchersAction: Function;
   deleteVoucherAction: Function;
+  filters: any;
+  // isAllowed: Function,
+  loadUsersAsCatalogAction
+  loadVouchersAction: Function;
   loading: boolean;
   paging: any;
-  // isAllowed: Function,
-  filters: any;
+  vouchers: any;
 };
 
 export const ValesTable = (props: Props) => {
   const {
-    vouchers,
-    loadVouchersAction,
     deleteVoucherAction,
+    filters,
+    // isAllowed,
+    loadUsersAsCatalogAction,
+    loadVouchersAction,
     loading,
     paging,
-    // isAllowed,
-    filters,
+    vouchers,
   } = props;
   const { count, page, per_page, order } = paging;
   const history = useHistory();
@@ -106,6 +108,7 @@ export const ValesTable = (props: Props) => {
   const getColumnNameByIndex = (columnId: number) =>
     columns.map((column) => column.field)[columnId];
   useEffect(() => {
+    loadUsersAsCatalogAction();
     loadVouchersAction({ per_page: paging.per_page, order });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

@@ -146,6 +146,7 @@ export default function CustomizedTables(props: Props) {
         size="small"
       >
         <TableHead>
+          {/*
           <TableRow>
             <StyledTableCell
               style={{ backgroundColor: "rgba(63, 81, 181, 1)" }}
@@ -155,7 +156,7 @@ export default function CustomizedTables(props: Props) {
               EQUIPOS DE AMARRE
             </StyledTableCell>
           </TableRow>
-
+          */}
           <TableRow>
             <StyledTableCell></StyledTableCell>
             <StyledTableCell align="right">Unidad</StyledTableCell>

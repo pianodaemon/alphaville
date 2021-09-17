@@ -255,7 +255,7 @@ export const VoucherForm = (props: Props) => {
                       inputProps={{
                         disabled: true,
                       }}
-                      label="ID #"
+                      label="No."
                       value={field.value ? field.value || "" : ""}
                     />
                     {errors.id && (

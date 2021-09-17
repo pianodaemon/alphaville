@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+import { loadUsersAsCatalogAction } from 'src/area/users/state/usecases/load-users-as-catalog.usecase';
 import { ValesTable } from './vouchers-table.component';
 import { loadVouchersAction } from '../state/usecases/load-vouchers.usecase';
 import { deleteVoucherAction } from '../state/usecases/delete-voucher.usecase';
@@ -11,8 +12,9 @@ import {
 } from '../state/vouchers.selectors';
 
 const mapDispatchToProps = {
-  loadVouchersAction,
   deleteVoucherAction,
+  loadVouchersAction,
+  loadUsersAsCatalogAction
 };
 
 function mapStateToProps(state: any) {

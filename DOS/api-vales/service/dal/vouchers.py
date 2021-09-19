@@ -18,7 +18,7 @@ class VouchersPersistence(object):
     mongo_uri = "mongodb://nosql_mongo:27017"
 
     @classmethod
-    def alter(cls, id, platform, carrier_code, patio_code, observations, unit_code, delivered_by, received_by, item_list):
+    def alter(cls, id, platform, carrier_code, patio_code, observations, unit_code, delivered_by, received_by, status, item_list):
         """
         It creates and edits a voucher
         """
@@ -27,9 +27,9 @@ class VouchersPersistence(object):
 
         try:
             if id:
-                cls._update(collection, id, carrier_code, patio_code, platform, observations, unit_code, delivered_by, received_by, item_list)
+                cls._update(collection, id, carrier_code, patio_code, platform, observations, unit_code, delivered_by, received_by, status, item_list)
             else:
-                id = cls._create(collection, carrier_code, patio_code, platform, observations, unit_code, delivered_by, received_by, item_list)
+                id = cls._create(collection, carrier_code, patio_code, platform, observations, unit_code, delivered_by, received_by, status, item_list)
             rc  = 0
             msg = id
         except Exception as err:
@@ -41,13 +41,14 @@ class VouchersPersistence(object):
 
 
     @staticmethod
-    def _create(collection, carrier_code, patio_code, platform, obs, unit_code, delivered_by, received_by, items):
+    def _create(collection, carrier_code, patio_code, platform, obs, unit_code, delivered_by, received_by, status, items):
         """
         It creates a newer voucher
         within the collection
         """
         # After insertion we shall get
         # a reference to the newer doc
+        t = time.time()
         doc = collection.insert_one({
             'platform': platform,
             'carrierCode': carrier_code,
@@ -56,7 +57,10 @@ class VouchersPersistence(object):
             'unitCode': unit_code,
             'deliveredBy': delivered_by,
             'receivedBy': received_by,
+            'status': status,
             'itemList': items,
+            'generationTime': t,
+            'lastTouchTime': t,
             'blocked': False,
         })
 
@@ -64,7 +68,7 @@ class VouchersPersistence(object):
 
 
     @staticmethod
-    def _update(collection, doc_id, carrier_code, patio_code, platform, obs, unit_code, delivered_by, received_by, items):
+    def _update(collection, doc_id, carrier_code, patio_code, platform, obs, unit_code, delivered_by, received_by, status, items):
         """
         It updates any voucher as per
         its document identifier
@@ -78,6 +82,7 @@ class VouchersPersistence(object):
             'unitCode': unit_code,
             'deliveredBy': delivered_by,
             'receivedBy': received_by,
+            'status': status,
             'itemList': items,
             'lastTouchTime': time.time(),
         }
@@ -161,6 +166,7 @@ class VouchersPersistence(object):
                 "unitCode"    : 1,
                 "deliveredBy" : 1,
                 "receivedBy"  : 1,
+                "status"      : 1,
             }).skip(whole_pages_offset).limit(target_items).sort(order_by, 1 if order == 'asc' else -1)
 
             rc = 0
@@ -190,14 +196,17 @@ class VouchersPersistence(object):
 
         try:
             doc = vouchers_coll.find_one(ObjectId(id), {
-                "platform"    : 1,
-                "carrierCode" : 1,
-                "patioCode"   : 1,
-                "observations": 1,
-                "unitCode"    : 1,
-                "deliveredBy" : 1,
-                "receivedBy"  : 1,
-                "itemList"    : 1,
+                "platform"      : 1,
+                "carrierCode"   : 1,
+                "patioCode"     : 1,
+                "observations"  : 1,
+                "unitCode"      : 1,
+                "deliveredBy"   : 1,
+                "receivedBy"    : 1,
+                "status"        : 1,
+                "itemList"      : 1,
+                "generationTime": 1,
+                "lastTouchTime" : 1,
             })
 
             rc = 0

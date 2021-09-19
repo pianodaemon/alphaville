@@ -241,6 +241,44 @@ ALTER SEQUENCE public.roles_id_seq OWNED BY public.roles.id;
 
 
 --
+-- Name: statuses; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.statuses (
+    id integer NOT NULL,
+    code character varying NOT NULL,
+    title character varying NOT NULL,
+    last_touch_time timestamp with time zone NOT NULL,
+    creation_time timestamp with time zone NOT NULL,
+    blocked boolean DEFAULT false NOT NULL
+);
+
+
+ALTER TABLE public.statuses OWNER TO postgres;
+
+--
+-- Name: statuses_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.statuses_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.statuses_id_seq OWNER TO postgres;
+
+--
+-- Name: statuses_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.statuses_id_seq OWNED BY public.statuses.id;
+
+
+--
 -- Name: units; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -374,6 +412,13 @@ ALTER TABLE ONLY public.roles ALTER COLUMN id SET DEFAULT nextval('public.roles_
 
 
 --
+-- Name: statuses id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.statuses ALTER COLUMN id SET DEFAULT nextval('public.statuses_id_seq'::regclass);
+
+
+--
 -- Name: units id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -484,6 +529,22 @@ ALTER TABLE ONLY public.roles
 
 
 --
+-- Name: statuses statuses_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.statuses
+    ADD CONSTRAINT statuses_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: statuses statuses_unique_code; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.statuses
+    ADD CONSTRAINT statuses_unique_code UNIQUE (code);
+
+
+--
 -- Name: units units_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -558,3 +619,4 @@ ALTER TABLE ONLY public.users
 --
 -- PostgreSQL database dump complete
 --
+

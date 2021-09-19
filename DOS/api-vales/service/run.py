@@ -14,6 +14,8 @@ import carriers_pb2
 import carriers_pb2_grpc
 import vouchers_pb2
 import vouchers_pb2_grpc
+import statuses_pb2
+import statuses_pb2_grpc
 
 from dal import users
 from dal import patios
@@ -21,6 +23,7 @@ from dal import equipments
 from dal import units
 from dal import carriers
 from dal.vouchers import VouchersPersistence
+from dal import statuses
 
 class Users(users_pb2_grpc.UsersServicer):
 
@@ -381,7 +384,8 @@ class Vouchers(vouchers_pb2_grpc.VouchersServicer):
             request.unitCode,
             request.deliveredBy,
             request.receivedBy,
-            item_list
+            request.status,
+            item_list,
         )
 
         return vouchers_pb2.VoucherGeneralResponse(
@@ -421,6 +425,25 @@ class Vouchers(vouchers_pb2_grpc.VouchersServicer):
         )
 
 
+class Statuses(statuses_pb2_grpc.StatusesServicer):
+
+    def ListStatuses(self, request, context):
+        print(request)
+
+        ret_code, ret_message, status_list, total_items, total_pages = statuses.list_statuses(
+            request.paramList,
+            request.pageParamList
+        )
+
+        return statuses_pb2.StatusListResponse(
+            returnCode=ret_code,
+            returnMessage=ret_message,
+            statusList=status_list,
+            totalItems=total_items,
+            totalPages=total_pages
+        )
+
+
 def _engage():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
 
@@ -430,6 +453,7 @@ def _engage():
     units_pb2_grpc.add_UnitsServicer_to_server(Units(), server)
     carriers_pb2_grpc.add_CarriersServicer_to_server(Carriers(), server)
     vouchers_pb2_grpc.add_VouchersServicer_to_server(Vouchers(), server)
+    statuses_pb2_grpc.add_StatusesServicer_to_server(Statuses(), server)
 
     server.add_insecure_port('[::]:10080')
     server.start()

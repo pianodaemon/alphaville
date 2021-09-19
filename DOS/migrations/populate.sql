@@ -91,6 +91,18 @@ COPY public.roles (id, title) FROM stdin;
 
 
 --
+-- Data for Name: statuses; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.statuses (id, code, title, last_touch_time, creation_time, blocked) FROM stdin;
+1	ENTRADA	Entrada de Equipo	2021-09-18 00:00:00-05	2021-09-18 00:00:00-05	f
+2	CARRETERA	En carretera	2021-09-18 00:00:00-05	2021-09-18 00:00:00-05	f
+3	PATIO	En patio	2021-09-18 00:00:00-05	2021-09-18 00:00:00-05	f
+4	SALIDA	Salida de Equipo	2021-09-18 00:00:00-05	2021-09-18 00:00:00-05	f
+\.
+
+
+--
 -- Data for Name: units; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -161,6 +173,13 @@ SELECT pg_catalog.setval('public.patios_id_seq', 1, false);
 --
 
 SELECT pg_catalog.setval('public.roles_id_seq', 6, true);
+
+
+--
+-- Name: statuses_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.statuses_id_seq', 4, true);
 
 
 --

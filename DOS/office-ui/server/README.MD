@@ -73,4 +73,6 @@
 
     grpc_tools_node_protoc --js_out=import_style=commonjs,binary:./DOS/office-ui/server/grpc --grpc_out=grpc_js:./DOS/office-ui/server/grpc -I="./DOS/api-vales/protos/" vouchers.proto
 
+    grpc_tools_node_protoc --js_out=import_style=commonjs,binary:./DOS/office-ui/server/grpc --grpc_out=grpc_js:./DOS/office-ui/server/grpc -I="./DOS/api-vales/protos/" statuses.proto
+
     #grpc_tools_node_protoc --js_out=import_style=commonjs,binary:./DOS/office-ui/server/grpc --grpc_out=generate_package_definition:./DOS/office-ui/server/grpc -I="./DOS/api-vales/protos/" users.proto

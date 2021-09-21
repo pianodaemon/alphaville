@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { Controller, /* useFieldArray,*/ useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import Paper from "@material-ui/core/Paper";
@@ -23,6 +23,7 @@ import Table from "./table.component";
 import { AutoCompleteDropdown } from "src/shared/components/autocomplete-dropdown.component";
 
 type Props = {
+  loadStatusesAction: Function;
   createVoucherAction: Function;
   readVoucherAction: Function;
   updateVoucherAction: Function;
@@ -35,6 +36,7 @@ type Props = {
   voucher: any | null;
   carriers: any;
   patios: any;
+  statuses: any;
   units: any;
   users: any;
 };
@@ -128,7 +130,7 @@ const schema = yup.object().shape({
 
 export const VoucherForm = (props: Props) => {
   const {
-    // catalog,
+    loadStatusesAction,
     createVoucherAction,
     readVoucherAction,
     updateVoucherAction,
@@ -141,18 +143,21 @@ export const VoucherForm = (props: Props) => {
     voucher,
     carriers,
     patios,
+    statuses,
     units,
     users,
   } = props;
   const initialValues: VoucherMutable = {
     carrierCode: "",
     deliveredBy: "",
-    fecha: new Date().toISOString(),
+    generationTime: 0,
     id: "",
+    lastTouchTime: 0,
     observations: "",
     patioCode: "",
     platform: "",
     receivedBy: "",
+    status: "",
     unitCode: "",
     itemList: [],
     newList: [], // mutable itemList, not a part of the Voucher interface
@@ -174,7 +179,11 @@ export const VoucherForm = (props: Props) => {
   const history = useHistory();
   const { action, id } = useParams<any>();
   const viewOnlyModeOn = action === "view";
+
   useEffect(() => {
+    loadStatusesAction({
+      per_page: Number.MAX_SAFE_INTEGER,
+    });
     loadUsersAsCatalogAction({
       per_page: Number.MAX_SAFE_INTEGER,
     });
@@ -195,10 +204,12 @@ export const VoucherForm = (props: Props) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
+  const [a, b] = useState(false);
   useEffect(() => {
     if (voucher) {
       reset(voucher || {});
+      // @todo: fix this, use watch approach properly
+      setTimeout(() => b(true), 1500);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [voucher]);
@@ -210,9 +221,11 @@ export const VoucherForm = (props: Props) => {
       Number(authId)
     );
     */
-    fields.itemList = fields.newList.filter(
-      (item: any) => parseInt(item.quantity, 10) > 0
-    );
+    fields.itemList = fields.newList
+      .filter((item: any) => parseInt(item.quantity, 10) > 0)
+      .map((item: any) => {
+        return { equipmentCode: item.code, quantity: item.quantity };
+      });
     if (id) {
       updateVoucherAction({ id, fields, history });
     } else {
@@ -227,7 +240,7 @@ export const VoucherForm = (props: Props) => {
               item.quantity || 0,
               equipments
                 ? equipments.find(
-                    (equipment) => equipment.code === item.equipmentCode
+                    (equipment) => equipment.code === item.code
                   )?.unitCost || 0
                 : 0
             )
@@ -272,19 +285,19 @@ export const VoucherForm = (props: Props) => {
             </Grid>
             <Grid item xs={12} sm={4}>
               <Controller
-                name="fecha"
+                name="generationTime"
                 control={control}
                 render={({ field }) => (
                   <FormControl className={classes.formControl}>
                     <TextField
                       {...field}
                       disabled={viewOnlyModeOn}
-                      id="fecha"
+                      id="generationTime"
                       inputProps={{ readOnly: true }}
-                      label="Fecha"
-                      value={field.value ? field.value || "" : ""}
+                      label="Fecha de Creación"
+                      value={field.value ? new Date(field.value *1000).toDateString() || "" : ""}
                     />
-                    {errors.fecha && (
+                    {errors.generationTime && (
                       <FormHelperText
                         error
                         classes={{ error: classes.textErrorHelper }}
@@ -442,7 +455,6 @@ export const VoucherForm = (props: Props) => {
                     control,
                     equipments,
                     getValues,
-                    setValue,
                     readonly: viewOnlyModeOn,
                   }}
                 />
@@ -478,7 +490,8 @@ export const VoucherForm = (props: Props) => {
                   }}
                   classes={{ root: classes.rootInput }}
                   label="Total (USD)"
-                  value={watchItemList && totalUnitCost()}
+                  defaultValue={'100'}
+                  value={watchItemList && a && totalUnitCost()}
                 />
               </FormControl>
             </Grid>
@@ -571,6 +584,41 @@ export const VoucherForm = (props: Props) => {
               </FormControl>
             </Grid>
             <Grid item xs={12} sm={4}>
+              <Controller
+                name="status"
+                control={control}
+                render={({ field }) => (
+                  <FormControl className={classes.formControl}>
+                    <InputLabel>Estatus</InputLabel>
+                    <Select
+                      {...field}
+                      disabled={viewOnlyModeOn}
+                      id="status"
+                      labelId="status"
+                      value={statuses && field.value ? field.value || "" : ""}
+                    >
+                      {statuses &&
+                        statuses.map((item) => {
+                          return (
+                            <MenuItem value={item.code} key={`type-${item.id}`}>
+                              {item.title}
+                            </MenuItem>
+                          );
+                        })}
+                    </Select>
+                    {errors.unitCode && (
+                      <FormHelperText
+                        error
+                        classes={{ error: classes.textErrorHelper }}
+                      >
+                        Seleccione un Estatus
+                      </FormHelperText>
+                    )}
+                  </FormControl>
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={4}>
               {!viewOnlyModeOn && (
                 <Button
                   variant="contained"
@@ -581,6 +629,12 @@ export const VoucherForm = (props: Props) => {
                   {!id ? "Crear" : "Actualizar"}
                 </Button>
               )}
+              <Button
+                variant="contained"
+                onClick={() => console.log(getValues(), getValues('newList'), totalUnitCost())}
+              >
+                {!id ? "Crear" : "Actualizar"}
+              </Button>
             </Grid>
           </Grid>
         </form>

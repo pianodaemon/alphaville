@@ -45,6 +45,7 @@ const {
   deleteVoucher,
   listVouchers,
 } = require("./vouchers");
+const { listStatuses } = require("./statuses");
 
 var cors = require("cors");
 
@@ -346,6 +347,24 @@ router.put("/vouchers/:id", cors(corsOptionsDelegate), function (req, res) {
 
 router.delete("/vouchers/:id", cors(corsOptionsDelegate), function (req, res) {
   deleteVoucher(req.params.id)
+    .then((data) => res.json(data))
+    .catch((err) => res.status(500).json(err));
+});
+
+/**
+ *
+ * Statuses
+ * ---------------------------------------------------------------------------------------------------
+ * ---------------------------------------------------------------------------------------------------
+ * ---------------------------------------------------------------------------------------------------
+ */
+app.options("/statuses", cors(corsOptionsDelegate));
+
+// enable pre-flight request for DELETE request
+app.options("/statuses/:id", cors(corsOptionsDelegate));
+
+router.get("/statuses", cors(corsOptionsDelegate), function (req, res) {
+  listStatuses(req.query)
     .then((data) => res.json(data))
     .catch((err) => res.status(500).json(err));
 });

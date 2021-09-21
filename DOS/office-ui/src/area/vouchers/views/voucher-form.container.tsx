@@ -8,17 +8,20 @@ import { loadCarriersCatalogAction } from 'src/area/carriers/state/usecases/load
 import { loadPatiosCatalogAction } from 'src/area/patios/state/usecases/load-patios-catalog.usecase';
 import { loadUnitsCatalogAction } from 'src/area/units/state/usecases/load-units-catalog.usecase';
 import { loadUsersAsCatalogAction } from 'src/area/users/state/usecases/load-users-as-catalog.usecase';
+import { loadStatusesAction } from 'src/area/statuses/state/usecases/load-statuses.usecase';
 import { catalogSelector } from 'src/area/equipments/state/equipments.selectors';
 import { catalogSelector as carrierCatalogSelector } from 'src/area/carriers/state/carriers.selectors';
 import { catalogSelector as patioCatalogSelector } from 'src/area/patios/state/patios.selectors';
 import { catalogSelector as unitCatalogSelector } from 'src/area/units/state/units.selectors';
 import { userCatalogSelector } from 'src/area/users/state/users.selectors';
+import { statusesCatalogSelector } from 'src/area/statuses/state/statuses.selectors';
 import {
   // catalogSelector,
   voucherSelector,
 } from '../state/vouchers.selectors';
 
 const mapDispatchToProps = {
+  loadStatusesAction,
   loadUsersAsCatalogAction,
   loadEquipmentsCatalogAction,
   loadCarriersCatalogAction,
@@ -37,6 +40,7 @@ function mapStateToProps(state: any) {
     patios: patioCatalogSelector(state),
     units: unitCatalogSelector(state),
     users: userCatalogSelector(state),
+    statuses: statusesCatalogSelector(state),
   };
 }
 

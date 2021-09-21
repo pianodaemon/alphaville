@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   withStyles,
   Theme,
@@ -109,35 +109,16 @@ type Props = {
   equipments: any[];
   getValues: Function;
   readonly: boolean;
-  setValue: Function;
 };
 
 export default function CustomizedTables(props: Props) {
   const classes = useStyles();
-  const { control, getValues, equipments, readonly, setValue } = props;
+  const { control, getValues, equipments, readonly } = props;
   const filteredEquipments = Array.isArray(equipments)
     ? equipments.filter((equipment: any) => equipment.regular)
     : [];
   const equipmentChunks = splitToBulks(filteredEquipments || []);
   let fieldIndex = 0;
-  let renders = 0;
-  let index = 0;
-  useEffect(() => {
-    if (equipments && equipments.length > 0 && renders === 0) {
-      equipmentChunks.forEach((chunk) => {
-        chunk.forEach((item) => {
-          const quantity = getValues("itemList").find((equipment) => {
-            return equipment.equipmentCode === item.code;
-          })?.quantity;
-          setValue(`newList.${index}.equipmentCode`, item.code);
-          setValue(`newList.${index}.quantity`, quantity);
-          ++index;
-        });
-      });
-      renders++;
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [equipments]);
   return (
     <TableContainer component={Paper}>
       <Table
@@ -176,9 +157,11 @@ export default function CustomizedTables(props: Props) {
             return (
               <StyledTableRow key={`${i + 1}-row`}>
                 {chunk.map((item, index) => {
-                  const quantity = (getValues("newList") || []).find((equipment) => {
-                    return equipment.equipmentCode === item.code;
-                  })?.quantity;
+                  const quantity = (getValues("itemList") || []).find(
+                    (equipment) => {
+                      return equipment.equipmentCode === item.code;
+                    }
+                  )?.quantity;
                   return (
                     <React.Fragment key={`${index}-cell`}>
                       <StyledTableCell component="th" scope="row">
@@ -192,13 +175,14 @@ export default function CustomizedTables(props: Props) {
                             <FormControl>
                               <TextField
                                 {...field}
-                                defaultValue={quantity ? quantity || "0" : "0"}
+                                value={field.value === "" ? "" : field.value || quantity || 0}
                                 disabled={readonly}
                                 id={`newList.${fieldIndex}.quantity`}
                                 inputProps={{ decimalSeparator: false }}
                                 InputProps={{
                                   inputComponent: NumberFormatCustom as any,
                                 }}
+                                name={`newList.${fieldIndex}.quantity`}
                                 style={{
                                   appearance: "none",
                                 }}

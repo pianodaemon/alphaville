@@ -607,7 +607,7 @@ export const VoucherForm = (props: Props) => {
                           );
                         })}
                     </Select>
-                    {errors.unitCode && (
+                    {errors.status && (
                       <FormHelperText
                         error
                         classes={{ error: classes.textErrorHelper }}

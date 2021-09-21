@@ -120,6 +120,7 @@ const schema = yup.object().shape({
   patioCode: yup.string().required(),
   platform: yup.string().required(),
   receivedBy: yup.string().required(),
+  status: yup.string().required(),
   unitCode: yup.string().required(),
   newList: yup
     .array()
@@ -629,12 +630,6 @@ export const VoucherForm = (props: Props) => {
                   {!id ? "Crear" : "Actualizar"}
                 </Button>
               )}
-              <Button
-                variant="contained"
-                onClick={() => console.log(getValues(), getValues('newList'), totalUnitCost())}
-              >
-                {!id ? "Crear" : "Actualizar"}
-              </Button>
             </Grid>
           </Grid>
         </form>

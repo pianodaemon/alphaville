@@ -357,7 +357,7 @@ proto.dylk.Item.prototype.setQuantity = function(value) {
  * @private {!Array<number>}
  * @const
  */
-proto.dylk.Voucher.repeatedFields_ = [9];
+proto.dylk.Voucher.repeatedFields_ = [10];
 
 
 
@@ -398,8 +398,11 @@ proto.dylk.Voucher.toObject = function(includeInstance, msg) {
     unitcode: jspb.Message.getFieldWithDefault(msg, 6, ""),
     deliveredby: jspb.Message.getFieldWithDefault(msg, 7, ""),
     receivedby: jspb.Message.getFieldWithDefault(msg, 8, ""),
+    status: jspb.Message.getFieldWithDefault(msg, 9, ""),
     itemlistList: jspb.Message.toObjectList(msg.getItemlistList(),
-    proto.dylk.Item.toObject, includeInstance)
+    proto.dylk.Item.toObject, includeInstance),
+    generationtime: jspb.Message.getFloatingPointFieldWithDefault(msg, 11, 0.0),
+    lasttouchtime: jspb.Message.getFloatingPointFieldWithDefault(msg, 12, 0.0)
   };
 
   if (includeInstance) {
@@ -469,9 +472,21 @@ proto.dylk.Voucher.deserializeBinaryFromReader = function(msg, reader) {
       msg.setReceivedby(value);
       break;
     case 9:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setStatus(value);
+      break;
+    case 10:
       var value = new proto.dylk.Item;
       reader.readMessage(value,proto.dylk.Item.deserializeBinaryFromReader);
       msg.addItemlist(value);
+      break;
+    case 11:
+      var value = /** @type {number} */ (reader.readDouble());
+      msg.setGenerationtime(value);
+      break;
+    case 12:
+      var value = /** @type {number} */ (reader.readDouble());
+      msg.setLasttouchtime(value);
       break;
     default:
       reader.skipField();
@@ -558,12 +573,33 @@ proto.dylk.Voucher.serializeBinaryToWriter = function(message, writer) {
       f
     );
   }
+  f = message.getStatus();
+  if (f.length > 0) {
+    writer.writeString(
+      9,
+      f
+    );
+  }
   f = message.getItemlistList();
   if (f.length > 0) {
     writer.writeRepeatedMessage(
-      9,
+      10,
       f,
       proto.dylk.Item.serializeBinaryToWriter
+    );
+  }
+  f = message.getGenerationtime();
+  if (f !== 0.0) {
+    writer.writeDouble(
+      11,
+      f
+    );
+  }
+  f = message.getLasttouchtime();
+  if (f !== 0.0) {
+    writer.writeDouble(
+      12,
+      f
     );
   }
 };
@@ -714,12 +750,30 @@ proto.dylk.Voucher.prototype.setReceivedby = function(value) {
 
 
 /**
- * repeated Item itemList = 9;
+ * optional string status = 9;
+ * @return {string}
+ */
+proto.dylk.Voucher.prototype.getStatus = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 9, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.dylk.Voucher} returns this
+ */
+proto.dylk.Voucher.prototype.setStatus = function(value) {
+  return jspb.Message.setProto3StringField(this, 9, value);
+};
+
+
+/**
+ * repeated Item itemList = 10;
  * @return {!Array<!proto.dylk.Item>}
  */
 proto.dylk.Voucher.prototype.getItemlistList = function() {
   return /** @type{!Array<!proto.dylk.Item>} */ (
-    jspb.Message.getRepeatedWrapperField(this, proto.dylk.Item, 9));
+    jspb.Message.getRepeatedWrapperField(this, proto.dylk.Item, 10));
 };
 
 
@@ -728,7 +782,7 @@ proto.dylk.Voucher.prototype.getItemlistList = function() {
  * @return {!proto.dylk.Voucher} returns this
 */
 proto.dylk.Voucher.prototype.setItemlistList = function(value) {
-  return jspb.Message.setRepeatedWrapperField(this, 9, value);
+  return jspb.Message.setRepeatedWrapperField(this, 10, value);
 };
 
 
@@ -738,7 +792,7 @@ proto.dylk.Voucher.prototype.setItemlistList = function(value) {
  * @return {!proto.dylk.Item}
  */
 proto.dylk.Voucher.prototype.addItemlist = function(opt_value, opt_index) {
-  return jspb.Message.addToRepeatedWrapperField(this, 9, opt_value, proto.dylk.Item, opt_index);
+  return jspb.Message.addToRepeatedWrapperField(this, 10, opt_value, proto.dylk.Item, opt_index);
 };
 
 
@@ -748,6 +802,42 @@ proto.dylk.Voucher.prototype.addItemlist = function(opt_value, opt_index) {
  */
 proto.dylk.Voucher.prototype.clearItemlistList = function() {
   return this.setItemlistList([]);
+};
+
+
+/**
+ * optional double generationTime = 11;
+ * @return {number}
+ */
+proto.dylk.Voucher.prototype.getGenerationtime = function() {
+  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 11, 0.0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.dylk.Voucher} returns this
+ */
+proto.dylk.Voucher.prototype.setGenerationtime = function(value) {
+  return jspb.Message.setProto3FloatField(this, 11, value);
+};
+
+
+/**
+ * optional double lastTouchTime = 12;
+ * @return {number}
+ */
+proto.dylk.Voucher.prototype.getLasttouchtime = function() {
+  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 12, 0.0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.dylk.Voucher} returns this
+ */
+proto.dylk.Voucher.prototype.setLasttouchtime = function(value) {
+  return jspb.Message.setProto3FloatField(this, 12, value);
 };
 
 

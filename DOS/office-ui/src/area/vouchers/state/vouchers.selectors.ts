@@ -1,6 +1,7 @@
 import { createSelector } from "reselect";
 import { vouchersReducer, Voucher, VoucherSlice } from "./vouchers.reducer";
 import { userCatalogSelector } from "src/area/users/state/users.selectors";
+import { catalogSelector } from "src/area/equipments/state/equipments.selectors";
 
 const sliceSelector = (state: VoucherSlice) => state[vouchersReducer.sliceName];
 
@@ -11,7 +12,14 @@ export const vouchersSelector = createSelector(
 
 export const voucherSelector = createSelector(
   sliceSelector,
-  (slice: VoucherSlice): Voucher | null => slice.voucher
+  catalogSelector,
+  (slice: VoucherSlice, equipments): any => {
+    const { voucher } = slice;
+    return {
+      ...voucher,
+      newList: equipments || [],
+    };
+  }
 );
 
 export const isLoadingSelector = createSelector(

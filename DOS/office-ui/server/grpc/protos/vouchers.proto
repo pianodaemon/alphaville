@@ -24,7 +24,10 @@ message Voucher {
   string unitCode            = 6;
   string deliveredBy         = 7;
   string receivedBy          = 8;
-  repeated Item itemList     = 9;
+  string status              = 9;
+  repeated Item itemList     = 10;
+  double generationTime      = 11;
+  double lastTouchTime       = 12;
 }
 
 message VoucherId {

@@ -3,13 +3,15 @@ import { createAndMergeSliceReducer } from 'src/redux-utils/create-and-merge-sli
 export interface Voucher {
   carrierCode: string;
   deliveredBy: string;
+  generationTime: number;
   id: string;
-  fecha: string; // @todo to be defined at gRPC service
   itemList: Item[];
+  lastTouchTime: number;
   observations: string;
   patioCode: string;
   platform: string;
   receivedBy: string;
+  status: string;
   unitCode: string;
 }
 

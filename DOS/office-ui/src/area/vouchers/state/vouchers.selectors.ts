@@ -17,7 +17,19 @@ export const voucherSelector = createSelector(
     const { voucher } = slice;
     return {
       ...voucher,
-      newList: equipments || [],
+      itemList: equipments?.map((equipment) => {
+        const quantity = voucher?.itemList?.find((equip) => {
+          return equip.equipmentCode === equipment.code;
+        })?.quantity || 0;
+        const { code, regular, unitCost, title } = equipment;
+        return {
+          quantity,
+          equipmentCode: code,
+          regular,
+          unitCost,
+          title,
+        };
+      }),
     };
   }
 );

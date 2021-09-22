@@ -57,9 +57,10 @@ function* updateVoucherWatcher(): Generator<any, any, any> {
 }
 
 const vouchersReducerHandlers = {
-  [UPDATE_VOUCHER]: (state: any) => {
+  [UPDATE_VOUCHER]: (state: any, action: any) => {
     return {
       ...state,
+      voucher: action.payload.fields,
       loading: true,
     };
   },

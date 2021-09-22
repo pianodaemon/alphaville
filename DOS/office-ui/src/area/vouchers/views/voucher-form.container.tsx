@@ -9,7 +9,6 @@ import { loadPatiosCatalogAction } from 'src/area/patios/state/usecases/load-pat
 import { loadUnitsCatalogAction } from 'src/area/units/state/usecases/load-units-catalog.usecase';
 import { loadUsersAsCatalogAction } from 'src/area/users/state/usecases/load-users-as-catalog.usecase';
 import { loadStatusesAction } from 'src/area/statuses/state/usecases/load-statuses.usecase';
-import { catalogSelector } from 'src/area/equipments/state/equipments.selectors';
 import { catalogSelector as carrierCatalogSelector } from 'src/area/carriers/state/carriers.selectors';
 import { catalogSelector as patioCatalogSelector } from 'src/area/patios/state/patios.selectors';
 import { catalogSelector as unitCatalogSelector } from 'src/area/units/state/units.selectors';
@@ -35,7 +34,6 @@ const mapDispatchToProps = {
 function mapStateToProps(state: any) {
   return {
     voucher: voucherSelector(state),
-    equipments: catalogSelector(state),
     carriers: carrierCatalogSelector(state),
     patios: patioCatalogSelector(state),
     units: unitCatalogSelector(state),

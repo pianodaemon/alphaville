@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
@@ -18,7 +18,7 @@ import mxLocale from "date-fns/locale/es";
 import DateFnsUtils from "@date-io/date-fns";
 import { add, mul } from "src/shared/utils/math/add.util";
 import { NumberFormatCustom } from "src/shared/components/number-format-custom.component";
-import { Voucher, Item } from "../state/vouchers.reducer";
+import { Voucher } from "../state/vouchers.reducer";
 import Table from "./table.component";
 import { AutoCompleteDropdown } from "src/shared/components/autocomplete-dropdown.component";
 
@@ -32,7 +32,6 @@ type Props = {
   loadPatiosCatalogAction: Function;
   loadUnitsCatalogAction: Function;
   loadUsersAsCatalogAction: Function;
-  equipments: any;
   voucher: any | null;
   carriers: any;
   patios: any;
@@ -40,8 +39,6 @@ type Props = {
   units: any;
   users: any;
 };
-
-type VoucherMutable = Voucher & { newList: Array<Item> };
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -122,7 +119,7 @@ const schema = yup.object().shape({
   receivedBy: yup.string().required(),
   status: yup.string().required(),
   unitCode: yup.string().required(),
-  newList: yup
+  itemList: yup
     .array()
     .test("test", "at least one item with quantity > 0", (value: any) => {
       return value && value.some((val) => val.quantity > 0);
@@ -140,7 +137,6 @@ export const VoucherForm = (props: Props) => {
     loadPatiosCatalogAction,
     loadUnitsCatalogAction,
     loadUsersAsCatalogAction,
-    equipments,
     voucher,
     carriers,
     patios,
@@ -148,7 +144,7 @@ export const VoucherForm = (props: Props) => {
     units,
     users,
   } = props;
-  const initialValues: VoucherMutable = {
+  const initialValues: Voucher = {
     carrierCode: "",
     deliveredBy: "",
     generationTime: 0,
@@ -161,26 +157,26 @@ export const VoucherForm = (props: Props) => {
     status: "",
     unitCode: "",
     itemList: [],
-    newList: [], // mutable itemList, not a part of the Voucher interface
   };
   const {
     control,
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
-    getValues,
+    // getValues,
     setValue,
     watch,
   } = useForm({
     defaultValues: initialValues,
     resolver: yupResolver(schema),
   });
-  const watchItemList = watch("newList");
+  const watchItemList = watch("itemList");
+  const watchDeliveredBy = watch("deliveredBy");
+  const watchReceivedBy = watch("receivedBy");
   const classes = useStyles();
   const history = useHistory();
   const { action, id } = useParams<any>();
   const viewOnlyModeOn = action === "view";
-
   useEffect(() => {
     loadStatusesAction({
       per_page: Number.MAX_SAFE_INTEGER,
@@ -205,16 +201,13 @@ export const VoucherForm = (props: Props) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const [a, b] = useState(false);
   useEffect(() => {
     if (voucher) {
       reset(voucher || {});
-      // @todo: fix this, use watch approach properly
-      setTimeout(() => b(true), 1500);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [voucher]);
-  const onSubmit = (fields: VoucherMutable) => {
+  const onSubmit = (fields: Voucher) => {
     /*
     const releaseForm: () => void = () => setSubmitting(false);
     const fields: any = values;
@@ -222,10 +215,10 @@ export const VoucherForm = (props: Props) => {
       Number(authId)
     );
     */
-    fields.itemList = fields.newList
+    fields.itemList = fields.itemList
       .filter((item: any) => parseInt(item.quantity, 10) > 0)
       .map((item: any) => {
-        return { equipmentCode: item.code, quantity: item.quantity };
+        return { equipmentCode: item.equipmentCode, quantity: item.quantity };
       });
     if (id) {
       updateVoucherAction({ id, fields, history });
@@ -237,14 +230,7 @@ export const VoucherForm = (props: Props) => {
     return watchItemList.length
       ? add(
           watchItemList.map((item: any) =>
-            mul(
-              item.quantity || 0,
-              equipments
-                ? equipments.find(
-                    (equipment) => equipment.code === item.code
-                  )?.unitCost || 0
-                : 0
-            )
+            mul(item.quantity || 0, item.unitCost || 0)
           )
         )
       : 0;
@@ -296,7 +282,19 @@ export const VoucherForm = (props: Props) => {
                       id="generationTime"
                       inputProps={{ readOnly: true }}
                       label="Fecha de Creación"
-                      value={field.value ? new Date(field.value *1000).toDateString() || "" : ""}
+                      value={
+                        field.value
+                          ? new Date(field.value * 1000).toLocaleDateString(
+                              "es-ES",
+                              {
+                                weekday: "long",
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                              }
+                            ) || ""
+                          : ""
+                      }
                     />
                     {errors.generationTime && (
                       <FormHelperText
@@ -454,13 +452,12 @@ export const VoucherForm = (props: Props) => {
                 <Table
                   {...{
                     control,
-                    equipments,
-                    getValues,
+                    items: watchItemList,
                     readonly: viewOnlyModeOn,
                   }}
                 />
               </div>
-              {errors.newList && (
+              {errors.itemList && (
                 <FormHelperText
                   error
                   classes={{ error: classes.textErrorHelper }}
@@ -491,8 +488,8 @@ export const VoucherForm = (props: Props) => {
                   }}
                   classes={{ root: classes.rootInput }}
                   label="Total (USD)"
-                  defaultValue={'100'}
-                  value={watchItemList && a && totalUnitCost()}
+                  defaultValue={"100"}
+                  value={watchItemList && totalUnitCost()}
                 />
               </FormControl>
             </Grid>
@@ -541,9 +538,7 @@ export const VoucherForm = (props: Props) => {
                   }}
                   options={users || []}
                   value={
-                    users && getValues("deliveredBy")
-                      ? getValues("deliveredBy") || ""
-                      : ""
+                    users && watchDeliveredBy ? watchDeliveredBy || "" : ""
                   }
                 />
                 {errors.deliveredBy && (
@@ -568,11 +563,7 @@ export const VoucherForm = (props: Props) => {
                     return setValue("receivedBy", value);
                   }}
                   options={users || []}
-                  value={
-                    users && getValues("receivedBy")
-                      ? getValues("receivedBy") || ""
-                      : ""
-                  }
+                  value={users && watchReceivedBy ? watchReceivedBy || "" : ""}
                 />
                 {errors.receivedBy && (
                   <FormHelperText

@@ -106,16 +106,15 @@ const useStyles = makeStyles((theme) => ({
 
 type Props = {
   control: any;
-  equipments: any[];
-  getValues: Function;
+  items: any;
   readonly: boolean;
 };
 
 export default function CustomizedTables(props: Props) {
   const classes = useStyles();
-  const { control, getValues, equipments, readonly } = props;
-  const filteredEquipments = Array.isArray(equipments)
-    ? equipments.filter((equipment: any) => equipment.regular)
+  const { control, items, readonly } = props;
+  const filteredEquipments = Array.isArray(items)
+    ? items.filter((equipment: any) => equipment.regular)
     : [];
   const equipmentChunks = splitToBulks(filteredEquipments || []);
   let fieldIndex = 0;
@@ -157,11 +156,7 @@ export default function CustomizedTables(props: Props) {
             return (
               <StyledTableRow key={`${i + 1}-row`}>
                 {chunk.map((item, index) => {
-                  const quantity = (getValues("itemList") || []).find(
-                    (equipment) => {
-                      return equipment.equipmentCode === item.code;
-                    }
-                  )?.quantity;
+                  // @todo: fix excessive re-rendering
                   return (
                     <React.Fragment key={`${index}-cell`}>
                       <StyledTableCell component="th" scope="row">
@@ -169,20 +164,23 @@ export default function CustomizedTables(props: Props) {
                       </StyledTableCell>
                       <StyledTableCell align="right">
                         <Controller
-                          name={`newList.${fieldIndex}.quantity`}
+                          name={`itemList.${fieldIndex}.quantity`}
                           control={control}
                           render={({ field }) => (
                             <FormControl>
                               <TextField
                                 {...field}
-                                value={field.value === "" ? "" : field.value || quantity || 0}
+                                value={field.value}
                                 disabled={readonly}
-                                id={`newList.${fieldIndex}.quantity`}
-                                inputProps={{ decimalSeparator: false }}
+                                id={`itemList.${fieldIndex}.quantity`}
+                                inputProps={{
+                                  decimalSeparator: false,
+                                  autoComplete: "off",
+                                }}
                                 InputProps={{
                                   inputComponent: NumberFormatCustom as any,
                                 }}
-                                name={`newList.${fieldIndex}.quantity`}
+                                name={`itemList.${fieldIndex}.quantity`}
                                 style={{
                                   appearance: "none",
                                 }}
@@ -216,7 +214,7 @@ export default function CustomizedTables(props: Props) {
                     </React.Fragment>
                   );
                 })}
-                {equipments &&
+                {items &&
                   filteredEquipments.length % 2 !== 0 &&
                   equipmentChunks.length - 1 === i && (
                     <>

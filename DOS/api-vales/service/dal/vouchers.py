@@ -1,8 +1,10 @@
 import time
 import math
+import os
 
 import pymongo
-from bson.objectid import ObjectId
+
+from misc.helperpg import exec_steady
 
 
 class VouchersPersistenceError(Exception):
@@ -15,23 +17,26 @@ class VouchersPersistenceError(Exception):
         
 class VouchersPersistence(object):
 
-    mongo_uri = "mongodb://nosql_mongo:27017"
+    host = os.getenv('MONGO_HOST')
+    port = os.getenv('MONGO_PORT')
+    db   = os.getenv('MONGO_DB')
+    mongo_uri = "mongodb://{}:{}".format(host, port)
 
     @classmethod
-    def alter(cls, id, platform, carrier_code, patio_code, observations, unit_code, delivered_by, received_by, status, item_list):
+    def alter(cls, doc_id, platform, carrier_code, patio_code, observations, unit_code, delivered_by, received_by, status, item_list):
         """
         It creates and edits a voucher
         """
-        client = pymongo.MongoClient(VouchersPersistence.mongo_uri, serverSelectionTimeoutMS=5000)
-        collection = client.vales_dylk_mongo.vouchers
+        client = VouchersPersistence.get_mongo_client()
+        vouchers_coll = client[VouchersPersistence.db].vouchers
 
         try:
-            if id:
-                cls._update(collection, id, carrier_code, patio_code, platform, observations, unit_code, delivered_by, received_by, status, item_list)
+            if doc_id:
+                cls._update(vouchers_coll, doc_id, carrier_code, patio_code, platform, observations, unit_code, delivered_by, received_by, status, item_list)
             else:
-                id = cls._create(collection, carrier_code, patio_code, platform, observations, unit_code, delivered_by, received_by, status, item_list)
-            rc  = 0
-            msg = id
+                doc_id = cls._create(vouchers_coll, carrier_code, patio_code, platform, observations, unit_code, delivered_by, received_by, status, item_list)
+            rc  = doc_id
+            msg = ''
         except Exception as err:
             rc  = -1
             msg = repr(err)
@@ -46,10 +51,21 @@ class VouchersPersistence(object):
         It creates a newer voucher
         within the collection
         """
+        # Getting next number from Postgres
+        sql = '''
+            select * from nextval('voucher_number_seq'::regclass);
+        '''
+        try:
+            rows = exec_steady(sql)
+            doc_id = rows[0][0]
+        except:
+            raise
+
         # After insertion we shall get
         # a reference to the newer doc
         t = time.time()
         doc = collection.insert_one({
+            '_id': doc_id,
             'platform': platform,
             'carrierCode': carrier_code,
             'patioCode': patio_code,
@@ -64,7 +80,7 @@ class VouchersPersistence(object):
             'blocked': False,
         })
 
-        return str(doc.inserted_id)
+        return doc.inserted_id
 
 
     @staticmethod
@@ -87,7 +103,7 @@ class VouchersPersistence(object):
             'lastTouchTime': time.time(),
         }
 
-        collection.update_one({'_id': ObjectId(doc_id) }, {"$set": atu })
+        collection.update_one({'_id': doc_id}, {"$set": atu })
 
 
     @staticmethod
@@ -99,8 +115,8 @@ class VouchersPersistence(object):
     def list_vouchers(param_list, page_param_list):
         """Retrieve a list of vouchers"""
 
-        bool_fields = {}
-        float_fields = {}
+        bool_fields = set()
+        float_fields = set()
         # Processing of Search params
         filter = {}
         for i in param_list:
@@ -112,7 +128,7 @@ class VouchersPersistence(object):
                 filter[i.name] = i.value
 
         client = VouchersPersistence.get_mongo_client()
-        vouchers_coll = client.vales_dylk_mongo.vouchers
+        vouchers_coll = client[VouchersPersistence.db].vouchers
 
         # Count items
         docs = vouchers_coll.find(filter, {'_id': 1})
@@ -173,7 +189,7 @@ class VouchersPersistence(object):
             msg = ''
             results = []
             for i in docs:
-                i['id'] = str(i['_id'])
+                i['id'] = i['_id']
                 del i['_id']
                 results.append(i)
                 rc += 1
@@ -188,14 +204,14 @@ class VouchersPersistence(object):
 
 
     @staticmethod
-    def get_voucher(id):
+    def get_voucher(doc_id):
         """Retrieve voucher data"""
 
         client = VouchersPersistence.get_mongo_client()
-        vouchers_coll = client.vales_dylk_mongo.vouchers
+        vouchers_coll = client[VouchersPersistence.db].vouchers
 
         try:
-            doc = vouchers_coll.find_one(ObjectId(id), {
+            doc = vouchers_coll.find_one({'_id': doc_id}, {
                 "platform"      : 1,
                 "carrierCode"   : 1,
                 "patioCode"     : 1,
@@ -209,9 +225,15 @@ class VouchersPersistence(object):
                 "lastTouchTime" : 1,
             })
 
-            rc = 0
-            msg = doc['id'] = str(doc['_id'])
-            del doc['_id']
+            if doc:
+                rc = doc_id
+                msg = ''
+                doc['id'] = doc_id
+                del doc['_id']
+            else:
+                rc = -1
+                msg = 'Vale {} no existe'.format(doc_id)
+                doc = {}
 
         except Exception as err:
             rc = -1
@@ -229,6 +251,6 @@ class VouchersPersistence(object):
         a kind of logical deletion.
         """
         collection.update_one(
-            {'_id' : ObjectId(doc_id)},
+            {'_id' : doc_id},
             {'$set': {'blocked': True}}
         )

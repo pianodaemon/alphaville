@@ -8,6 +8,9 @@ x-shared-environment: &commonEnv
     POSTGRES_PORT: 5432
     POSTGRES_HOST: "rdbms_vales"
     POSTGRES_DB: "vales_dylk"
+    MONGO_HOST: "nosql_mongo"
+    MONGO_PORT: "27017"
+    MONGO_DB: "vales_dylk_mongo"
 
 x-common-environment: &common-variables
     SERVER_PORT: 8081

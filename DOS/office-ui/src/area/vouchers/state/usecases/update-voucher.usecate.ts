@@ -71,10 +71,11 @@ const vouchersReducerHandlers = {
       voucher: null,
     };
   },
-  [UPDATE_VOUCHER_ERROR]: (state: any) => {
+  [UPDATE_VOUCHER_ERROR]: (state: any, action: any) => {
     return {
       ...state,
       error: true,
+      voucher: action.payload.fields,
       loading: false,
     };
   },

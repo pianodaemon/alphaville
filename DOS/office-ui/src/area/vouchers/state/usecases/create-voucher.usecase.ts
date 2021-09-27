@@ -42,7 +42,7 @@ function* createVoucherWorker(action: any): Generator<any, any, any> {
     );
 
     // yield releaseForm();
-    yield put(createVoucherErrorAction());
+    yield put(createVoucherErrorAction(action.payload));
     yield put(
       notificationAction({
         message,
@@ -71,10 +71,11 @@ const voucherReducerHandlers = {
       voucher: null,
     };
   },
-  [CREATE_VOUCHER_ERROR]: (state: any) => {
+  [CREATE_VOUCHER_ERROR]: (state: any, action: any) => {
     return {
       ...state,
       error: true,
+      voucher: action.payload.fields,
       loading: false,
     };
   },

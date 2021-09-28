@@ -1,5 +1,5 @@
 /* eslint-disable no-alert */
-import React, { useEffect /* useState */ } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 // import { User } from "src/area/users/state/users.reducer";
 import MaterialTable, {
@@ -23,7 +23,7 @@ type Props = {
   deleteVoucherAction: Function;
   filters: any;
   // isAllowed: Function,
-  loadUsersAsCatalogAction
+  loadUsersAsCatalogAction: Function;
   loadVouchersAction: Function;
   loading: boolean;
   paging: any;
@@ -43,70 +43,55 @@ export const ValesTable = (props: Props) => {
   } = props;
   const { count, page, per_page, order } = paging;
   const history = useHistory();
-  // const [listOrder, setListOrder] = useState<string>("");
   // const customSort = () => 0;
-  const customFilterAndSearch = (term: any, rowData: any) => true;
+  // const customFilterAndSearch = (term: any, rowData: any) => true;
   const draggable: boolean = false;
-  const sorting: boolean = false;
+  // const sorting: boolean = false;
+  const [cols, setColumns] = useState<any[]>([]);
   const columns = [
     {
       title: "ID",
       field: "id",
-      // customSort,
-      customFilterAndSearch,
-      sorting: !sorting,
+      // customFilterAndSearch,
       filtering: false,
-      defaultSort: "asc",
+      sorting: true,
+      defaultSort: "desc",
     },
     {
       title: "Compañía",
       field: "carrierCode",
-      sorting: !sorting,
-      customFilterAndSearch,
       filtering: false,
+      defaultSort: "desc",
+      sorting: true,
     },
     {
       title: "Plataforma",
       field: "platform",
-      sorting: !sorting,
-      customFilterAndSearch,
       filtering: false,
-      defaultSort: "asc",
     },
     {
       title: "Unidad",
       field: "unitCode",
-      sorting: !sorting,
-      customFilterAndSearch,
       filtering: false,
     },
     {
       title: "Patio",
       field: "patioCode",
-      sorting: !sorting,
-      // customSort,
-      customFilterAndSearch,
       filtering: false,
     },
     {
       title: "Entregó equipo",
       field: "deliveredBy",
-      sorting: !sorting,
-      // customSort,
-      customFilterAndSearch,
       filtering: false,
     },
     {
       title: "Recibió equipo",
       field: "receivedBy",
-      sorting: !sorting,
-      // customSort,
-      customFilterAndSearch,
       filtering: false,
     },
   ];
-  const getColumnNameByIndex = (columnId: number) =>
-    columns.map((column) => column.field)[columnId];
+  const getColumnNameByIndex = (columnId: number): string | any =>
+    (cols.length ? cols : columns).map((column) => column.field)[columnId];
   useEffect(() => {
     loadUsersAsCatalogAction();
     loadVouchersAction({ per_page: paging.per_page, order });
@@ -116,14 +101,23 @@ export const ValesTable = (props: Props) => {
     <MaterialTable
       title="Vales"
       onOrderChange={(orderBy: number, orderDirection: "asc" | "desc") => {
-        console.log(orderBy, orderDirection);
+        setColumns(
+          columns.map((column, index) => {
+            if (index !== orderBy) {
+              delete column.defaultSort;
+            } else {
+              column.defaultSort = orderDirection;
+            }
+            return column;
+          })
+        );
         loadVouchersAction({
           //...paging,
           order: orderDirection,
           order_by: getColumnNameByIndex(orderBy),
         });
       }}
-      columns={columns as any}
+      columns={(cols.length ? cols : columns) as any}
       data={vouchers || []}
       options={{
         draggable,
@@ -131,13 +125,12 @@ export const ValesTable = (props: Props) => {
         paging: true,
         pageSize: per_page,
         thirdSortClick: false,
-        actionsColumnIndex: columns.length, // @todo this shouldn't be hardcoded, calculate using columns.lenght
+        actionsColumnIndex: (cols.length ? cols : columns).length, // @todo this shouldn't be hardcoded, calculate using columns.lenght
         filtering: true,
-
+        sorting: true,
+        loadingType: "overlay",
         rowStyle: (_data: any, index: number, _level: number) => {
-          return index % 2 
-            ? { backgroundColor: 'rgba(227,27,35,0.1)' }
-            : {};
+          return index % 2 ? { backgroundColor: "rgba(227,27,35,0.1)" } : {};
         },
       }}
       components={{
@@ -211,8 +204,8 @@ export const ValesTable = (props: Props) => {
           // disabled: !isAllowed('USR', PERMISSIONS.UPDATE),
         },
         {
-          icon: 'search',
-          tooltip: 'Visualizar Vale',
+          icon: "search",
+          tooltip: "Visualizar Vale",
           onClick: (event, rowData: any) =>
             history.push(`/voucher/${rowData.id}/view`),
           // disabled: !isAllowed('ASER', PERMISSIONS.READ),

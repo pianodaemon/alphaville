@@ -21,7 +21,7 @@ export const loadVouchersErrorAction: ActionFunctionAny<Action<any>> =
 
 function* loadVouchersWorker(action?: any): Generator<any, any, any> {
   try {
-    const aliases = { id: "id" };
+    const aliases = { id: "id", carrierCode: "code", platform: "platform" };
     const { per_page, page, order, order_by, filters } = action.payload || {};
     const paging = yield select(pagingSelector);
     const options = {
@@ -30,7 +30,7 @@ function* loadVouchersWorker(action?: any): Generator<any, any, any> {
       page: page || paging.page,
       pages: paging.pages,
       order: order || paging.order,
-      order_by: aliases[order_by] || aliases[paging.order_by] || "id",
+      order_by: aliases[order_by] || aliases[paging.order_by] || order_by,
       ...filters,
     };
     delete options.filters;

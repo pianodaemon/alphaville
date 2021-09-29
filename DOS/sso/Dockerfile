@@ -33,7 +33,7 @@ COPY cmd cmd
 RUN make clean build
 
 # Final image
-FROM ubuntu:bionic
+FROM ubuntu:focal
 LABEL MAINTAINER="Edwin Plauchu <j4nusx@yahoo.com>"
 
 # getting last software catalog

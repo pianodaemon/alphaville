@@ -1,5 +1,5 @@
 /* eslint-disable no-alert */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useReducer } from "react";
 import { useHistory } from "react-router-dom";
 // import { User } from "src/area/users/state/users.reducer";
 import MaterialTable, {
@@ -30,6 +30,23 @@ type Props = {
   vouchers: any;
 };
 
+function reducer(state, action) {
+  const { orderBy, orderDirection } = action.payload;
+  switch (action.type) {
+    case "reorder":
+      return state.map((column, index) => {
+        if (index !== orderBy) {
+          delete column.defaultSort;
+        } else {
+          column.defaultSort = orderDirection;
+        }
+        return column;
+      });
+    default:
+      throw new Error();
+  }
+}
+
 export const ValesTable = (props: Props) => {
   const {
     deleteVoucherAction,
@@ -43,11 +60,6 @@ export const ValesTable = (props: Props) => {
   } = props;
   const { count, page, per_page, order } = paging;
   const history = useHistory();
-  // const customSort = () => 0;
-  // const customFilterAndSearch = (term: any, rowData: any) => true;
-  const draggable: boolean = false;
-  // const sorting: boolean = false;
-  const [cols, setColumns] = useState<any[]>([]);
   const columns = [
     {
       title: "ID",
@@ -90,8 +102,9 @@ export const ValesTable = (props: Props) => {
       filtering: false,
     },
   ];
+  const [state, dispatch] = useReducer(reducer, columns);
   const getColumnNameByIndex = (columnId: number): string | any =>
-    (cols.length ? cols : columns).map((column) => column.field)[columnId];
+    state.map((column) => column.field)[columnId];
   useEffect(() => {
     loadUsersAsCatalogAction();
     loadVouchersAction({ per_page: paging.per_page, order });
@@ -101,31 +114,28 @@ export const ValesTable = (props: Props) => {
     <MaterialTable
       title="Vales"
       onOrderChange={(orderBy: number, orderDirection: "asc" | "desc") => {
-        setColumns(
-          columns.map((column, index) => {
-            if (index !== orderBy) {
-              delete column.defaultSort;
-            } else {
-              column.defaultSort = orderDirection;
-            }
-            return column;
-          })
-        );
+        dispatch({ type: "reorder", payload: { orderBy, orderDirection } });
         loadVouchersAction({
           //...paging,
           order: orderDirection,
           order_by: getColumnNameByIndex(orderBy),
         });
       }}
-      columns={(cols.length ? cols : columns) as any}
+      columns={
+        [
+          ...state.map((item) => {
+            return { ...item };
+          }),
+        ] as any
+      }
       data={vouchers || []}
       options={{
-        draggable,
+        draggable: false,
         initialPage: 1, // @todo include this settings value in a CONSTANTS file
         paging: true,
         pageSize: per_page,
         thirdSortClick: false,
-        actionsColumnIndex: (cols.length ? cols : columns).length, // @todo this shouldn't be hardcoded, calculate using columns.lenght
+        actionsColumnIndex: state.length, // @todo this shouldn't be hardcoded, calculate using columns.lenght
         filtering: true,
         sorting: true,
         loadingType: "overlay",

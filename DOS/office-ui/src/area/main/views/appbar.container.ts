@@ -1,28 +1,29 @@
-import { connect } from 'react-redux';
-/*
+import { connect } from "react-redux";
 import {
   checkedSelector,
   isLoggedInSelector,
-  refreshingSelector,
+  // refreshingSelector,
   usernameSelector,
-} from 'src/area/auth/state/auth.selectors';
-import { logoutAction } from 'src/area/auth/state/usecases/logout.usecase';
-import { refreshTokenAuthAction } from 'src/area/auth/state/usecases/refresh-token-auth.usecase';
-*/
-import { AppBarComponent } from './appbar.component';
+} from "src/area/auth/state/auth.selectors";
+import { logoutAction } from "src/area/auth/state/usecases/logout.usecase";
+// import { refreshTokenAuthAction } from 'src/area/auth/state/usecases/refresh-token-auth.usecase';
+import { AppBarComponent } from "./appbar.component";
 
 const mapDispatchToProps = {
-  // logoutAction,
+  logoutAction,
   // refreshTokenAuthAction,
 };
 
 function mapStateToProps(state: any) {
   return {
-    // checked: checkedSelector(state),
-    // isLoggedIn: isLoggedInSelector(state),
+    checked: checkedSelector(state),
+    isLoggedIn: isLoggedInSelector(state),
     // refreshing: refreshingSelector(state),
-    // username: usernameSelector(state),
+    username: usernameSelector(state),
   };
 }
 
-export const AppBarContainer = connect(mapStateToProps, mapDispatchToProps)(AppBarComponent);
+export const AppBarContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AppBarComponent);

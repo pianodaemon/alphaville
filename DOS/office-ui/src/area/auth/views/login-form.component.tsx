@@ -18,8 +18,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
 type Props = {
-  // authTokenAction: Function,
-  notificationAction: Function,
+  authTokenAction: Function;
   isLoading?: boolean;
   checked?: boolean;
 };
@@ -147,55 +146,32 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     progress: {
-      marginLeft: "10px",
+      display: "inherit",
+      margin: "0 auto",
+      marginTop: "10px",
       verticalAlign: "middle",
     },
   })
 );
 
-const fakeUsers = [
-  {
-    username: "admin",
-    passwd: "admin",
-  },
-  {
-    username: "edwin",
-    passwd: "master",
-  },
-];
-
 const schema = yup.object().shape({
-  username: yup
-    .string()
-    .required(),
-  passwd: yup
-    .string()
-    .required()
+  username: yup.string().required(),
+  password: yup.string().required(),
 });
 
 export const LoginForm = (props: Props) => {
-  const {
-    // authTokenAction,
-    // checked,
-    // isLoading,
-    notificationAction
-  } = props;
+  const { authTokenAction, checked, isLoading } = props;
   const classes = useStyles();
   const history = useHistory();
-  // const { action } = useParams<any>();
   const initialValues = {
     username: "",
-    passwd: "",
+    password: "",
     login: "",
   };
   const {
     control,
     handleSubmit,
-    formState: { errors },
-    // reset,
-    // getValues,
-    // setValue,
-    // register,
+    formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: initialValues,
     resolver: yupResolver(schema),
@@ -213,16 +189,9 @@ export const LoginForm = (props: Props) => {
     event.preventDefault();
   };
   const onSubmit = (fields) => {
-    const user = fakeUsers.find((item) => item.username === fields.username && item.passwd === fields.passwd);
-    if(!user) {
-      notificationAction({ message: 'Usuario o contraseña inexistentes.'});
-    }
-
-    if (user) {
-      history.push("/start");
-    }
+    authTokenAction({ credentials: fields, history });
   };
-  return /*checked*/ true ? (
+  return checked ? (
     <>
       <Paper elevation={3} className={classes.paper}>
         <>
@@ -263,7 +232,7 @@ export const LoginForm = (props: Props) => {
               </Grid>
               <Grid item xs={12}>
                 <Controller
-                  name="passwd"
+                  name="password"
                   control={control}
                   render={({ field }) => (
                     <FormControl
@@ -273,7 +242,7 @@ export const LoginForm = (props: Props) => {
                       <TextField
                         {...field}
                         autoComplete="on"
-                        id="passwd"
+                        id="password"
                         label="Contraseña"
                         type={data.showPassword ? "text" : "password"}
                         value={field.value ? field.value || "" : ""}
@@ -299,7 +268,7 @@ export const LoginForm = (props: Props) => {
                         }}
                         variant="outlined"
                       />
-                      {errors.passwd && (
+                      {errors.password && (
                         <FormHelperText
                           error
                           classes={{ error: classes.textErrorHelper }}
@@ -312,22 +281,20 @@ export const LoginForm = (props: Props) => {
                 />
               </Grid>
             </Grid>
-            {true && (
-              <>
-                <Button
-                  variant="contained"
-                  className={classes.submitInput}
-                  disabled={false}
-                  type="submit"
-                  color="primary"
-                >
-                  {"Entrar"}
-                </Button>
-                {(false || false) && (
-                  <CircularProgress className={classes.progress} size={20} />
-                )}
-              </>
-            )}
+            <>
+              <Button
+                variant="contained"
+                className={classes.submitInput}
+                disabled={false}
+                type="submit"
+                color="primary"
+              >
+                {"Entrar"}
+              </Button>
+              {(isSubmitting || isLoading) && (
+                <CircularProgress className={classes.progress} size={20} />
+              )}
+            </>
           </form>
         </>
       </Paper>

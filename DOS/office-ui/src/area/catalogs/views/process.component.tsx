@@ -13,7 +13,7 @@ const useStyles = makeStyles({
     flexWrap: "wrap",
     height: 'calc(100vh - 156px)',
     justifyContent: "center",
-    overflow: "scroll",
+    overflow: "auto",
   },
 });
 

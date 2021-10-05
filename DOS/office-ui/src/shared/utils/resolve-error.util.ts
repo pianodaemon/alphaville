@@ -20,6 +20,10 @@ const errorList: Array<ServerErrorMessage> = [
     en: "InvalidId(\"'0' is not a valid ObjectId, it must be a 12-byte input or a 24-character hex string\")",
     es: "UUID no válido.",
   },
+  {
+    en: "Failed Log in",
+    es: "Usuario o contraseña inexistentes",
+  }
 ];
 
 const GENERIC_ERROR_MESSAGE_ES =

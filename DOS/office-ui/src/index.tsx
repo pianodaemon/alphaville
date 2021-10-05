@@ -15,7 +15,7 @@ const appSettings = {
   authUrl:
     process.env.NODE_ENV === 'production'
       ? `${process.env.REACT_APP_HOST_AUTH}`
-      : process.env.REACT_APP_HOST_AUTH || 'http://localhost:10090/v1', // @todo this should be fetch from docker image container env vars
+      : process.env.REACT_APP_HOST_AUTH || 'http://localhost:10100/v1', // @todo this should be fetch from docker image container env vars
   baseUrl:
     process.env.NODE_ENV === 'production'
       ? `${process.env.REACT_APP_HOST_API}`

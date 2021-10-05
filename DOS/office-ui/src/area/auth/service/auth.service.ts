@@ -1,5 +1,4 @@
 import { getAppSettings } from 'src/shared/utils/app-settings.util';
-/*
 import { axiosApi } from 'src/redux-utils/axios.helper';
 
 type Credentials = {
@@ -54,4 +53,3 @@ export function refreshToken(userID: string | number): Promise<any> {
     false
   );
 }
-*/

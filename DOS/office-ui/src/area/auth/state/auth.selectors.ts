@@ -1,20 +1,12 @@
-import { createSelector } from 'reselect';
+import { createSelector } from "reselect";
 // import { resolvePermission } from 'src/shared/utils/permissions.util';
-import {
-  authReducer,
-  JWT,
-} from './auth.reducer';
+import { authReducer, JWT } from "./auth.reducer";
 
 const sliceSelector = (state: any) => state[authReducer.sliceName];
 
-export const usernameSelector = createSelector(
+export const authTokenSelector = createSelector(
   sliceSelector,
-  (slice: any) => slice.profile ? `${slice.profile?.first_name} ${slice.profile?.last_name} (${slice.profile?.username})` : ''
-);
-
-export const currentUserDivisionIdSelector = createSelector(
-  sliceSelector,
-  (slice: any) => slice.profile?.division_id
+  (slice: any): JWT => slice.token
 );
 
 export const checkedSelector = createSelector(
@@ -22,24 +14,14 @@ export const checkedSelector = createSelector(
   (slice: any): boolean => slice.checked
 );
 
-export const isLoggedInSelector = createSelector(
-  sliceSelector,
-  (slice: any): boolean => slice.signedIn
-);
-
-export const authTokenSelector = createSelector(
-  sliceSelector,
-  (slice: any): JWT => slice.token
-);
-
 export const isLoadingSelector = createSelector(
   sliceSelector,
   (slice: any): boolean => slice.loading
 );
 
-export const refreshingSelector = createSelector(
+export const isLoggedInSelector = createSelector(
   sliceSelector,
-  (slice: any): boolean => slice.refreshing
+  (slice: any): boolean => slice.signedIn
 );
 
 /*
@@ -56,3 +38,14 @@ export const permissionSelector = createSelector(
     )
 );
 */
+
+export const refreshingSelector = createSelector(
+  sliceSelector,
+  (slice: any): boolean => slice.refreshing
+);
+
+export const usernameSelector = createSelector(sliceSelector, (slice: any) =>
+  slice.profile && slice.profile.user
+    ? `${slice.profile?.user?.firstName} ${slice.profile?.user?.lastName} (${slice.profile?.user?.username})`
+    : ""
+);

@@ -6,13 +6,14 @@ import { Routes } from 'src/shared/constants/routes.contants';
 
 const useStyles = makeStyles({
   root: {
-    backgroundColor: "#fff",
     alignItems: "center",
+    backgroundColor: "#fff",
     display: "flex",
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "center",
     height: 'calc(100vh - 156px)',
+    justifyContent: "center",
+    overflow: "auto",
   },
 });
 

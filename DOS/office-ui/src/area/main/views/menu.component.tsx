@@ -1,16 +1,16 @@
-import React from 'react';
-import { useHistory, /*useParams,*/ useRouteMatch } from 'react-router-dom';
-import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
+import React from "react";
+import { useHistory /* useParams, useRouteMatch */ } from "react-router-dom";
+import PropTypes from "prop-types";
+import { makeStyles } from "@material-ui/core/styles";
+import AppBar from "@material-ui/core/AppBar";
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
+import Typography from "@material-ui/core/Typography";
+import Box from "@material-ui/core/Box";
 // import PersonPinIcon from '@material-ui/icons/PersonPin';
-import ListAltIcon from '@material-ui/icons/ListAlt';
-import AssessmentIcon from '@material-ui/icons/Assessment';
-import SettingsIcon from '@material-ui/icons/Settings';
+import ListAltIcon from "@material-ui/icons/ListAlt";
+import AssessmentIcon from "@material-ui/icons/Assessment";
+import SettingsIcon from "@material-ui/icons/Settings";
 
 function TabPanel(props: any) {
   const { children, value, index, ...other } = props;
@@ -41,20 +41,20 @@ TabPanel.propTypes = {
 function a11yProps(index: any) {
   return {
     id: `scrollable-auto-tab-${index}`,
-    'aria-controls': `scrollable-auto-tabpanel-${index}`,
+    "aria-controls": `scrollable-auto-tabpanel-${index}`,
   };
 }
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-    width: '100%',
+    width: "100%",
     backgroundColor: theme.palette.background.paper,
-    marginTop: '85px',
-    position: 'fixed',
+    marginTop: "85px",
+    position: "fixed",
   },
   indicator: {
-    backgroundColor: 'red',
+    backgroundColor: "red",
   },
 }));
 
@@ -64,12 +64,16 @@ const menu = [
   // 'equipments',
   // 'units',
   // 'carriers',
-  'catalogs',
-  'process',
-  'reports',
+  "catalogs",
+  "process",
+  "reports",
 ];
 
-export default function ScrollableTabsButtonAuto() {
+type Props = {
+  hidden: boolean;
+};
+
+export default function ScrollableTabsButtonAuto(props: Props) {
   const classes = useStyles();
   const [value, setValue] = React.useState(false);
   const history = useHistory();
@@ -78,13 +82,11 @@ export default function ScrollableTabsButtonAuto() {
     history.push(`/${menu[newValue]}`);
   };
 
-  /** delete me */
-  const match: any | null = useRouteMatch([
-    '/:module',
-  ]);
-
   return (
-    <div className={classes.root} style={{display: match ? 'block' : 'none'}}>
+    <div
+      className={classes.root}
+      style={{ display: props.hidden ? "none" : "block" }}
+    >
       <AppBar position="static" color="default">
         <Tabs
           value={value}
@@ -95,7 +97,7 @@ export default function ScrollableTabsButtonAuto() {
           scrollButtons="auto"
           aria-label="scrollable auto tabs example"
           classes={{
-              indicator: classes.indicator
+            indicator: classes.indicator,
           }}
         >
           {/* <Tab icon={<PersonPinIcon />} label="Usuarios" {...a11yProps(0)} /> */}

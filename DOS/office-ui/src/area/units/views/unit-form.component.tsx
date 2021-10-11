@@ -124,6 +124,7 @@ export const UnitForm = (props: Props) => {
   const history = useHistory();
   const { action, id } = useParams<any>();
   const viewOnlyModeOn = action === "view";
+  const isEditing = action === "edit";
   useEffect(() => {
     if (id) {
       readUnitAction({ id, history });
@@ -166,7 +167,7 @@ export const UnitForm = (props: Props) => {
                 <FormControl className={classes.formControl}>
                   <TextField
                     {...field}
-                    disabled={viewOnlyModeOn}
+                    disabled={viewOnlyModeOn || isEditing}
                     id="code"
                     label="Clave"
                     value={field.value ? field.value || "" : ""}

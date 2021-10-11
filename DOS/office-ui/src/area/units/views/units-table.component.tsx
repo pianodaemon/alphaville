@@ -49,7 +49,7 @@ export const UnitsTable = (props: Props) => {
       customFilterAndSearch,
       sorting: !sorting,
       filtering: false,
-      defaultSort: "asc",
+      defaultSort: "desc",
     },
     {
       title: "Clave",

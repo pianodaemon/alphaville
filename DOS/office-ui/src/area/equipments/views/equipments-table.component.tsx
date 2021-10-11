@@ -50,7 +50,7 @@ export const EquipmentsTable = (props: Props) => {
       customFilterAndSearch,
       sorting: !sorting,
       filtering: false,
-      defaultSort: "asc",
+      defaultSort: "desc",
     },
     {
       title: "Clave",

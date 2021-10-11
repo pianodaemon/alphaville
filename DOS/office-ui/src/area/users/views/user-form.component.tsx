@@ -146,7 +146,8 @@ export const UserForm = (props: Props) => {
   });
   const classes = useStyles();
   const history = useHistory();
-  const { id } = useParams<any>();
+  const { action, id } = useParams<any>();
+  const isEditing = action === "edit";
   useEffect(() => {
     loadUsersCatalogAction();
     if (id) {
@@ -190,6 +191,7 @@ export const UserForm = (props: Props) => {
                 <FormControl className={classes.formControl}>
                   <TextField
                     {...field}
+                    disabled={isEditing}
                     id="username"
                     label="Nombre del Usuario"
                     value={field.value ? field.value || "" : ""}

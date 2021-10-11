@@ -133,6 +133,7 @@ export const CarrierForm = (props: Props) => {
   const history = useHistory();
   const { action, id } = useParams<any>();
   const viewOnlyModeOn = action === "view";
+  const isEditing = action === "edit";
   useEffect(() => {
     if (id) {
       readCarrierAction({ id, history });
@@ -175,7 +176,7 @@ export const CarrierForm = (props: Props) => {
                 <FormControl className={classes.formControl}>
                   <TextField
                     {...field}
-                    disabled={viewOnlyModeOn}
+                    disabled={viewOnlyModeOn || isEditing}
                     id="code"
                     label="Clave"
                     value={field.value ? field.value || "" : ""}

@@ -49,7 +49,7 @@ export const PatiosTable = (props: Props) => {
       customFilterAndSearch,
       sorting: !sorting,
       filtering: false,
-      defaultSort: "asc",
+      defaultSort: "desc",
     },
     {
       title: "Clave",

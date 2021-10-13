@@ -15,6 +15,7 @@ type Props = {
   onChange: any,
   onSearch: any,
   options: Array<any>,
+  placeholder: string,
   value: any,
 };
 
@@ -30,6 +31,7 @@ export function AutoCompleteLoadMoreDropdown(props: Props) {
     onChange,
     onSearch,
     options,
+    placeholder,
     value,
   } = props;
   const opts = options;
@@ -94,7 +96,7 @@ export function AutoCompleteLoadMoreDropdown(props: Props) {
                   {params.InputProps.endAdornment}
                 </>
               ),
-              placeholder: 'Ingrese Clave de Auditoría o el ID de Auditoria, ej. id:1',
+              placeholder,
             }}
           />
         );

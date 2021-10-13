@@ -26,6 +26,11 @@ export const Process = () => {
       imageURL: "/images/carrier.png",
       onClick: (e: React.MouseEvent<HTMLElement>) => history.push(Routes.PROCESSES.VOUCHERS),
     },
+    {
+      title: "Entradas y Salidas",
+      imageURL: "/images/carrier.png",
+      onClick: (e: React.MouseEvent<HTMLElement>) => history.push(Routes.PROCESSES.INNOUT),
+    },
   ];
   return (
     <div className={classes.root}>

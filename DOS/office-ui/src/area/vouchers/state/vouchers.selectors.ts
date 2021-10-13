@@ -80,3 +80,14 @@ export const filtersSelector = createSelector(
   sliceSelector,
   (slice: VoucherSlice) => slice.filters
 );
+
+
+export const searchSelector = createSelector(
+  sliceSelector,
+  (slice: VoucherSlice): Voucher | null => slice.search ? slice.search.voucher : null
+);
+
+export const searchLoadingSelector = createSelector(
+  sliceSelector,
+  (slice: VoucherSlice): boolean | undefined => slice.search?.loading
+);

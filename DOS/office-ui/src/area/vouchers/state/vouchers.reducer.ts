@@ -28,6 +28,11 @@ export interface VoucherSlice {
     order_by: string,
   };
   filters: {[key: string]: string} | null,
+  search: {
+    voucher: Voucher | null,
+    loading: boolean,
+    error: any,
+  } | null,
 }
 
 export type Item = {
@@ -48,6 +53,7 @@ const initialState: VoucherSlice = {
     order_by: 'id',
   },
   filters: null,
+  search: null,
 };
 
 export const sliceName = 'vouchersSlice';

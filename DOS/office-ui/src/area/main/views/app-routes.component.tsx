@@ -21,6 +21,8 @@ import { CarriersFormContainer } from "src/area/carriers/views/carrier-form.cont
 import { VourcherFormContainer } from "src/area/vouchers/views/voucher-form.container";
 import { ProcessContainer } from "src/area/catalogs/views/process.container";
 import { VouchersTableContainer } from "src/area/vouchers/views/vouchers-table.container";
+import { InNoutContainer } from "src/area/in-n-out/views/in-n-out.container";
+
 // import { UsersFormContainer } from 'src/area/patios/views/patios-form.container';
 // import { PERMISSIONS } from 'src/shared/constants/permissions.contants';
 
@@ -172,6 +174,13 @@ const routes: Array<CustomRoute> = [
       exact: true,
     },
     component: <NotFound />,
+  },
+  {
+    props: {
+      path: ["/in-n-out/"],
+      exact: true,
+    },
+    component: <InNoutContainer />,
   },
   {
     props: {

@@ -3,7 +3,7 @@ import {
   checkedSelector,
   isLoggedInSelector,
   // refreshingSelector,
-  usernameSelector,
+  usernameLoginSelector,
 } from "src/area/auth/state/auth.selectors";
 import { logoutAction } from "src/area/auth/state/usecases/logout.usecase";
 // import { refreshTokenAuthAction } from 'src/area/auth/state/usecases/refresh-token-auth.usecase';
@@ -19,7 +19,7 @@ function mapStateToProps(state: any) {
     checked: checkedSelector(state),
     isLoggedIn: isLoggedInSelector(state),
     // refreshing: refreshingSelector(state),
-    username: usernameSelector(state),
+    username: usernameLoginSelector(state),
   };
 }
 

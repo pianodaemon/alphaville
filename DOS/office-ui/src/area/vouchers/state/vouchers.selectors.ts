@@ -2,6 +2,7 @@ import { createSelector } from "reselect";
 import { vouchersReducer, Voucher, VoucherSlice } from "./vouchers.reducer";
 import { userCatalogSelector } from "src/area/users/state/users.selectors";
 import { catalogSelector } from "src/area/equipments/state/equipments.selectors";
+import { statusesSelector } from "src/area/statuses/state/statuses.selectors";
 
 const sliceSelector = (state: VoucherSlice) => state[vouchersReducer.sliceName];
 
@@ -18,9 +19,10 @@ export const voucherSelector = createSelector(
     return {
       ...voucher,
       itemList: equipments?.map((equipment) => {
-        const quantity = voucher?.itemList?.find((equip) => {
-          return equip.equipmentCode === equipment.code;
-        })?.quantity || 0;
+        const quantity =
+          voucher?.itemList?.find((equip) => {
+            return equip.equipmentCode === equipment.code;
+          })?.quantity || 0;
         const { code, regular, unitCost, title } = equipment;
         return {
           quantity,
@@ -47,7 +49,8 @@ export const catalogSelector = createSelector(
 export const vouchersCatalogSelector = createSelector(
   sliceSelector,
   userCatalogSelector,
-  (slice: VoucherSlice, users) =>
+  statusesSelector,
+  (slice: VoucherSlice, users, statuses) =>
     slice.vouchers &&
     users &&
     Array.isArray(users) &&
@@ -67,6 +70,10 @@ export const vouchersCatalogSelector = createSelector(
         receivedBy: receivedBy
           ? `${receivedBy.firstName} ${receivedBy.lastName} (${voucher.receivedBy})`
           : voucher.receivedBy,
+        status:
+          (statuses &&
+            statuses.find((status) => status.code === voucher.status)?.title) ||
+          "",
       };
     })
 );
@@ -81,10 +88,10 @@ export const filtersSelector = createSelector(
   (slice: VoucherSlice) => slice.filters
 );
 
-
 export const searchSelector = createSelector(
   sliceSelector,
-  (slice: VoucherSlice): Voucher | null => slice.search ? slice.search.voucher : null
+  (slice: VoucherSlice): Voucher | null =>
+    slice.search ? slice.search.voucher : null
 );
 
 export const searchLoadingSelector = createSelector(

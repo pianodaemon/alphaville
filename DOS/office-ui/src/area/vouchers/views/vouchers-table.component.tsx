@@ -23,6 +23,7 @@ type Props = {
   deleteVoucherAction: Function;
   filters: any;
   // isAllowed: Function,
+  loadStatusesAction: Function;
   loadUsersAsCatalogAction: Function;
   loadVouchersAction: Function;
   loading: boolean;
@@ -52,6 +53,7 @@ export const ValesTable = (props: Props) => {
     deleteVoucherAction,
     filters,
     // isAllowed,
+    loadStatusesAction,
     loadUsersAsCatalogAction,
     loadVouchersAction,
     loading,
@@ -101,6 +103,11 @@ export const ValesTable = (props: Props) => {
       field: "receivedBy",
       filtering: false,
     },
+    {
+      title: "Estatus",
+      field: "status",
+      filtering: false,
+    },
   ];
   const [state, dispatch] = useReducer(reducer, columns);
   const getColumnNameByIndex = (columnId: number): string | any =>
@@ -108,6 +115,9 @@ export const ValesTable = (props: Props) => {
   useEffect(() => {
     loadUsersAsCatalogAction();
     loadVouchersAction({ per_page: paging.per_page, order });
+    loadStatusesAction({
+      per_page: Number.MAX_SAFE_INTEGER,
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (

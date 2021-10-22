@@ -3,6 +3,7 @@ import { loadUsersAsCatalogAction } from 'src/area/users/state/usecases/load-use
 import { ValesTable } from './vouchers-table.component';
 import { loadVouchersAction } from '../state/usecases/load-vouchers.usecase';
 import { deleteVoucherAction } from '../state/usecases/delete-voucher.usecase';
+import { loadStatusesAction } from 'src/area/statuses/state/usecases/load-statuses.usecase';
 // import { permissionSelector } from 'src/area/auth/state/auth.selectors';
 import {
   isLoadingSelector,
@@ -14,7 +15,8 @@ import {
 const mapDispatchToProps = {
   deleteVoucherAction,
   loadVouchersAction,
-  loadUsersAsCatalogAction
+  loadUsersAsCatalogAction,
+  loadStatusesAction,
 };
 
 function mapStateToProps(state: any) {

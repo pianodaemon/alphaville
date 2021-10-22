@@ -44,8 +44,14 @@ export const refreshingSelector = createSelector(
   (slice: any): boolean => slice.refreshing
 );
 
-export const usernameSelector = createSelector(sliceSelector, (slice: any) =>
+export const usernameLoginSelector = createSelector(sliceSelector, (slice: any) =>
   slice.profile && slice.profile.user
     ? `${slice.profile?.user?.firstName} ${slice.profile?.user?.lastName} (${slice.profile?.user?.username})`
+    : ""
+);
+
+export const usernameSelector = createSelector(sliceSelector, (slice: any) =>
+  slice.profile && slice.profile.user
+    ? slice.profile.user.username
     : ""
 );

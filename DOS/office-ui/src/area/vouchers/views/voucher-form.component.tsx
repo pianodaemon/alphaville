@@ -37,6 +37,7 @@ type Props = {
   patios: any;
   statuses: any;
   units: any;
+  username: string;
   users: any;
 };
 
@@ -143,6 +144,7 @@ export const VoucherForm = (props: Props) => {
     statuses,
     units,
     users,
+    username,
   } = props;
   const initialValues: Voucher = {
     carrierCode: "",
@@ -203,7 +205,16 @@ export const VoucherForm = (props: Props) => {
   }, []);
   useEffect(() => {
     if (voucher) {
-      reset(voucher || {});
+      reset(
+        {
+          ...voucher,
+          ...(action === "create" ? { receivedBy: username } : {}),
+        } || {}
+      );
+    }
+    // @todo: set default values
+    if (action === "create") {
+      setValue("status", "ENTRADA");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [voucher]);
@@ -554,7 +565,7 @@ export const VoucherForm = (props: Props) => {
             <Grid item xs={12} sm={4}>
               <FormControl className={classes.formControl}>
                 <AutoCompleteDropdown
-                  disabled={viewOnlyModeOn}
+                  disabled // ={viewOnlyModeOn}
                   fieldLabel="displayName"
                   fieldValue="username"
                   label="Recibió Equipo"
@@ -584,7 +595,8 @@ export const VoucherForm = (props: Props) => {
                     <InputLabel>Estatus</InputLabel>
                     <Select
                       {...field}
-                      disabled={viewOnlyModeOn}
+                      // disabled={viewOnlyModeOn}
+                      disabled
                       id="status"
                       labelId="status"
                       value={statuses && field.value ? field.value || "" : ""}

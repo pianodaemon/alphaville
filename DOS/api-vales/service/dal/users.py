@@ -3,7 +3,7 @@ import math
 from misc.helperpg import run_stored_procedure, exec_steady, update_steady, EmptySetError
 from .entity import count_entities
 
-def alter_user(user_id, username, passwd, role_id, disabled, first_name, last_name, authorities):
+def alter_user(user_id, username, passwd, role_id, disabled, first_name, last_name, patio_id, authorities):
     """Calls database function in order to create/update a user"""
 
     sql = """
@@ -15,6 +15,7 @@ def alter_user(user_id, username, passwd, role_id, disabled, first_name, last_na
                 {}::boolean,
                 '{}'::character varying,
                 '{}'::character varying,
+                {}::integer,
                 '{}'::integer[]
             ) AS (rc integer, msg text);
             """.format(
@@ -25,6 +26,7 @@ def alter_user(user_id, username, passwd, role_id, disabled, first_name, last_na
                 disabled,
                 first_name.replace("'", "''"),
                 last_name.replace("'", "''"),
+                patio_id,
                 set(authorities) if authorities else '{}'
             )
 
@@ -89,7 +91,8 @@ def list_users(param_list, page_param_list):
                role_id    AS "roleId",
                disabled,
                first_name AS "firstName",
-               last_name  AS "lastName"
+               last_name  AS "lastName",
+               patio_id   AS "patioId"
           FROM users
          WHERE NOT blocked
            {}
@@ -163,7 +166,8 @@ def get_user(id):
                role_id    AS "roleId",
                disabled,
                first_name AS "firstName",
-               last_name  AS "lastName"
+               last_name  AS "lastName",
+               patio_id   AS "patioId"
           FROM users
          WHERE id = {}
            AND NOT blocked;

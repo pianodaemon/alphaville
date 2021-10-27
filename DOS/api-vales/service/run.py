@@ -38,6 +38,7 @@ class Users(users_pb2_grpc.UsersServicer):
             request.disabled,
             request.firstName,
             request.lastName,
+            request.patioId,
             request.authorities
         )
 

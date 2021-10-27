@@ -216,12 +216,18 @@ export const VoucherForm = (props: Props) => {
           ...(action === "create"
             ? { receivedBy: username, patioCode: patio }
             : {}),
+          ...(action === "edit" &&
+          ["ENTRADA", "PATIO"].indexOf(voucher.status) > -1
+            ? { deliveredBy: username }
+            : {}),
         } || {}
       );
     }
     // @todo: set default values
     if (action === "create") {
       setValue("status", "ENTRADA");
+    } else if (action === "edit" && voucher.status === "ENTRADA") {
+      setValue("status", "CARRETERA");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [voucher]);
@@ -427,7 +433,7 @@ export const VoucherForm = (props: Props) => {
                     <InputLabel>Carrier</InputLabel>
                     <Select
                       {...field}
-                      disabled={viewOnlyModeOn}
+                      disabled={viewOnlyModeOn || action !== "create"}
                       id="carrierCode"
                       label="Carrier"
                       labelId="carrierCode"
@@ -614,7 +620,11 @@ export const VoucherForm = (props: Props) => {
             <Grid item xs={12} sm={4}>
               <FormControl className={classes.formControl}>
                 <AutoCompleteDropdown
-                  disabled={viewOnlyModeOn}
+                  disabled={
+                    viewOnlyModeOn ||
+                    (action === "edit" &&
+                      ["ENTRADA", "PATIO"].indexOf(voucher.status) > -1)
+                  }
                   fieldLabel="displayName"
                   fieldValue="username"
                   label="Entregó Equipo"
@@ -640,7 +650,7 @@ export const VoucherForm = (props: Props) => {
             <Grid item xs={12} sm={4}>
               <FormControl className={classes.formControl}>
                 <AutoCompleteDropdown
-                  disabled // ={viewOnlyModeOn}
+                  disabled={viewOnlyModeOn || action === "create"}
                   fieldLabel="displayName"
                   fieldValue="username"
                   label="Recibió Equipo"

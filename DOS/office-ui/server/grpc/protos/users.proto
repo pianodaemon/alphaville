@@ -23,7 +23,8 @@ message User {
   bool disabled              = 5;
   string firstName           = 6;
   string lastName            = 7;
-  repeated int32 authorities = 8;
+  int32 patioId              = 8;
+  repeated int32 authorities = 9;
 }
 
 message CatalogEntry {

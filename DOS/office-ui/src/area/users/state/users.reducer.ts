@@ -8,6 +8,7 @@ export interface User {
   disabled: boolean;
   firstName: string;
   lastName: string;
+  patioId: number;
   authorities: never[];
 }
 

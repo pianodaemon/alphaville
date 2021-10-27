@@ -37,6 +37,7 @@ type Props = {
   voucher: any | null;
   carriers: any;
   patios: any;
+  patio: string | undefined;
   statuses: any;
   units: any;
   username: string;
@@ -143,6 +144,7 @@ export const VoucherForm = (props: Props) => {
     voucher,
     carriers,
     patios,
+    patio,
     statuses,
     units,
     users,
@@ -211,7 +213,9 @@ export const VoucherForm = (props: Props) => {
       reset(
         {
           ...voucher,
-          ...(action === "create" ? { receivedBy: username } : {}),
+          ...(action === "create"
+            ? { receivedBy: username, patioCode: patio }
+            : {}),
         } || {}
       );
     }
@@ -309,7 +313,8 @@ export const VoucherForm = (props: Props) => {
       return (
         <Alert severity="warning">
           Importante: Los cambios realizado en las cantidades de cualquier
-          equipo resultarán en la generación de un nuevo "Vale para equipo dejado en patio".
+          equipo resultarán en la generación de un nuevo "Vale para equipo
+          dejado en patio".
         </Alert>
       );
     }
@@ -493,7 +498,8 @@ export const VoucherForm = (props: Props) => {
                     <InputLabel>Patio</InputLabel>
                     <Select
                       {...field}
-                      disabled={viewOnlyModeOn}
+                      // disabled={viewOnlyModeOn}
+                      disabled
                       id="patioCode"
                       labelId="patioCode"
                       value={patios && field.value ? field.value || "" : ""}

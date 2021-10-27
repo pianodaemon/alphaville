@@ -285,7 +285,7 @@ if (goog.DEBUG && !COMPILED) {
  * @private {!Array<number>}
  * @const
  */
-proto.dylk.User.repeatedFields_ = [8];
+proto.dylk.User.repeatedFields_ = [9];
 
 
 
@@ -325,7 +325,8 @@ proto.dylk.User.toObject = function(includeInstance, msg) {
     disabled: jspb.Message.getBooleanFieldWithDefault(msg, 5, false),
     firstname: jspb.Message.getFieldWithDefault(msg, 6, ""),
     lastname: jspb.Message.getFieldWithDefault(msg, 7, ""),
-    authoritiesList: (f = jspb.Message.getRepeatedField(msg, 8)) == null ? undefined : f
+    patioid: jspb.Message.getFieldWithDefault(msg, 8, 0),
+    authoritiesList: (f = jspb.Message.getRepeatedField(msg, 9)) == null ? undefined : f
   };
 
   if (includeInstance) {
@@ -391,6 +392,10 @@ proto.dylk.User.deserializeBinaryFromReader = function(msg, reader) {
       msg.setLastname(value);
       break;
     case 8:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setPatioid(value);
+      break;
+    case 9:
       var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedInt32() : [reader.readInt32()]);
       for (var i = 0; i < values.length; i++) {
         msg.addAuthorities(values[i]);
@@ -474,10 +479,17 @@ proto.dylk.User.serializeBinaryToWriter = function(message, writer) {
       f
     );
   }
+  f = message.getPatioid();
+  if (f !== 0) {
+    writer.writeInt32(
+      8,
+      f
+    );
+  }
   f = message.getAuthoritiesList();
   if (f.length > 0) {
     writer.writePackedInt32(
-      8,
+      9,
       f
     );
   }
@@ -611,11 +623,29 @@ proto.dylk.User.prototype.setLastname = function(value) {
 
 
 /**
- * repeated int32 authorities = 8;
+ * optional int32 patioId = 8;
+ * @return {number}
+ */
+proto.dylk.User.prototype.getPatioid = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 8, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.dylk.User} returns this
+ */
+proto.dylk.User.prototype.setPatioid = function(value) {
+  return jspb.Message.setProto3IntField(this, 8, value);
+};
+
+
+/**
+ * repeated int32 authorities = 9;
  * @return {!Array<number>}
  */
 proto.dylk.User.prototype.getAuthoritiesList = function() {
-  return /** @type {!Array<number>} */ (jspb.Message.getRepeatedField(this, 8));
+  return /** @type {!Array<number>} */ (jspb.Message.getRepeatedField(this, 9));
 };
 
 
@@ -624,7 +654,7 @@ proto.dylk.User.prototype.getAuthoritiesList = function() {
  * @return {!proto.dylk.User} returns this
  */
 proto.dylk.User.prototype.setAuthoritiesList = function(value) {
-  return jspb.Message.setField(this, 8, value || []);
+  return jspb.Message.setField(this, 9, value || []);
 };
 
 
@@ -634,7 +664,7 @@ proto.dylk.User.prototype.setAuthoritiesList = function(value) {
  * @return {!proto.dylk.User} returns this
  */
 proto.dylk.User.prototype.addAuthorities = function(value, opt_index) {
-  return jspb.Message.addToRepeatedField(this, 8, value, opt_index);
+  return jspb.Message.addToRepeatedField(this, 9, value, opt_index);
 };
 
 

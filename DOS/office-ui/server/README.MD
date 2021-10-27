@@ -14,8 +14,6 @@
 */
 
 /**
-    docker exec rdbms_obs psql -U postgres -f db_dump_sfp.sql
-
     1) remuevo la db soa: ./bin/mgmt_rdbms
     soa=# \c postgres         # cambiar a BD postgres para poder eliminar soa
     postgres=# drop database soa;
@@ -23,6 +21,15 @@
     2) ./bin/init_schema
 
     3) copio el file .sql dump a docker y lo ejecuto
+        docker cp ~/Downloads/DYLKA/users_patio.sql rdbms_vales:/b.sql
+    
+    4) ejecuto import db
+        docker exec rdbms_vales psql -U postgres -f b.sql
+
+        docker run -it --rm --network operational_network --volume /Users/dealersocket/Downloads/DYLKA debezium/postgres:13-alpine bash
+        psql -h rdbms_vales -U postgres vales_dylk < ./users_patio.sql
+        psql -h rdbms_vales -U postgres vales_dylk < /dump/users_patio.sql
+
 */
 
     docker rm -f rdbms_vales

@@ -15,6 +15,7 @@ import { catalogSelector as unitCatalogSelector } from 'src/area/units/state/uni
 import { userCatalogSelector } from 'src/area/users/state/users.selectors';
 import { statusesCatalogSelector } from 'src/area/statuses/state/statuses.selectors';
 import {
+  patioSelector,
   usernameSelector,
 } from 'src/area/auth/state/auth.selectors';
 import {
@@ -43,6 +44,7 @@ function mapStateToProps(state: any) {
     users: userCatalogSelector(state),
     statuses: statusesCatalogSelector(state),
     username: usernameSelector(state),
+    patio: patioSelector(state),
   };
 }
 

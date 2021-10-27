@@ -18,9 +18,11 @@ import mxLocale from "date-fns/locale/es";
 import DateFnsUtils from "@date-io/date-fns";
 import { add, mul } from "src/shared/utils/math/add.util";
 import { NumberFormatCustom } from "src/shared/components/number-format-custom.component";
+import { AutoCompleteDropdown } from "src/shared/components/autocomplete-dropdown.component";
+// import { Statuses } from "src/shared/constants/voucher-statuses.constants";
 import { Voucher } from "../state/vouchers.reducer";
 import Table from "./table.component";
-import { AutoCompleteDropdown } from "src/shared/components/autocomplete-dropdown.component";
+import Alert from "@material-ui/lab/Alert";
 
 type Props = {
   loadStatusesAction: Function;
@@ -165,7 +167,7 @@ export const VoucherForm = (props: Props) => {
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
-    // getValues,
+    getValues,
     setValue,
     watch,
   } = useForm({
@@ -175,6 +177,7 @@ export const VoucherForm = (props: Props) => {
   const watchItemList = watch("itemList");
   const watchDeliveredBy = watch("deliveredBy");
   const watchReceivedBy = watch("receivedBy");
+  const watchStatus = watch("status");
   const classes = useStyles();
   const history = useHistory();
   const { action, id } = useParams<any>();
@@ -218,6 +221,33 @@ export const VoucherForm = (props: Props) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [voucher]);
+  const diffVoucherUnits = ({
+    pristine,
+    dirty,
+  }: {
+    pristine: Voucher;
+    dirty: Voucher;
+  }) => {
+    return pristine.itemList
+      .filter((item) => item.quantity > 0)
+      .map((item) => {
+        const newQuantity =
+          (dirty &&
+            dirty.itemList &&
+            dirty.itemList.find((i) => i.equipmentCode === item.equipmentCode)
+              ?.quantity) ||
+          0;
+        if (item.quantity > parseInt(newQuantity.toString(), 10)) {
+          return {
+            ...item,
+            quantity:
+              newQuantity === 0 ? item.quantity : item.quantity - newQuantity,
+          };
+        }
+        return undefined;
+      })
+      .filter((item) => item && item.quantity !== undefined);
+  };
   const onSubmit = (fields: Voucher) => {
     /*
     const releaseForm: () => void = () => setSubmitting(false);
@@ -226,13 +256,23 @@ export const VoucherForm = (props: Props) => {
       Number(authId)
     );
     */
-    fields.itemList = fields.itemList
+    const diff = diffVoucherUnits({
+      pristine: voucher,
+      dirty: fields,
+    });
+    const mustCreateNewVoucher =
+      (watchStatus === "ENTRADA" || watchStatus === "PATIO") && diff.length;
+    const itemList = mustCreateNewVoucher ? diff : fields.itemList;
+    fields.itemList = itemList
       .filter((item: any) => parseInt(item.quantity, 10) > 0)
       .map((item: any) => {
         return { equipmentCode: item.equipmentCode, quantity: item.quantity };
       });
     if (id) {
       updateVoucherAction({ id, fields, history });
+      if (mustCreateNewVoucher) {
+        // @todo add endpoint to create new voucher
+      }
     } else {
       createVoucherAction({ fields, history });
     }
@@ -246,10 +286,39 @@ export const VoucherForm = (props: Props) => {
         )
       : 0;
   };
+  const showTitle: () => string = () => {
+    switch (true) {
+      case Boolean(watchStatus === "ENTRADA" && id):
+      case Boolean(watchStatus === "PATIO" && id):
+        return "Salida de patio a carretera";
+      case Boolean(watchStatus === "CARRETERA" && id):
+        return "Entrada a patio";
+      default:
+        return "Vales";
+    }
+  };
+  const showTooltip = () => {
+    if (!voucher || !voucher.itemList) {
+      return;
+    }
+    const diff = diffVoucherUnits({
+      pristine: voucher,
+      dirty: getValues(),
+    });
+    if ((watchStatus === "ENTRADA" || watchStatus === "PATIO") && diff.length) {
+      return (
+        <Alert severity="warning">
+          Importante: Los cambios realizado en las cantidades de cualquier
+          equipo resultarán en la generación de un nuevo "Vale para equipo dejado en patio".
+        </Alert>
+      );
+    }
+  };
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils} locale={mxLocale}>
       <Paper className={classes.paper}>
-        <h1 style={{ color: "#E31B23", textAlign: "center" }}>Vales</h1>
+        <h1 style={{ color: "#E31B23", textAlign: "center" }}>{showTitle()}</h1>
+        {showTooltip()}
         <hr className={classes.hrDivider} />
         <form onSubmit={handleSubmit(onSubmit)} className={classes.root}>
           <Grid container spacing={3}>

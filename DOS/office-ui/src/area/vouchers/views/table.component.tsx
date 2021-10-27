@@ -171,11 +171,12 @@ export default function CustomizedTables(props: Props) {
                               <TextField
                                 {...field}
                                 value={field.value}
-                                disabled={readonly}
+                                disabled={readonly || !item.canEdit}
                                 id={`itemList.${fieldIndex}.quantity`}
                                 inputProps={{
                                   decimalSeparator: false,
                                   autoComplete: "off",
+                                  max: item.maxQuantity,
                                 }}
                                 InputProps={{
                                   inputComponent: NumberFormatCustom as any,

@@ -3,6 +3,7 @@ import { vouchersReducer, Voucher, VoucherSlice } from "./vouchers.reducer";
 import { userCatalogSelector } from "src/area/users/state/users.selectors";
 import { catalogSelector } from "src/area/equipments/state/equipments.selectors";
 import { statusesSelector } from "src/area/statuses/state/statuses.selectors";
+import { Statuses } from "src/shared/constants/voucher-statuses.constants";
 
 const sliceSelector = (state: VoucherSlice) => state[vouchersReducer.sliceName];
 
@@ -24,12 +25,28 @@ export const voucherSelector = createSelector(
             return equip.equipmentCode === equipment.code;
           })?.quantity || 0;
         const { code, regular, unitCost, title } = equipment;
+        const canEditUnit = () => {
+          switch (true) {
+            case voucher &&
+              voucher.status === Statuses.ENTRADA &&
+              parseInt(quantity.toString(), 10) > 0:
+              return true;
+            case voucher &&
+              voucher.status === Statuses.ENTRADA &&
+              parseInt(quantity.toString(), 10) === 0:
+              return false;
+            default:
+              return true;
+          }
+        };
         return {
           quantity,
           equipmentCode: code,
           regular,
           unitCost,
           title,
+          canEdit: canEditUnit(),
+          maxQuantity: quantity,
         };
       }),
     };

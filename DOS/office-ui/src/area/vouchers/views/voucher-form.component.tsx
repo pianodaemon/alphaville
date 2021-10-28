@@ -303,7 +303,7 @@ export const VoucherForm = (props: Props) => {
     switch (true) {
       case Boolean(
         id &&
-          ["ENTRADA", "PATIO"].indexOf(watchStatus) > -1 &&
+          // ["ENTRADA", "PATIO"].indexOf(watchStatus) > -1 &&
           ["ENTRADA", "PATIO"].indexOf(voucher.status) > -1
       ):
         return "Salida de patio a carretera";

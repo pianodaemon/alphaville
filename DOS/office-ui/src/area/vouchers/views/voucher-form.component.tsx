@@ -354,7 +354,7 @@ export const VoucherForm = (props: Props) => {
           Importante: Los cambios realizado en las cantidades de cualquier
           equipo, así como en los campos <em>Unidad</em> o{" "}
           <em>Entregó Equipo</em> resultarán en la generación de un nuevo{" "}
-          <em>"Vale de incidente y/o percance"</em>.
+          <em>"Reporte de incidente y/o percance"</em>.
         </Alert>
       );
     }
@@ -659,7 +659,7 @@ export const VoucherForm = (props: Props) => {
                   disabled={
                     viewOnlyModeOn ||
                     (action === "edit" &&
-                      ["ENTRADA", "PATIO"].indexOf(voucher.status) > -1)
+                      [Statuses.ENTRADA, Statuses.PATIO].indexOf(voucher.status) > -1)
                   }
                   fieldLabel="displayName"
                   fieldValue="username"

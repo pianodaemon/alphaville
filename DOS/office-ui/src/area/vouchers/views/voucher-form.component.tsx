@@ -209,7 +209,7 @@ export const VoucherForm = (props: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(() => {
-    if (voucher) {
+    if (voucher.id) {
       reset(
         {
           ...voucher,
@@ -222,6 +222,9 @@ export const VoucherForm = (props: Props) => {
             : {}),
         } || {}
       );
+      if (action === "edit" && voucher.status === "ENTRADA") {
+        setValue("status", "CARRETERA");
+      }
     }
     // @todo: set default values
     if (action === "create") {
@@ -298,10 +301,13 @@ export const VoucherForm = (props: Props) => {
   };
   const showTitle: () => string = () => {
     switch (true) {
-      case Boolean(watchStatus === "ENTRADA" && id):
-      case Boolean(watchStatus === "PATIO" && id):
+      case Boolean(
+        id &&
+          ["ENTRADA", "PATIO"].indexOf(watchStatus) > -1 &&
+          ["ENTRADA", "PATIO"].indexOf(voucher.status) > -1
+      ):
         return "Salida de patio a carretera";
-      case Boolean(watchStatus === "CARRETERA" && id):
+      case Boolean(id && watchStatus === "CARRETERA"):
         return "Entrada a patio";
       default:
         return "Vales";
@@ -328,7 +334,9 @@ export const VoucherForm = (props: Props) => {
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils} locale={mxLocale}>
       <Paper className={classes.paper}>
-        <h1 style={{ color: "#E31B23", textAlign: "center" }}>{showTitle()}</h1>
+        <h1 style={{ color: "#E31B23", textAlign: "center" }}>
+          {watchStatus && showTitle()}
+        </h1>
         {showTooltip()}
         <hr className={classes.hrDivider} />
         <form onSubmit={handleSubmit(onSubmit)} className={classes.root}>

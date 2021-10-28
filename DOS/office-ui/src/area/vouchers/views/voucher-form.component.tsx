@@ -363,7 +363,7 @@ export const VoucherForm = (props: Props) => {
     <MuiPickersUtilsProvider utils={DateFnsUtils} locale={mxLocale}>
       <Paper className={classes.paper}>
         <h1 style={{ color: "#E31B23", textAlign: "center" }}>
-          {watchStatus && showTitle()}
+          {showTitle()}
         </h1>
         {showAlert()}
         <hr className={classes.hrDivider} />

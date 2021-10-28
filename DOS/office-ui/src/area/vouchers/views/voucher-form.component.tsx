@@ -210,29 +210,14 @@ export const VoucherForm = (props: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(() => {
-    if (voucher.id) {
-      reset(
-        {
-          ...voucher,
-          ...(action === "create"
-            ? { receivedBy: username, patioCode: patio }
-            : {}),
-          ...(action === "edit" &&
-          ["ENTRADA", "PATIO"].indexOf(voucher.status) > -1
-            ? { deliveredBy: username }
-            : {}),
-        } || {}
-      );
-      if (action === "edit" && voucher.status === "ENTRADA") {
-        setValue("status", "CARRETERA");
-      }
-    }
-    // @todo: set default values
-    if (action === "create") {
-      setValue("status", "ENTRADA");
-    } else if (action === "edit" && voucher.status === "ENTRADA") {
-      setValue("status", "CARRETERA");
-    }
+    reset(
+      {
+        ...voucher,
+        ...(action === "create"
+          ? { receivedBy: username, patioCode: patio, status: Statuses.ENTRADA }
+          : {}),
+      } || {}
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [voucher]);
   const diffVoucherUnits = ({
@@ -290,14 +275,18 @@ export const VoucherForm = (props: Props) => {
       });
     if (id) {
       if (shouldCreateNewVoucher) {
+        fields.status = Statuses.CARRETERA;
+        fields.deliveredBy = username;
         // @todo add endpoint to create new voucher
-      } else if (shouldCreateIncident) {
+      } else if (shouldCreateIncident || fields.status === Statuses.CARRETERA) {
         fields.status = Statuses.PATIO;
         fields.receivedBy = username;
         // @todo add endpoint to create incident
-      } else {
-        updateVoucherAction({ id, fields, history });
+      } else if (fields.status === Statuses.ENTRADA) {
+        fields.status = Statuses.CARRETERA;
+        fields.deliveredBy = username;
       }
+      updateVoucherAction({ id, fields, history });
     } else {
       createVoucherAction({ fields, history });
     }
@@ -362,9 +351,7 @@ export const VoucherForm = (props: Props) => {
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils} locale={mxLocale}>
       <Paper className={classes.paper}>
-        <h1 style={{ color: "#E31B23", textAlign: "center" }}>
-          {showTitle()}
-        </h1>
+        <h1 style={{ color: "#E31B23", textAlign: "center" }}>{showTitle()}</h1>
         {showAlert()}
         <hr className={classes.hrDivider} />
         <form onSubmit={handleSubmit(onSubmit)} className={classes.root}>
@@ -659,7 +646,9 @@ export const VoucherForm = (props: Props) => {
                   disabled={
                     viewOnlyModeOn ||
                     (action === "edit" &&
-                      [Statuses.ENTRADA, Statuses.PATIO].indexOf(voucher.status) > -1)
+                      [Statuses.ENTRADA, Statuses.PATIO].indexOf(
+                        voucher.status
+                      ) > -1)
                   }
                   fieldLabel="displayName"
                   fieldValue="username"

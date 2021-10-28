@@ -12,6 +12,7 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 import Select from "@material-ui/core/Select";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
+import Alert from "@material-ui/lab/Alert";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import mxLocale from "date-fns/locale/es";
@@ -19,10 +20,9 @@ import DateFnsUtils from "@date-io/date-fns";
 import { add, mul } from "src/shared/utils/math/add.util";
 import { NumberFormatCustom } from "src/shared/components/number-format-custom.component";
 import { AutoCompleteDropdown } from "src/shared/components/autocomplete-dropdown.component";
-// import { Statuses } from "src/shared/constants/voucher-statuses.constants";
+import { Statuses } from "src/shared/constants/voucher-statuses.constants";
 import { Voucher } from "../state/vouchers.reducer";
 import Table from "./table.component";
-import Alert from "@material-ui/lab/Alert";
 
 type Props = {
   loadStatusesAction: Function;
@@ -180,6 +180,7 @@ export const VoucherForm = (props: Props) => {
   const watchDeliveredBy = watch("deliveredBy");
   const watchReceivedBy = watch("receivedBy");
   const watchStatus = watch("status");
+  const watchUnitCode = watch("unitCode");
   const classes = useStyles();
   const history = useHistory();
   const { action, id } = useParams<any>();
@@ -273,18 +274,29 @@ export const VoucherForm = (props: Props) => {
       pristine: voucher,
       dirty: fields,
     });
-    const mustCreateNewVoucher =
-      (watchStatus === "ENTRADA" || watchStatus === "PATIO") && diff.length;
-    const itemList = mustCreateNewVoucher ? diff : fields.itemList;
+    const shouldCreateNewVoucher =
+      (watchStatus === Statuses.ENTRADA || watchStatus === Statuses.PATIO) &&
+      diff.length;
+    const shouldCreateIncident =
+      watchStatus === Statuses.CARRETERA &&
+      (diff.length ||
+        voucher.unitCode !== watchUnitCode ||
+        voucher.deliveredBy !== watchDeliveredBy);
+    const itemList = shouldCreateNewVoucher ? diff : fields.itemList;
     fields.itemList = itemList
       .filter((item: any) => parseInt(item.quantity, 10) > 0)
       .map((item: any) => {
         return { equipmentCode: item.equipmentCode, quantity: item.quantity };
       });
     if (id) {
-      updateVoucherAction({ id, fields, history });
-      if (mustCreateNewVoucher) {
+      if (shouldCreateNewVoucher) {
         // @todo add endpoint to create new voucher
+      } else if (shouldCreateIncident) {
+        fields.status = Statuses.PATIO;
+        fields.receivedBy = username;
+        // @todo add endpoint to create incident
+      } else {
+        updateVoucherAction({ id, fields, history });
       }
     } else {
       createVoucherAction({ fields, history });
@@ -302,18 +314,16 @@ export const VoucherForm = (props: Props) => {
   const showTitle: () => string = () => {
     switch (true) {
       case Boolean(
-        id &&
-          // ["ENTRADA", "PATIO"].indexOf(watchStatus) > -1 &&
-          ["ENTRADA", "PATIO"].indexOf(voucher.status) > -1
+        id && [Statuses.ENTRADA, Statuses.PATIO].indexOf(voucher.status) > -1
       ):
         return "Salida de patio a carretera";
-      case Boolean(id && watchStatus === "CARRETERA"):
+      case Boolean(id && watchStatus === Statuses.CARRETERA):
         return "Entrada a patio";
       default:
         return "Vales";
     }
   };
-  const showTooltip = () => {
+  const showAlert = () => {
     if (!voucher || !voucher.itemList) {
       return;
     }
@@ -321,12 +331,30 @@ export const VoucherForm = (props: Props) => {
       pristine: voucher,
       dirty: getValues(),
     });
-    if ((watchStatus === "ENTRADA" || watchStatus === "PATIO") && diff.length) {
+    if (
+      (watchStatus === Statuses.ENTRADA || watchStatus === Statuses.PATIO) &&
+      diff.length
+    ) {
       return (
         <Alert severity="warning">
           Importante: Los cambios realizado en las cantidades de cualquier
           equipo resultarán en la generación de un nuevo "Vale para equipo
           dejado en patio".
+        </Alert>
+      );
+    }
+    if (
+      watchStatus === Statuses.CARRETERA &&
+      (diff.length ||
+        voucher.unitCode !== watchUnitCode ||
+        voucher.deliveredBy !== watchDeliveredBy)
+    ) {
+      return (
+        <Alert severity="warning">
+          Importante: Los cambios realizado en las cantidades de cualquier
+          equipo, así como en los campos <em>Unidad</em> o{" "}
+          <em>Entregó Equipo</em> resultarán en la generación de un nuevo{" "}
+          <em>"Vale de incidente y/o percance"</em>.
         </Alert>
       );
     }
@@ -337,7 +365,7 @@ export const VoucherForm = (props: Props) => {
         <h1 style={{ color: "#E31B23", textAlign: "center" }}>
           {watchStatus && showTitle()}
         </h1>
-        {showTooltip()}
+        {showAlert()}
         <hr className={classes.hrDivider} />
         <form onSubmit={handleSubmit(onSubmit)} className={classes.root}>
           <Grid container spacing={3}>
@@ -658,7 +686,11 @@ export const VoucherForm = (props: Props) => {
             <Grid item xs={12} sm={4}>
               <FormControl className={classes.formControl}>
                 <AutoCompleteDropdown
-                  disabled={viewOnlyModeOn || action === "create"}
+                  disabled={
+                    viewOnlyModeOn ||
+                    action === "create" ||
+                    (action === "edit" && watchStatus === Statuses.CARRETERA)
+                  }
                   fieldLabel="displayName"
                   fieldValue="username"
                   label="Recibió Equipo"

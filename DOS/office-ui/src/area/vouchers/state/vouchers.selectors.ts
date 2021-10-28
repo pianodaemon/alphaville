@@ -32,7 +32,8 @@ export const voucherSelector = createSelector(
               parseInt(quantity.toString(), 10) > 0:
               return true;
             case voucher &&
-              voucher.status === Statuses.ENTRADA &&
+              [Statuses.ENTRADA, Statuses.CARRETERA].indexOf(voucher.status) >
+                -1 &&
               parseInt(quantity.toString(), 10) === 0:
               return false;
             default:

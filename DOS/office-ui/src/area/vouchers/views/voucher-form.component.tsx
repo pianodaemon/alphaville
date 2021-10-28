@@ -229,6 +229,8 @@ export const VoucherForm = (props: Props) => {
     // @todo: set default values
     if (action === "create") {
       setValue("status", "ENTRADA");
+    } else if (action === "edit" && voucher.status === "ENTRADA") {
+      setValue("status", "CARRETERA");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [voucher]);

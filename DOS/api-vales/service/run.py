@@ -16,6 +16,8 @@ import vouchers_pb2
 import vouchers_pb2_grpc
 import statuses_pb2
 import statuses_pb2_grpc
+import patio_vouchers_pb2
+import patio_vouchers_pb2_grpc
 
 from dal import users
 from dal import patios
@@ -24,6 +26,7 @@ from dal import units
 from dal import carriers
 from dal.vouchers import VouchersPersistence
 from dal import statuses
+from dal.patio_vouchers import PatioVouchersPersistence
 
 class Users(users_pb2_grpc.UsersServicer):
 
@@ -445,6 +448,63 @@ class Statuses(statuses_pb2_grpc.StatusesServicer):
         )
 
 
+class PatioVouchers(patio_vouchers_pb2_grpc.PatioVouchersServicer):
+
+    def AlterPatioVoucher(self, request, context):
+        print(request)
+
+        item_list = []
+        for i in request.itemList:
+            item_list.append({"equipmentCode": i.equipmentCode, "quantity": i.quantity})
+
+        ret_code, ret_message = PatioVouchersPersistence.alter(
+            request.id,
+            request.voucherId,
+            request.patioCode,
+            request.observations,
+            request.deliveredBy,
+            request.receivedBy,
+            request.status,
+            item_list,
+        )
+
+        return patio_vouchers_pb2.PatioVoucherGeneralResponse(
+            returnCode=ret_code,
+            returnMessage=ret_message
+        )
+
+
+    def ListPatioVouchers(self, request, context):
+        print(request)
+
+        ret_code, ret_message, patio_voucher_list, total_items, total_pages = PatioVouchersPersistence.list_patio_vouchers(
+            request.paramList,
+            request.pageParamList
+        )
+
+        return patio_vouchers_pb2.PatioVoucherListResponse(
+            returnCode=ret_code,
+            returnMessage=ret_message,
+            patioVoucherList=patio_voucher_list,
+            totalItems=total_items,
+            totalPages=total_pages
+        )
+
+
+    def GetPatioVoucher(self, request, context):
+        print(request)
+
+        ret_code, ret_message, patio_voucher = PatioVouchersPersistence.get_patio_voucher(
+            request.id
+        )
+
+        return patio_vouchers_pb2.PatioVoucherResponse(
+            returnCode=ret_code,
+            returnMessage=ret_message,
+            patioVoucher=patio_voucher
+        )
+
+
 def _engage():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
 
@@ -455,6 +515,7 @@ def _engage():
     carriers_pb2_grpc.add_CarriersServicer_to_server(Carriers(), server)
     vouchers_pb2_grpc.add_VouchersServicer_to_server(Vouchers(), server)
     statuses_pb2_grpc.add_StatusesServicer_to_server(Statuses(), server)
+    patio_vouchers_pb2_grpc.add_PatioVouchersServicer_to_server(PatioVouchers(), server)
 
     server.add_insecure_port('[::]:10080')
     server.start()

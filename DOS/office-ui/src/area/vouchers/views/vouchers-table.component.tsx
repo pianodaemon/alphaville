@@ -1,7 +1,6 @@
 /* eslint-disable no-alert */
 import React, { useEffect, useReducer } from "react";
 import { useHistory } from "react-router-dom";
-// import { User } from "src/area/users/state/users.reducer";
 import MaterialTable, {
   MTableToolbar,
   MTableBody,
@@ -10,6 +9,7 @@ import MaterialTable, {
 import TablePagination from "@material-ui/core/TablePagination";
 import Button from "@material-ui/core/Button";
 import PostAddIcon from "@material-ui/icons/PostAdd";
+import { Statuses } from "src/shared/constants/voucher-statuses.constants";
 // import { PERMISSIONS } from 'src/shared/constants/permissions.contants';
 
 /*
@@ -112,12 +112,13 @@ export const ValesTable = (props: Props) => {
   const [state, dispatch] = useReducer(reducer, columns);
   const getColumnNameByIndex = (columnId: number): string | any =>
     state.map((column) => column.field)[columnId];
+  const canEdit = (status): boolean => {
+    return ![Statuses.ENTRADA].includes(status);
+  };
   useEffect(() => {
     loadUsersAsCatalogAction();
     loadVouchersAction({ per_page: paging.per_page, order });
-    loadStatusesAction({
-      per_page: Number.MAX_SAFE_INTEGER,
-    });
+    loadStatusesAction({ per_page: Number.MAX_SAFE_INTEGER });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
@@ -230,13 +231,12 @@ export const ValesTable = (props: Props) => {
             history.push(`/voucher/${rowData.id}/view`),
           // disabled: !isAllowed('ASER', PERMISSIONS.READ),
         },
-        {
+        (rowData) => ({
           icon: "edit",
           tooltip: "Editar",
-          onClick: (event, rowData: any) =>
-            history.push(`/voucher/${rowData.id}/edit`),
-          // disabled: !isAllowed('USR', PERMISSIONS.UPDATE),
-        },
+          onClick: () => history.push(`/voucher/${rowData.id}/edit`),
+          disabled: canEdit(rowData.stat),
+        }),
         {
           icon: "delete",
           tooltip: "Eliminar Usuario",

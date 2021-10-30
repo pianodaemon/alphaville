@@ -92,6 +92,7 @@ export const vouchersCatalogSelector = createSelector(
           (statuses &&
             statuses.find((status) => status.code === voucher.status)?.title) ||
           "",
+        stat: voucher.status,
       };
     })
 );

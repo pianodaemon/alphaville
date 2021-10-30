@@ -184,7 +184,7 @@ export const VoucherForm = (props: Props) => {
   const classes = useStyles();
   const history = useHistory();
   const { action, id } = useParams<any>();
-  const viewOnlyModeOn = action === "view";
+  const viewOnlyModeOn: boolean = action === "view";
   useEffect(() => {
     loadStatusesAction({
       per_page: Number.MAX_SAFE_INTEGER,
@@ -247,7 +247,7 @@ export const VoucherForm = (props: Props) => {
       })
       .filter((item) => item && item.quantity !== undefined);
   };
-  const onSubmit = (fields: Voucher) => {
+  const onSubmit: (fields: Voucher) => void = (fields: Voucher) => {
     /*
     const releaseForm: () => void = () => setSubmitting(false);
     const fields: any = values;
@@ -259,12 +259,12 @@ export const VoucherForm = (props: Props) => {
       pristine: voucher,
       dirty: fields,
     });
-    const shouldCreateNewVoucher =
+    const shouldCreateNewVoucher: boolean =
       (watchStatus === Statuses.ENTRADA || watchStatus === Statuses.PATIO) &&
-      diff.length;
-    const shouldCreateIncident =
+      diff.length > 0;
+    const shouldCreateIncident: boolean =
       watchStatus === Statuses.CARRETERA &&
-      (diff.length ||
+      (diff.length > 0 ||
         voucher.unitCode !== watchUnitCode ||
         voucher.deliveredBy !== watchDeliveredBy);
     const itemList = shouldCreateNewVoucher ? diff : fields.itemList;
@@ -291,7 +291,7 @@ export const VoucherForm = (props: Props) => {
       createVoucherAction({ fields, history });
     }
   };
-  const totalUnitCost = () => {
+  const totalUnitCost: () => number = () => {
     return watchItemList.length
       ? add(
           watchItemList.map((item: any) =>
@@ -312,7 +312,7 @@ export const VoucherForm = (props: Props) => {
         return "Vales";
     }
   };
-  const showAlert = () => {
+  const showAlert: () => React.ReactNode = () => {
     if (!voucher || !voucher.itemList) {
       return;
     }

@@ -1,8 +1,8 @@
 import { Action, createAction, ActionFunctionAny } from "redux-actions";
-import { call, put, take, takeLatest } from "redux-saga/effects";
+import { put, take, takeLatest } from "redux-saga/effects";
 import { mergeSaga } from "src/redux-utils/merge-saga";
 import { notificationAction } from "src/area/main/state/usecase/notification.usecase";
-import { errorCodes, resolveError } from "src/shared/utils/resolve-error.util";
+import { resolveError } from "src/shared/utils/resolve-error.util";
 import {
   updateVoucherAction,
   updateVoucherErrorAction,

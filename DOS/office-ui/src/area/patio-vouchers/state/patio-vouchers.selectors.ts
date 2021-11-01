@@ -1,38 +1,38 @@
 import { createSelector } from "reselect";
-import { vouchersReducer, Voucher, VoucherSlice } from "./vouchers.reducer";
+import { patioVouchersReducer, PatioVoucher, PatioVoucherSlice } from "./patio-vouchers.reducer";
 import { userCatalogSelector } from "src/area/users/state/users.selectors";
 import { catalogSelector } from "src/area/equipments/state/equipments.selectors";
 import { statusesSelector } from "src/area/statuses/state/statuses.selectors";
 import { Statuses } from "src/shared/constants/voucher-statuses.constants";
 
-const sliceSelector = (state: VoucherSlice) => state[vouchersReducer.sliceName];
+const sliceSelector = (state: PatioVoucherSlice) => state[patioVouchersReducer.sliceName];
 
-export const vouchersSelector = createSelector(
+export const patioVouchersSelector = createSelector(
   sliceSelector,
-  (slice: VoucherSlice) => slice.vouchers
+  (slice: PatioVoucherSlice) => slice.patioVouchers
 );
 
-export const voucherSelector = createSelector(
+export const patioVoucherSelector = createSelector(
   sliceSelector,
   catalogSelector,
-  (slice: VoucherSlice, equipments): any => {
-    const { voucher } = slice;
+  (slice: PatioVoucherSlice, equipments): any => {
+    const { patioVoucher } = slice;
     return {
-      ...voucher,
+      ...patioVoucher,
       itemList: equipments?.map((equipment) => {
         const quantity =
-          voucher?.itemList?.find((equip) => {
+        patioVoucher?.itemList?.find((equip) => {
             return equip.equipmentCode === equipment.code;
           })?.quantity || 0;
         const { code, regular, unitCost, title } = equipment;
         const canEditUnit = () => {
           switch (true) {
-            case voucher &&
-              voucher.status === Statuses.ENTRADA &&
+            case patioVoucher &&
+            patioVoucher.status === Statuses.ENTRADA &&
               parseInt(quantity.toString(), 10) > 0:
               return true;
-            case voucher &&
-              [Statuses.ENTRADA, Statuses.CARRETERA].indexOf(voucher.status) >
+            case patioVoucher &&
+              [Statuses.ENTRADA, Statuses.CARRETERA].indexOf(patioVoucher.status) >
                 -1 &&
               parseInt(quantity.toString(), 10) === 0:
               return false;
@@ -56,24 +56,19 @@ export const voucherSelector = createSelector(
 
 export const isLoadingSelector = createSelector(
   sliceSelector,
-  (slice: VoucherSlice) => slice.loading
+  (slice: PatioVoucherSlice) => slice.loading
 );
-/*
-export const catalogSelector = createSelector(
-  sliceSelector,
-  (slice: VoucherSlice) => slice.catalog
-);
-*/
-export const vouchersCatalogSelector = createSelector(
+
+export const patioVouchersCatalogSelector = createSelector(
   sliceSelector,
   userCatalogSelector,
   statusesSelector,
-  (slice: VoucherSlice, users, statuses) =>
-    slice.vouchers &&
+  (slice: PatioVoucherSlice, users, statuses) =>
+    slice.patioVouchers &&
     users &&
     Array.isArray(users) &&
-    Array.isArray(slice.vouchers) &&
-    slice.vouchers.map((voucher: Voucher) => {
+    Array.isArray(slice.patioVouchers) &&
+    slice.patioVouchers.map((voucher: PatioVoucher) => {
       const deliveredBy = users.find(
         (user) => user.username === voucher.deliveredBy
       );
@@ -99,21 +94,21 @@ export const vouchersCatalogSelector = createSelector(
 
 export const pagingSelector = createSelector(
   sliceSelector,
-  (slice: VoucherSlice) => slice.paging
+  (slice: PatioVoucherSlice) => slice.paging
 );
 
 export const filtersSelector = createSelector(
   sliceSelector,
-  (slice: VoucherSlice) => slice.filters
+  (slice: PatioVoucherSlice) => slice.filters
 );
 
 export const searchSelector = createSelector(
   sliceSelector,
-  (slice: VoucherSlice): Voucher | null =>
-    slice.search ? slice.search.voucher : null
+  (slice: PatioVoucherSlice): PatioVoucher | null =>
+    slice.search ? slice.search.patioVoucher : null
 );
 
 export const searchLoadingSelector = createSelector(
   sliceSelector,
-  (slice: VoucherSlice): boolean | undefined => slice.search?.loading
+  (slice: PatioVoucherSlice): boolean | undefined => slice.search?.loading
 );

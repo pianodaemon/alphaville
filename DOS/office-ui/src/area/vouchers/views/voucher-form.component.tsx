@@ -34,6 +34,7 @@ type Props = {
   loadPatiosCatalogAction: Function;
   loadUnitsCatalogAction: Function;
   loadUsersAsCatalogAction: Function;
+  createPatioVoucherUpdateVoucherAction: Function;
   voucher: any | null;
   carriers: any;
   patios: any;
@@ -141,6 +142,7 @@ export const VoucherForm = (props: Props) => {
     loadPatiosCatalogAction,
     loadUnitsCatalogAction,
     loadUsersAsCatalogAction,
+    createPatioVoucherUpdateVoucherAction,
     voucher,
     carriers,
     patios,
@@ -184,7 +186,7 @@ export const VoucherForm = (props: Props) => {
   const classes = useStyles();
   const history = useHistory();
   const { action, id } = useParams<any>();
-  const viewOnlyModeOn = action === "view";
+  const viewOnlyModeOn: boolean = action === "view";
   useEffect(() => {
     loadStatusesAction({
       per_page: Number.MAX_SAFE_INTEGER,
@@ -247,37 +249,41 @@ export const VoucherForm = (props: Props) => {
       })
       .filter((item) => item && item.quantity !== undefined);
   };
-  const onSubmit = (fields: Voucher) => {
-    /*
-    const releaseForm: () => void = () => setSubmitting(false);
-    const fields: any = values;
-    fields.access_vector = fields.access_vector.map((authId: string) =>
-      Number(authId)
-    );
-    */
+  const onSubmit: (fields: Voucher) => void = (fields: Voucher) => {
+    /* @todo implement const releaseForm: () => void = () => setSubmitting(false); */
     const diff = diffVoucherUnits({
       pristine: voucher,
       dirty: fields,
     });
-    const shouldCreateNewVoucher =
+    const shouldCreateNewVoucher: boolean =
       (watchStatus === Statuses.ENTRADA || watchStatus === Statuses.PATIO) &&
-      diff.length;
-    const shouldCreateIncident =
+      diff.length > 0;
+    const shouldCreateIncident: boolean =
       watchStatus === Statuses.CARRETERA &&
-      (diff.length ||
+      (diff.length > 0 ||
         voucher.unitCode !== watchUnitCode ||
         voucher.deliveredBy !== watchDeliveredBy);
-    const itemList = shouldCreateNewVoucher ? diff : fields.itemList;
-    fields.itemList = itemList
-      .filter((item: any) => parseInt(item.quantity, 10) > 0)
-      .map((item: any) => {
-        return { equipmentCode: item.equipmentCode, quantity: item.quantity };
-      });
+    const filterItems = (items: any[]) => {
+      return items
+        .filter((item: any) => parseInt(item.quantity, 10) > 0)
+        .map((item: any) => {
+          return { equipmentCode: item.equipmentCode, quantity: item.quantity };
+        });
+    };
     if (id) {
       if (shouldCreateNewVoucher) {
         fields.status = Statuses.CARRETERA;
         fields.deliveredBy = username;
-        // @todo add endpoint to create new voucher
+        const update = {
+          ...fields,
+          itemList: filterItems(fields.itemList),
+        };
+        const create = {
+          ...fields,
+          itemList: filterItems(diff),
+        };
+        createPatioVoucherUpdateVoucherAction({ create, history, id, update });
+        return;
       } else if (shouldCreateIncident || fields.status === Statuses.CARRETERA) {
         fields.status = Statuses.PATIO;
         fields.receivedBy = username;
@@ -286,12 +292,13 @@ export const VoucherForm = (props: Props) => {
         fields.status = Statuses.CARRETERA;
         fields.deliveredBy = username;
       }
+      fields.itemList = filterItems(fields.itemList);
       updateVoucherAction({ id, fields, history });
     } else {
       createVoucherAction({ fields, history });
     }
   };
-  const totalUnitCost = () => {
+  const totalUnitCost: () => number = () => {
     return watchItemList.length
       ? add(
           watchItemList.map((item: any) =>
@@ -312,7 +319,7 @@ export const VoucherForm = (props: Props) => {
         return "Vales";
     }
   };
-  const showAlert = () => {
+  const showAlert: () => React.ReactNode = () => {
     if (!voucher || !voucher.itemList) {
       return;
     }

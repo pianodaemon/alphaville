@@ -46,6 +46,13 @@ const {
   listVouchers,
 } = require("./vouchers");
 const { listStatuses } = require("./statuses");
+const {
+  createPatioVoucher,
+  readPatioVoucher,
+  updatePatioVoucher,
+  deletePatioVoucher,
+  listPatioVouchers,
+} = require("./patio-vouchers");
 
 var cors = require("cors");
 
@@ -350,6 +357,60 @@ router.delete("/vouchers/:id", cors(corsOptionsDelegate), function (req, res) {
     .then((data) => res.json(data))
     .catch((err) => res.status(500).json(err));
 });
+
+/**
+ *
+ * Patio Vouchers
+ * ---------------------------------------------------------------------------------------------------
+ * ---------------------------------------------------------------------------------------------------
+ * ---------------------------------------------------------------------------------------------------
+ */
+app.options("/patio-vouchers", cors(corsOptionsDelegate));
+
+// enable pre-flight request for DELETE request
+app.options("/patio-vouchers/:id", cors(corsOptionsDelegate));
+
+router.get("/patio-vouchers", cors(corsOptionsDelegate), function (req, res) {
+  listPatioVouchers(req.query)
+    .then((data) => res.json(data))
+    .catch((err) => res.status(500).json(err));
+});
+
+router.post("/patio-vouchers", cors(corsOptionsDelegate), function (req, res) {
+  createPatioVoucher(req.body)
+    .then((data) => res.json(data))
+    .catch((err) => res.status(500).json(err));
+});
+
+router.get(
+  "/patio-vouchers/:id",
+  cors(corsOptionsDelegate),
+  function (req, res) {
+    readPatioVoucher(req.params.id)
+      .then((data) => res.json(data))
+      .catch((err) => res.status(500).json(err));
+  }
+);
+
+router.put(
+  "/patio-vouchers/:id",
+  cors(corsOptionsDelegate),
+  function (req, res) {
+    updatePatioVoucher(req.params.id, req.body)
+      .then((data) => res.json(data))
+      .catch((err) => res.status(500).json(err));
+  }
+);
+
+router.delete(
+  "/patio-vouchers/:id",
+  cors(corsOptionsDelegate),
+  function (req, res) {
+    deletePatioVoucher(req.params.id)
+      .then((data) => res.json(data))
+      .catch((err) => res.status(500).json(err));
+  }
+);
 
 /**
  *

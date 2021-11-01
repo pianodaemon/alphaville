@@ -27,8 +27,10 @@ function* updateVoucherWorker(action: any): Generator<any, any, any> {
       throw new Error(result.returnMessage);
     }
     yield put(updateVoucherSuccessAction(result));
-    yield history.push("/vouchers");
-    yield put(loadVouchersAction());
+    if (history) {
+      yield history.push("/vouchers");
+      yield put(loadVouchersAction());
+    }
     yield put(
       notificationAction({
         message: `¡Voucher ${id} ha sido actualizado!`,

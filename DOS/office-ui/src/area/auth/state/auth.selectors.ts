@@ -62,6 +62,6 @@ export const patioSelector = createSelector(
   catalogSelector,
   (slice: any, patios) => {
     return patios?.find((patio) => patio.id === slice.profile?.user?.patioId)
-      ?.code;
+      ?.code || "";
   }
 );

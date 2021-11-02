@@ -38,7 +38,7 @@ type Props = {
   voucher: any | null;
   carriers: any;
   patios: any;
-  patio: string | undefined;
+  patio: string;
   statuses: any;
   units: any;
   username: string;
@@ -287,6 +287,7 @@ export const VoucherForm = (props: Props) => {
       } else if (shouldCreateIncident || fields.status === Statuses.CARRETERA) {
         fields.status = Statuses.PATIO;
         fields.receivedBy = username;
+        fields.patioCode = patio;
         // @todo add endpoint to create incident
       } else if (fields.status === Statuses.ENTRADA) {
         fields.status = Statuses.CARRETERA;
@@ -309,14 +310,16 @@ export const VoucherForm = (props: Props) => {
   };
   const showTitle: () => string = () => {
     switch (true) {
+      case viewOnlyModeOn === true:
+        return "Vale de equipo de amarre";
       case Boolean(
         id && [Statuses.ENTRADA, Statuses.PATIO].indexOf(voucher.status) > -1
       ):
         return "Salida de patio a carretera";
       case Boolean(id && watchStatus === Statuses.CARRETERA):
-        return "Entrada a patio";
+        return "Entrada a patio (edición)";
       default:
-        return "Vales";
+        return "Entrada a patio";
     }
   };
   const showAlert: () => React.ReactNode = () => {

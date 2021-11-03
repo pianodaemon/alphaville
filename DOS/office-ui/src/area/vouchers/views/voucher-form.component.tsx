@@ -280,6 +280,7 @@ export const VoucherForm = (props: Props) => {
         };
         const create = {
           ...fields,
+          status: Statuses.PATIO,
           itemList: filterItems(diff),
         };
         createPatioVoucherUpdateVoucherAction({ create, history, id, update });
@@ -289,7 +290,7 @@ export const VoucherForm = (props: Props) => {
         fields.receivedBy = username;
         fields.patioCode = patio;
         // @todo add endpoint to create incident
-      } else if (fields.status === Statuses.ENTRADA) {
+      } else if (fields.status === Statuses.ENTRADA || fields.status === Statuses.PATIO) {
         fields.status = Statuses.CARRETERA;
         fields.deliveredBy = username;
       }

@@ -15,7 +15,7 @@ WORKDIR /service
 RUN python -m pip install --upgrade pip
 RUN python -m pip install -r requirements.txt
 
-RUN for i in carriers equipments patios units users vouchers patio_vouchers statuses; do \
+RUN for i in carriers equipments patios units users vouchers patio_vouchers statuses incidences; do \
         python -m grpc_tools.protoc -I../protos --python_out=. --grpc_python_out=. ../protos/$i.proto; \
 done
 

@@ -116,7 +116,7 @@ export const ValesTable = (props: Props) => {
     return ![Statuses.ENTRADA].includes(status);
   };
   useEffect(() => {
-    loadUsersAsCatalogAction();
+    loadUsersAsCatalogAction({ per_page: Number.MAX_SAFE_INTEGER });
     loadVouchersAction({ per_page: paging.per_page, order });
     loadStatusesAction({ per_page: Number.MAX_SAFE_INTEGER });
     // eslint-disable-next-line react-hooks/exhaustive-deps

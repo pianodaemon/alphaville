@@ -81,6 +81,7 @@ def list_patios(param_list, page_param_list):
                title
           FROM patios
          WHERE NOT blocked
+           AND id >= 1
            {}
          ORDER BY {} {} LIMIT {} OFFSET {};
     """.format(
@@ -117,11 +118,13 @@ def get_patio(id):
     """Retrieve patio data"""
 
     sql = """
-        SELECT id,
-               code,
-               title
+        SELECT patios.id,
+               patios.code,
+               patios.title,
+               patio_types.code AS "typeCode"
           FROM patios
-         WHERE id = {}
+          JOIN patio_types ON patios.patio_type_id = patio_types.id
+         WHERE patios.id = {}
            AND NOT blocked;
     """.format(id)
 

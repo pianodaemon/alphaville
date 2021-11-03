@@ -311,6 +311,8 @@ export const VoucherForm = (props: Props) => {
   };
   const showTitle: () => string = () => {
     switch (true) {
+      case action === "create":
+        return "Entrada de Equipo";
       case viewOnlyModeOn === true:
         return "Vale de equipo de amarre";
       case Boolean(

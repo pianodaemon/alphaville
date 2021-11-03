@@ -280,6 +280,7 @@ export const VoucherForm = (props: Props) => {
         };
         const create = {
           ...fields,
+          status: Statuses.PATIO,
           itemList: filterItems(diff),
         };
         createPatioVoucherUpdateVoucherAction({ create, history, id, update });

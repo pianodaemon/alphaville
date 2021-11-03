@@ -18,6 +18,8 @@ import statuses_pb2
 import statuses_pb2_grpc
 import patio_vouchers_pb2
 import patio_vouchers_pb2_grpc
+import incidences_pb2
+import incidences_pb2_grpc
 
 from dal import users
 from dal import patios
@@ -27,6 +29,7 @@ from dal import carriers
 from dal.vouchers import VouchersPersistence
 from dal import statuses
 from dal.patio_vouchers import PatioVouchersPersistence
+from dal.incidences import IncidencesPersistence
 
 class Users(users_pb2_grpc.UsersServicer):
 
@@ -505,6 +508,66 @@ class PatioVouchers(patio_vouchers_pb2_grpc.PatioVouchersServicer):
         )
 
 
+class Incidences(incidences_pb2_grpc.IncidencesServicer):
+
+    def AlterIncidence(self, request, context):
+        print(request)
+
+        item_list = []
+        for i in request.itemList:
+            item_list.append({"equipmentCode": i.equipmentCode, "quantity": i.quantity})
+
+        ret_code, ret_message = IncidencesPersistence.alter(
+            request.id,
+            request.voucherId,
+            request.platform,
+            request.carrierCode,
+            request.patioCode,
+            request.observations,
+            request.unitCode,
+            request.inspectedBy,
+            request.operator,
+            request.status,
+            item_list,
+        )
+
+        return incidences_pb2.IncidenceGeneralResponse(
+            returnCode=ret_code,
+            returnMessage=ret_message
+        )
+
+
+    def ListIncidences(self, request, context):
+        print(request)
+
+        ret_code, ret_message, incidence_list, total_items, total_pages = IncidencesPersistence.list_incidences(
+            request.paramList,
+            request.pageParamList
+        )
+
+        return incidences_pb2.IncidenceListResponse(
+            returnCode=ret_code,
+            returnMessage=ret_message,
+            incidenceList=incidence_list,
+            totalItems=total_items,
+            totalPages=total_pages
+        )
+
+
+    def GetIncidence(self, request, context):
+        print(request)
+
+        ret_code, ret_message, incidence_data = IncidencesPersistence.get_incidence(
+            request.id
+        )
+
+        return incidences_pb2.IncidenceResponse(
+            returnCode=ret_code,
+            returnMessage=ret_message,
+            incidence=incidence_data
+        )
+
+
 def _engage():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
 
@@ -516,6 +579,7 @@ def _engage():
     vouchers_pb2_grpc.add_VouchersServicer_to_server(Vouchers(), server)
     statuses_pb2_grpc.add_StatusesServicer_to_server(Statuses(), server)
     patio_vouchers_pb2_grpc.add_PatioVouchersServicer_to_server(PatioVouchers(), server)
+    incidences_pb2_grpc.add_IncidencesServicer_to_server(Incidences(), server)
 
     server.add_insecure_port('[::]:10080')
     server.start()

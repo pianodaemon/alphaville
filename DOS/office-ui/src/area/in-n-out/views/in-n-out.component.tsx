@@ -116,7 +116,7 @@ export const InNout = (props: Props) => {
   const { loading, searchVoucherAction, searchVoucherResetAction, voucher } = props;
   const handleClick = () => {
     if (voucher) {
-      window.open(`/voucher/${voucher.id}/edit`, "_blank");
+      window.open(`/voucher/${voucher.id}/forward`, "_blank");
     }
   };
   useEffect(() => {

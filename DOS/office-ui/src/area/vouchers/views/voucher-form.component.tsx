@@ -187,6 +187,7 @@ export const VoucherForm = (props: Props) => {
   const history = useHistory();
   const { action, id } = useParams<any>();
   const viewOnlyModeOn: boolean = action === "view";
+  const forwardVoucher: boolean = action === "forward";
   useEffect(() => {
     loadStatusesAction({
       per_page: Number.MAX_SAFE_INTEGER,
@@ -272,7 +273,9 @@ export const VoucherForm = (props: Props) => {
     };
     if (id) {
       if (shouldCreateNewVoucher) {
-        fields.status = Statuses.CARRETERA;
+        if (forwardVoucher) {
+          fields.status = Statuses.CARRETERA;
+        }
         fields.deliveredBy = username;
         const update = {
           ...fields,
@@ -286,12 +289,19 @@ export const VoucherForm = (props: Props) => {
         createPatioVoucherUpdateVoucherAction({ create, history, id, update });
         return;
       } else if (shouldCreateIncident || fields.status === Statuses.CARRETERA) {
-        fields.status = Statuses.PATIO;
+        if (forwardVoucher) {
+          fields.status = Statuses.PATIO;
+        }
         fields.receivedBy = username;
         fields.patioCode = patio;
         // @todo add endpoint to create incident
-      } else if (fields.status === Statuses.ENTRADA || fields.status === Statuses.PATIO) {
-        fields.status = Statuses.CARRETERA;
+      } else if (
+        fields.status === Statuses.ENTRADA ||
+        fields.status === Statuses.PATIO
+      ) {
+        if (forwardVoucher) {
+          fields.status = Statuses.CARRETERA;
+        }
         fields.deliveredBy = username;
       }
       fields.itemList = filterItems(fields.itemList);
@@ -320,7 +330,7 @@ export const VoucherForm = (props: Props) => {
       ):
         return "Salida de patio a carretera";
       case Boolean(id && watchStatus === Statuses.CARRETERA):
-        return "Entrada a patio (edición)";
+        return "Entrada de Equipo (edición)";
       default:
         return "Entrada a patio";
     }
@@ -658,7 +668,7 @@ export const VoucherForm = (props: Props) => {
                 <AutoCompleteDropdown
                   disabled={
                     viewOnlyModeOn ||
-                    (action === "edit" &&
+                    ((action === "edit" || action === "forward") &&
                       [Statuses.ENTRADA, Statuses.PATIO].indexOf(
                         voucher.status
                       ) > -1)
@@ -691,7 +701,7 @@ export const VoucherForm = (props: Props) => {
                   disabled={
                     viewOnlyModeOn ||
                     action === "create" ||
-                    (action === "edit" && watchStatus === Statuses.CARRETERA)
+                    ((action === "edit" || action === "forward") && watchStatus === Statuses.CARRETERA)
                   }
                   fieldLabel="displayName"
                   fieldValue="username"

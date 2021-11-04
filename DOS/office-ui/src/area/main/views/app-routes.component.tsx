@@ -140,7 +140,7 @@ const routes: Array<CustomRoute> = [
   },
   {
     props: {
-      path: ["/voucher/:action(create)", "/voucher/:id/:action(edit|view)"],
+      path: ["/voucher/:action(create)", "/voucher/:id/:action(edit|view|forward)"],
       exact: true,
     },
     component: <VourcherFormContainer />,

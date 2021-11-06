@@ -20,7 +20,7 @@ import DateFnsUtils from "@date-io/date-fns";
 import { add, mul } from "src/shared/utils/math/add.util";
 import { NumberFormatCustom } from "src/shared/components/number-format-custom.component";
 import { AutoCompleteDropdown } from "src/shared/components/autocomplete-dropdown.component";
-import { Statuses } from "src/shared/constants/voucher-statuses.constants";
+import { Statuses, IncidenceStatuses } from "src/shared/constants/voucher-statuses.constants";
 import { Voucher } from "../state/vouchers.reducer";
 import Table from "./table.component";
 
@@ -35,6 +35,7 @@ type Props = {
   loadUnitsCatalogAction: Function;
   loadUsersAsCatalogAction: Function;
   createPatioVoucherUpdateVoucherAction: Function;
+  createIncidenceUpdateVoucherAction: Function;
   voucher: any | null;
   carriers: any;
   patios: any;
@@ -143,6 +144,7 @@ export const VoucherForm = (props: Props) => {
     loadUnitsCatalogAction,
     loadUsersAsCatalogAction,
     createPatioVoucherUpdateVoucherAction,
+    createIncidenceUpdateVoucherAction,
     voucher,
     carriers,
     patios,
@@ -259,7 +261,7 @@ export const VoucherForm = (props: Props) => {
     const shouldCreateNewVoucher: boolean =
       (watchStatus === Statuses.ENTRADA || watchStatus === Statuses.PATIO) &&
       diff.length > 0;
-    const shouldCreateIncident: boolean =
+    const shouldCreateIncidence: boolean =
       watchStatus === Statuses.CARRETERA &&
       (diff.length > 0 ||
         voucher.unitCode !== watchUnitCode ||
@@ -286,15 +288,19 @@ export const VoucherForm = (props: Props) => {
           status: Statuses.PATIO,
           itemList: filterItems(diff),
         };
+        // @todo This is an Orchestrated Action, which executes 2 different actions in 2 different transactions
+        // this should be refactored server side to become a single transaction
         createPatioVoucherUpdateVoucherAction({ create, history, id, update });
         return;
-      } else if (shouldCreateIncident || fields.status === Statuses.CARRETERA) {
+      } else if (
+        shouldCreateIncidence ||
+        fields.status === Statuses.CARRETERA
+      ) {
         if (forwardVoucher) {
           fields.status = Statuses.PATIO;
         }
         fields.receivedBy = username;
         fields.patioCode = patio;
-        // @todo add endpoint to create incident
       } else if (
         fields.status === Statuses.ENTRADA ||
         fields.status === Statuses.PATIO
@@ -304,6 +310,30 @@ export const VoucherForm = (props: Props) => {
         }
         fields.deliveredBy = username;
       }
+
+      if (shouldCreateIncidence) {
+        const create = {
+          ...fields,
+          inspectedBy: username,
+          operator: fields.deliveredBy,
+          status: IncidenceStatuses.ABIERTA,
+          itemList: filterItems(diff),
+        };
+        const update = {
+          ...fields,
+          itemList: filterItems(fields.itemList),
+        };
+        // @todo This is an Orchestrated Action, which executes 2 different actions in 2 different transactions
+        // this should be refactored server side to become a single transaction
+        createIncidenceUpdateVoucherAction({
+          create,
+          history,
+          id,
+          update,
+        });
+        return;
+      }
+
       fields.itemList = filterItems(fields.itemList);
       updateVoucherAction({ id, fields, history });
     } else {
@@ -371,7 +401,7 @@ export const VoucherForm = (props: Props) => {
           Importante: Los cambios realizado en las cantidades de cualquier
           equipo, así como en los campos <em>Unidad</em> o{" "}
           <em>Entregó Equipo</em> resultarán en la generación de un nuevo{" "}
-          <em>"Reporte de incidente y/o percance"</em>.
+          <em>"Reporte de incidencia y/o percance"</em>.
         </Alert>
       );
     }

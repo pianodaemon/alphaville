@@ -10,6 +10,7 @@ import { loadUnitsCatalogAction } from "src/area/units/state/usecases/load-units
 import { loadUsersAsCatalogAction } from "src/area/users/state/usecases/load-users-as-catalog.usecase";
 import { loadStatusesAction } from "src/area/statuses/state/usecases/load-statuses.usecase";
 import { createPatioVoucherUpdateVoucherAction } from "src/area/patio-vouchers/state/usecases/create-patio-voucher-update-voucher.usecase";
+import { createIncidenceUpdateVoucherAction } from "src/area/incidences/state/usecases/create-incidence-update-voucher.usecase";
 import { catalogSelector as carrierCatalogSelector } from "src/area/carriers/state/carriers.selectors";
 import { catalogSelector as patioCatalogSelector } from "src/area/patios/state/patios.selectors";
 import { catalogSelector as unitCatalogSelector } from "src/area/units/state/units.selectors";
@@ -35,6 +36,7 @@ const mapDispatchToProps = {
   readVoucherAction,
   updateVoucherAction,
   createPatioVoucherUpdateVoucherAction,
+  createIncidenceUpdateVoucherAction,
 };
 
 function mapStateToProps(state: any) {

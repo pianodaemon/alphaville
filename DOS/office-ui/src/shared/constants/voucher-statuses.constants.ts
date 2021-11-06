@@ -11,3 +11,8 @@ export enum Status {
   CARRETERA = "En carretera",
   ENTRADA = "Entrada de Equipo",
 }
+
+export const IncidenceStatuses = {
+  ABIERTA: "ABIERTA",
+  RESUELTA: "RESUELTA",
+};

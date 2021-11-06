@@ -53,6 +53,13 @@ const {
   deletePatioVoucher,
   listPatioVouchers,
 } = require("./patio-vouchers");
+const {
+  createIncidence,
+  readIncidence,
+  updateIncidence,
+  deleteIncidence,
+  listIncidences,
+} = require("./incidences");
 
 var cors = require("cors");
 
@@ -429,6 +436,52 @@ router.get("/statuses", cors(corsOptionsDelegate), function (req, res) {
     .then((data) => res.json(data))
     .catch((err) => res.status(500).json(err));
 });
+
+/**
+ *
+ * Patio Vouchers
+ * ---------------------------------------------------------------------------------------------------
+ * ---------------------------------------------------------------------------------------------------
+ * ---------------------------------------------------------------------------------------------------
+ */
+app.options("/incidences", cors(corsOptionsDelegate));
+
+// enable pre-flight request for DELETE request
+app.options("/incidences/:id", cors(corsOptionsDelegate));
+
+router.get("/incidences", cors(corsOptionsDelegate), function (req, res) {
+  listIncidences(req.query)
+    .then((data) => res.json(data))
+    .catch((err) => res.status(500).json(err));
+});
+
+router.post("/incidences", cors(corsOptionsDelegate), function (req, res) {
+  createIncidence(req.body)
+    .then((data) => res.json(data))
+    .catch((err) => res.status(500).json(err));
+});
+
+router.get("/incidences/:id", cors(corsOptionsDelegate), function (req, res) {
+  readIncidence(req.params.id)
+    .then((data) => res.json(data))
+    .catch((err) => res.status(500).json(err));
+});
+
+router.put("/incidences/:id", cors(corsOptionsDelegate), function (req, res) {
+  updateIncidence(req.params.id, req.body)
+    .then((data) => res.json(data))
+    .catch((err) => res.status(500).json(err));
+});
+
+router.delete(
+  "/incidences/:id",
+  cors(corsOptionsDelegate),
+  function (req, res) {
+    deleteIncidence(req.params.id)
+      .then((data) => res.json(data))
+      .catch((err) => res.status(500).json(err));
+  }
+);
 
 app.use(router);
 

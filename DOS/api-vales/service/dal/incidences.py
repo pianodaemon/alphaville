@@ -29,12 +29,13 @@ class IncidencesPersistence(object):
         """
         client = IncidencesPersistence.get_mongo_client()
         incidences_coll = client[IncidencesPersistence.db].incidences
+        eventlog_coll = client[IncidencesPersistence.db].eventLog
 
         try:
             if doc_id:
-                cls._update(incidences_coll, doc_id, voucher_id, carrier_code, patio_code, platform, observations, unit_code, inspected_by, operator, status, item_list)
+                cls._update(incidences_coll, eventlog_coll, doc_id, voucher_id, carrier_code, patio_code, platform, observations, unit_code, inspected_by, operator, status, item_list)
             else:
-                doc_id = cls._create(incidences_coll, voucher_id, carrier_code, patio_code, platform, observations, unit_code, inspected_by, operator, status, item_list)
+                doc_id = cls._create(incidences_coll, eventlog_coll, voucher_id, carrier_code, patio_code, platform, observations, unit_code, inspected_by, operator, status, item_list)
             rc  = doc_id
             msg = ''
         except Exception as err:
@@ -46,7 +47,7 @@ class IncidencesPersistence(object):
 
 
     @staticmethod
-    def _create(collection, voucher_id, carrier_code, patio_code, platform, obs, unit_code, inspected_by, operator, status, items):
+    def _create(collection, eventlog_coll, voucher_id, carrier_code, patio_code, platform, obs, unit_code, inspected_by, operator, status, items):
         """
         It creates a newer incidence
         within the collection
@@ -81,16 +82,33 @@ class IncidencesPersistence(object):
             'blocked': False,
         })
 
+        eventlog_coll.insert_one({
+            'voucherId': voucher_id,
+            'timestamp': t,
+            'document': 'incidencia',
+            'documentId': doc_id,
+            'operation': 'create',
+            'platform': platform,
+            'patioCode': patio_code,
+            'observations': obs,
+            'unitCode': unit_code,
+            'originUser': inspected_by,
+            'targetUser': operator,
+            'status': status,
+            'itemList': items,
+        })
+
         return doc.inserted_id
 
 
     @staticmethod
-    def _update(collection, doc_id, voucher_id, carrier_code, patio_code, platform, obs, unit_code, inspected_by, operator, status, items):
+    def _update(collection, eventlog_coll, doc_id, voucher_id, carrier_code, patio_code, platform, obs, unit_code, inspected_by, operator, status, items):
         """
         It updates any incidence as per
         its document identifier
         """
         # The attributes to update
+        t = time.time()
         atu = {
             'voucherId': voucher_id,
             'platform': platform,
@@ -102,8 +120,24 @@ class IncidencesPersistence(object):
             'operator': operator,
             'status': status,
             'itemList': items,
-            'lastTouchTime': time.time(),
+            'lastTouchTime': t,
         }
+
+        eventlog_coll.insert_one({
+            'voucherId': voucher_id,
+            'timestamp': t,
+            'document': 'incidencia',
+            'documentId': doc_id,
+            'operation': 'update',
+            'platform': platform,
+            'patioCode': patio_code,
+            'observations': obs,
+            'unitCode': unit_code,
+            'originUser': inspected_by,
+            'targetUser': operator,
+            'status': status,
+            'itemList': items,
+        })
 
         collection.update_one({'_id': doc_id}, {"$set": atu })
 

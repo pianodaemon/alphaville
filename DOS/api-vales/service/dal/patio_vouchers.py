@@ -29,12 +29,13 @@ class PatioVouchersPersistence(object):
         """
         client = PatioVouchersPersistence.get_mongo_client()
         patio_vouchers_coll = client[PatioVouchersPersistence.db].patioVouchers
+        eventlog_coll = client[PatioVouchersPersistence.db].eventLog
 
         try:
             if doc_id:
-                cls._update(patio_vouchers_coll, doc_id, voucher_id, patio_code, observations, delivered_by, received_by, status, item_list)
+                cls._update(patio_vouchers_coll, eventlog_coll, doc_id, voucher_id, patio_code, observations, delivered_by, received_by, status, item_list)
             else:
-                doc_id = cls._create(patio_vouchers_coll, voucher_id, patio_code, observations, delivered_by, received_by, status, item_list)
+                doc_id = cls._create(patio_vouchers_coll, eventlog_coll, voucher_id, patio_code, observations, delivered_by, received_by, status, item_list)
             rc  = doc_id
             msg = ''
         except Exception as err:
@@ -46,7 +47,7 @@ class PatioVouchersPersistence(object):
 
 
     @staticmethod
-    def _create(collection, voucher_id, patio_code, obs, delivered_by, received_by, status, items):
+    def _create(collection, eventlog_coll, voucher_id, patio_code, obs, delivered_by, received_by, status, items):
         """
         It creates a newer patio voucher
         within the collection
@@ -78,16 +79,33 @@ class PatioVouchersPersistence(object):
             'blocked': False,
         })
 
+        eventlog_coll.insert_one({
+            'voucherId': voucher_id,
+            'timestamp': t,
+            'document': 'patio_vale',
+            'documentId': doc_id,
+            'operation': 'create',
+            'platform': '',
+            'patioCode': patio_code,
+            'observations': obs,
+            'unitCode': '',
+            'originUser': delivered_by,
+            'targetUser': received_by,
+            'status': status,
+            'itemList': items,
+        })
+
         return doc.inserted_id
 
 
     @staticmethod
-    def _update(collection, doc_id, voucher_id, patio_code, obs, delivered_by, received_by, status, items):
+    def _update(collection, eventlog_coll, doc_id, voucher_id, patio_code, obs, delivered_by, received_by, status, items):
         """
         It updates any voucher as per
         its document identifier
         """
         # The attributes to update
+        t = time.time()
         atu = {
             'voucherId': voucher_id,
             'patioCode': patio_code,
@@ -96,8 +114,24 @@ class PatioVouchersPersistence(object):
             'receivedBy': received_by,
             'status': status,
             'itemList': items,
-            'lastTouchTime': time.time(),
+            'lastTouchTime': t,
         }
+
+        eventlog_coll.insert_one({
+            'voucherId': voucher_id,
+            'timestamp': t,
+            'document': 'patio_vale',
+            'documentId': doc_id,
+            'operation': 'update',
+            'platform': '',
+            'patioCode': patio_code,
+            'observations': obs,
+            'unitCode': '',
+            'originUser': delivered_by,
+            'targetUser': received_by,
+            'status': status,
+            'itemList': items,
+        })
 
         collection.update_one({'_id': doc_id}, {"$set": atu })
 

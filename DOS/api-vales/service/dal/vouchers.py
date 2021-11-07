@@ -29,12 +29,13 @@ class VouchersPersistence(object):
         """
         client = VouchersPersistence.get_mongo_client()
         vouchers_coll = client[VouchersPersistence.db].vouchers
+        eventlog_coll = client[VouchersPersistence.db].eventLog
 
         try:
             if doc_id:
-                cls._update(vouchers_coll, doc_id, carrier_code, patio_code, platform, observations, unit_code, delivered_by, received_by, status, item_list)
+                cls._update(vouchers_coll, eventlog_coll, doc_id, carrier_code, patio_code, platform, observations, unit_code, delivered_by, received_by, status, item_list)
             else:
-                doc_id = cls._create(vouchers_coll, carrier_code, patio_code, platform, observations, unit_code, delivered_by, received_by, status, item_list)
+                doc_id = cls._create(vouchers_coll, eventlog_coll, carrier_code, patio_code, platform, observations, unit_code, delivered_by, received_by, status, item_list)
             rc  = doc_id
             msg = ''
         except Exception as err:
@@ -46,7 +47,7 @@ class VouchersPersistence(object):
 
 
     @staticmethod
-    def _create(collection, carrier_code, patio_code, platform, obs, unit_code, delivered_by, received_by, status, items):
+    def _create(collection, eventlog_coll, carrier_code, patio_code, platform, obs, unit_code, delivered_by, received_by, status, items):
         """
         It creates a newer voucher
         within the collection
@@ -80,16 +81,33 @@ class VouchersPersistence(object):
             'blocked': False,
         })
 
+        eventlog_coll.insert_one({
+            'voucherId': doc_id,
+            'timestamp': t,
+            'document': 'vale',
+            'documentId': doc_id,
+            'operation': 'create',
+            'platform': platform,
+            'patioCode': patio_code,
+            'observations': obs,
+            'unitCode': unit_code,
+            'originUser': delivered_by,
+            'targetUser': received_by,
+            'status': status,
+            'itemList': items,
+        })
+
         return doc.inserted_id
 
 
     @staticmethod
-    def _update(collection, doc_id, carrier_code, patio_code, platform, obs, unit_code, delivered_by, received_by, status, items):
+    def _update(collection, eventlog_coll, doc_id, carrier_code, patio_code, platform, obs, unit_code, delivered_by, received_by, status, items):
         """
         It updates any voucher as per
         its document identifier
         """
         # The attributes to update
+        t = time.time()
         atu = {
             'platform': platform,
             'carrierCode': carrier_code,
@@ -100,8 +118,24 @@ class VouchersPersistence(object):
             'receivedBy': received_by,
             'status': status,
             'itemList': items,
-            'lastTouchTime': time.time(),
+            'lastTouchTime': t,
         }
+
+        eventlog_coll.insert_one({
+            'voucherId': doc_id,
+            'timestamp': t,
+            'document': 'vale',
+            'documentId': doc_id,
+            'operation': 'update',
+            'platform': platform,
+            'patioCode': patio_code,
+            'observations': obs,
+            'unitCode': unit_code,
+            'originUser': delivered_by,
+            'targetUser': received_by,
+            'status': status,
+            'itemList': items,
+        })
 
         collection.update_one({'_id': doc_id}, {"$set": atu })
 
@@ -183,7 +217,7 @@ class VouchersPersistence(object):
                 "deliveredBy" : 1,
                 "receivedBy"  : 1,
                 "status"      : 1,
-            }).skip(whole_pages_offset).limit(target_items).sort(order_by, 1 if order == 'asc' else -1)
+            }).skip(whole_pages_offset).limit(target_items).sort(order_by, pymongo.ASCENDING if order == 'asc' else pymongo.DESCENDING)
 
             rc = 0
             msg = ''
@@ -209,6 +243,9 @@ class VouchersPersistence(object):
 
         client = VouchersPersistence.get_mongo_client()
         vouchers_coll = client[VouchersPersistence.db].vouchers
+        patioVouchers_coll = client[VouchersPersistence.db].patioVouchers
+        incidences_coll = client[VouchersPersistence.db].incidences
+        eventlog_coll = client[VouchersPersistence.db].eventLog
 
         try:
             doc = vouchers_coll.find_one({'_id': doc_id}, {
@@ -230,6 +267,75 @@ class VouchersPersistence(object):
                 msg = ''
                 doc['id'] = doc_id
                 del doc['_id']
+
+                # Retrieve all patioVouchers for the current voucher
+                patio_docs = patioVouchers_coll.find({'voucherId': doc_id}, {
+                    '_id': 1,
+                    'voucherId': 1,
+                    'patioCode': 1,
+                    'observations': 1,
+                    'deliveredBy': 1,
+                    'receivedBy': 1,
+                    'status': 1,
+                    'itemList': 1,
+                })
+
+                patio_docs_list = []
+
+                for i in patio_docs:
+                    i['id'] = i['_id']
+                    del i['_id']
+                    patio_docs_list.append(i)
+
+                doc['patioVoucherList'] = patio_docs_list
+
+                # Retrieve all incidences for the current voucher
+                incidence_docs = incidences_coll.find({'voucherId': doc_id}, {
+                    '_id': 1,
+                    'voucherId': 1,
+                    'platform': 1,
+                    'carrierCode': 1,
+                    'patioCode': 1,
+                    'observations': 1,
+                    'unitCode': 1,
+                    'inspectedBy': 1,
+                    'operator': 1,
+                    'status': 1,
+                    'itemList': 1,
+                })
+
+                incidence_docs_list = []
+
+                for i in incidence_docs:
+                    i['id'] = i['_id']
+                    del i['_id']
+                    incidence_docs_list.append(i)
+
+                doc['incidenceList'] = incidence_docs_list
+
+                # Retrieve all events recorded for the current voucher
+                eventlog_docs = eventlog_coll.find({'voucherId': doc_id}, {
+                    'timestamp': 1,
+                    'document': 1,
+                    'documentId': 1,
+                    'operation': 1,
+                    'platform': 1,
+                    'patioCode': 1,
+                    'observations': 1,
+                    'unitCode': 1,
+                    'originUser': 1,
+                    'targetUser': 1,
+                    'status': 1,
+                }).sort('timestamp', pymongo.ASCENDING)
+
+                eventlog_docs_list = []
+
+                for i in eventlog_docs:
+                    del i['_id']
+                    eventlog_docs_list.append(i)
+
+                doc['eventList'] = eventlog_docs_list
+
             else:
                 rc = -1
                 msg = 'Vale {} no existe'.format(doc_id)

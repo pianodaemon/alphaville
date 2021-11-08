@@ -77,39 +77,41 @@ export const createVoucherPDF = ({ voucher, mountPreviewSelector }: Props) => {
     margin: { left: 107 },
   });
 
-  autoTable(doc, {
-    startY: 60,
-    // showHead: false,
-    head: [{ equipment: "", units: "Unidad", cost: "Costo Unit.", }],
-    body: [
-      ...voucher.itemList.filter((item, index) => index % 2 === 0 ).map((item: any) => ({
-        equipment: item.title,
-        units: Intl.NumberFormat('es-MX',).format(item.quantity),
-        cost: Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(item.unitCost),
-      })),
-    ],
-    columnStyles: {
-      field: { fillColor: [41, 128, 185], textColor: 255, fontStyle: "bold" },
-    },
-    margin: { right: 107 },
-  });
+  if (voucher && voucher.itemList && voucher.itemList.length > 0) {
+    autoTable(doc, {
+      startY: 60,
+      // showHead: false,
+      head: [{ equipment: "", units: "Unidad", cost: "Costo Unit.", }],
+      body: [
+        ...voucher.itemList.filter((item, index) => index % 2 === 0 ).map((item: any) => ({
+          equipment: item.title,
+          units: Intl.NumberFormat('es-MX',).format(item.quantity),
+          cost: Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(item.unitCost),
+        })),
+      ],
+      columnStyles: {
+        field: { fillColor: [41, 128, 185], textColor: 255, fontStyle: "bold" },
+      },
+      margin: { right: 107 },
+    });
 
-  autoTable(doc, {
-    startY: 60,
-    // showHead: false,
-    head: [{ equipment: "", units: "Unidad", cost: "Costo Unit.", }],
-    body: [
-      ...voucher.itemList.filter((item, index) => index % 2 !== 0 ).map((item: any) => ({
-        equipment: item.title,
-        units: Intl.NumberFormat('es-MX',).format(item.quantity),
-        cost: Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(item.unitCost),
-      })),
-    ],
-    columnStyles: {
-      field: { fillColor: [41, 128, 185], textColor: 255, fontStyle: "bold" },
-    },
-    margin: { left: 107 },
-  });
+    autoTable(doc, {
+      startY: 60,
+      // showHead: false,
+      head: [{ equipment: "", units: "Unidad", cost: "Costo Unit.", }],
+      body: [
+        ...voucher.itemList.filter((item, index) => index % 2 !== 0 ).map((item: any) => ({
+          equipment: item.title,
+          units: Intl.NumberFormat('es-MX',).format(item.quantity),
+          cost: Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(item.unitCost),
+        })),
+      ],
+      columnStyles: {
+        field: { fillColor: [41, 128, 185], textColor: 255, fontStyle: "bold" },
+      },
+      margin: { left: 107 },
+    });
+  }
 
   autoTable(doc, {
     // startY: (doc as any).lastAutoTable.finalY + 150,

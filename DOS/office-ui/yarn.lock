@@ -1120,6 +1120,13 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
+"@babel/runtime@^7.14.0":
+  version "7.16.0"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.16.0.tgz#e27b977f2e2088ba24748bf99b5e1dece64e4f0b"
+  integrity sha512-Nht8L0O8YCktmsDV6FqFue7vQLRx3Hb0B37lS5y0jDRqRxlBG4wIJHnf9/bgSE2UyipKFA01YtS+npRdTWBUyw==
+  dependencies:
+    regenerator-runtime "^0.13.4"
+
 "@babel/template@^7.10.4", "@babel/template@^7.12.13", "@babel/template@^7.3.3":
   version "7.12.13"
   resolved "https://registry.yarnpkg.com/@babel/template/-/template-7.12.13.tgz#530265be8a2589dbb37523844c5bcb55947fb327"
@@ -2153,6 +2160,11 @@
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/@types/parse-json/-/parse-json-4.0.0.tgz#2f8bb441434d163b35fb8ffdccd7138927ffb8c0"
   integrity sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==
+
+"@types/pdfobject@^2.2.2":
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/@types/pdfobject/-/pdfobject-2.2.2.tgz#027b70e44741a5e55dea9f6b326fefb2b3a21ea0"
+  integrity sha512-a3Ul7DDltIjMazNu+32IjhJL4or4QM04fimwvhyYaJoOrypzcGwb6jnh56ClTcBv8T5oANg8ti1lyQti09Wuwg==
 
 "@types/prettier@^2.0.0":
   version "2.2.1"
@@ -4960,6 +4972,11 @@ dompurify@^2.0.12:
   resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.3.1.tgz#a47059ca21fd1212d3c8f71fdea6943b8bfbdf6a"
   integrity sha512-xGWt+NHAQS+4tpgbOAI08yxW0Pr256Gu/FNE2frZVTbgrBUn8M7tz7/ktS/LZ2MHeGqz6topj0/xY+y8R5FBFw==
 
+dompurify@^2.2.0:
+  version "2.3.3"
+  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.3.3.tgz#c1af3eb88be47324432964d8abc75cf4b98d634c"
+  integrity sha512-dqnqRkPMAjOZE0FogZ+ceJNM2dZ3V/yNOuFB7+39qpO93hHhfRpHw3heYQC7DPK9FqbQTfBKUJhiSfz4MvXYwg==
+
 domutils@^1.5.1, domutils@^1.7.0:
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/domutils/-/domutils-1.7.0.tgz#56ea341e834e06e6748af7a1cb25da67ea9f8c2a"
@@ -5875,6 +5892,11 @@ fb-watchman@^2.0.0:
   integrity sha512-DkPJKQeY6kKwmuMretBhr7G6Vodr7bFwDYTXIkfG1gjvNpaxBTQV3PbXg6bR1c1UP4jPOX0jHUbbHANL9vRjVg==
   dependencies:
     bser "2.1.1"
+
+fflate@^0.4.8:
+  version "0.4.8"
+  resolved "https://registry.yarnpkg.com/fflate/-/fflate-0.4.8.tgz#f90b82aefbd8ac174213abb338bd7ef848f0f5ae"
+  integrity sha512-FJqqoDBR00Mdj9ppamLa/Y7vxm+PRmNWA67N846RvsoYVMKB4q3y/de5PA7gUmRMYK/8CMz2GDZQmCRN1wBcWA==
 
 figgy-pudding@^3.5.1:
   version "3.5.2"
@@ -7990,6 +8012,11 @@ jspdf-autotable@3.5.9:
   resolved "https://registry.yarnpkg.com/jspdf-autotable/-/jspdf-autotable-3.5.9.tgz#8a625ef2aead44271da95e9f649843c401536925"
   integrity sha512-ZRfiI5P7leJuWmvC0jGVXu227m68C2Jfz1dkDckshmDYDeVFCGxwIBYdCUXJ8Eb2CyFQC2ok82fEWO+xRDovDQ==
 
+jspdf-autotable@^3.5.23:
+  version "3.5.23"
+  resolved "https://registry.yarnpkg.com/jspdf-autotable/-/jspdf-autotable-3.5.23.tgz#c46448ef93b51fc958feb6a2974257dde63c8f79"
+  integrity sha512-uIYxQsdKrDdbhygEFlbTVoaxawZMZXMasAOryQ1oMFTragcxLhhWIfc8peLCBXuB7fJ5SICtPZ2De7Pk7eS8SQ==
+
 jspdf@2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/jspdf/-/jspdf-2.1.0.tgz#2322f8644bc41845b3abe20db4c3ca0adeadb84c"
@@ -8001,6 +8028,21 @@ jspdf@2.1.0:
     canvg "^3.0.6"
     core-js "^3.6.0"
     dompurify "^2.0.12"
+    html2canvas "^1.0.0-rc.5"
+
+jspdf@^2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/jspdf/-/jspdf-2.4.0.tgz#53d6d2acc63203b0b3688949597dd11a633b1db5"
+  integrity sha512-nsZ92YfbNG/EimR1yqmOkxf2D4iJRypBsw7pvP1aPiIEnoGITaLl6XDR/GYA36/R29vMZSBedpEhBCzutSGytA==
+  dependencies:
+    "@babel/runtime" "^7.14.0"
+    atob "^2.1.2"
+    btoa "^1.2.1"
+    fflate "^0.4.8"
+  optionalDependencies:
+    canvg "^3.0.6"
+    core-js "^3.6.0"
+    dompurify "^2.2.0"
     html2canvas "^1.0.0-rc.5"
 
 jsprim@^1.2.2:
@@ -9483,6 +9525,11 @@ pbkdf2@^3.0.3:
     ripemd160 "^2.0.1"
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
+
+pdfobject@^2.2.7:
+  version "2.2.7"
+  resolved "https://registry.yarnpkg.com/pdfobject/-/pdfobject-2.2.7.tgz#487ec2ab425c9385f2d80eea5890d632f503cac2"
+  integrity sha512-9ptX0XNCtpYz0hNWz6j/1O4rvJkcPR2rct3UDBhs8ZEosOO67dCEAu4VpBvVJ64SMh8Mrn9pWWODnyLjgFQYgg==
 
 performance-now@^2.1.0:
   version "2.1.0"

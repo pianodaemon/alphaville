@@ -221,7 +221,7 @@ export const ValesTable = (props: Props) => {
           icon: "print",
           tooltip: "Imprimir",
           onClick: (event, rowData: any) =>
-            history.push(`/voucher/${rowData.id}/edit`),
+            history.push(`/voucher/${rowData.id}/pdf`),
           // disabled: !isAllowed('USR', PERMISSIONS.UPDATE),
         },
         {

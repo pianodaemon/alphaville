@@ -87,3 +87,7 @@
     grpc_tools_node_protoc --js_out=import_style=commonjs,binary:./DOS/office-ui/server/grpc --grpc_out=grpc_js:./DOS/office-ui/server/grpc -I="./DOS/api-vales/protos/" incidences.proto
 
     #grpc_tools_node_protoc --js_out=import_style=commonjs,binary:./DOS/office-ui/server/grpc --grpc_out=generate_package_definition:./DOS/office-ui/server/grpc -I="./DOS/api-vales/protos/" users.proto
+
+# https://stackoverflow.com/questions/24272058/word-wrap-in-generated-pdf-using-jspdf
+# https://stackoverflow.com/questions/33515127/adding-footer-to-pdf-using-jspdf
+# https://github.com/simonbengtsson/jsPDF-AutoTable/tree/master/examples

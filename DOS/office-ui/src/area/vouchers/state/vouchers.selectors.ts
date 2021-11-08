@@ -4,6 +4,8 @@ import { userCatalogSelector } from "src/area/users/state/users.selectors";
 import { catalogSelector } from "src/area/equipments/state/equipments.selectors";
 import { statusesSelector } from "src/area/statuses/state/statuses.selectors";
 import { Statuses } from "src/shared/constants/voucher-statuses.constants";
+import { catalogSelector as carriersCatalogSelector } from "src/area/carriers/state/carriers.selectors";
+import { catalogSelector as patioCatalogSelector } from "src/area/patios/state/patios.selectors";
 
 const sliceSelector = (state: VoucherSlice) => state[vouchersReducer.sliceName];
 
@@ -50,6 +52,77 @@ export const voucherSelector = createSelector(
           maxQuantity: quantity,
         };
       }),
+    };
+  }
+);
+
+export const voucherPdfSelector = createSelector(
+  sliceSelector,
+  catalogSelector,
+  userCatalogSelector,
+  carriersCatalogSelector,
+  patioCatalogSelector,
+  (slice: VoucherSlice, equipments, users, carriers, patios): any => {
+    const { voucher } = slice;
+    const deliveredBy =
+      voucher &&
+      users &&
+      users.find((user) => user.username === voucher.deliveredBy);
+    const receivedBy =
+      voucher &&
+      users &&
+      users.find((user) => user.username === voucher.receivedBy);
+    const carrier =
+      voucher &&
+      carriers &&
+      carriers.find((carr) => carr.code === voucher.carrierCode);
+    const patio =
+      voucher && patios && patios.find((pat) => pat.code === voucher.patioCode);
+    return {
+      ...voucher,
+      itemList: equipments?.map((equipment) => {
+        const quantity =
+          voucher?.itemList?.find((equip) => {
+            return equip.equipmentCode === equipment.code;
+          })?.quantity || 0;
+        const { code, regular, unitCost, title } = equipment;
+        const canEditUnit = () => {
+          switch (true) {
+            case voucher &&
+              voucher.status === Statuses.ENTRADA &&
+              parseInt(quantity.toString(), 10) > 0:
+              return true;
+            case voucher &&
+              [Statuses.ENTRADA, Statuses.CARRETERA].indexOf(voucher.status) >
+                -1 &&
+              parseInt(quantity.toString(), 10) === 0:
+              return false;
+            default:
+              return true;
+          }
+        };
+        return {
+          quantity,
+          equipmentCode: code,
+          regular,
+          unitCost,
+          title,
+          canEdit: canEditUnit(),
+          maxQuantity: quantity,
+        };
+      }),
+      deliveredBy: deliveredBy
+        ? `${deliveredBy.firstName} ${deliveredBy.lastName} (${
+            voucher && voucher.deliveredBy
+          })`
+        : voucher && voucher.deliveredBy,
+      receivedBy: receivedBy
+        ? `${receivedBy.firstName} ${receivedBy.lastName} (${
+            voucher && voucher.receivedBy
+          })`
+        : voucher && voucher.receivedBy,
+      carrierCode: carrier,
+      patioCode: patio,
     };
   }
 );

@@ -20,7 +20,11 @@ import DateFnsUtils from "@date-io/date-fns";
 import { add, mul } from "src/shared/utils/math/add.util";
 import { NumberFormatCustom } from "src/shared/components/number-format-custom.component";
 import { AutoCompleteDropdown } from "src/shared/components/autocomplete-dropdown.component";
-import { Statuses, IncidenceStatuses } from "src/shared/constants/voucher-statuses.constants";
+import {
+  Statuses,
+  IncidenceStatuses,
+} from "src/shared/constants/voucher-statuses.constants";
+import { getFormattedDate } from "src/shared/utils/format-date.util";
 import { Voucher } from "../state/vouchers.reducer";
 import Table from "./table.component";
 
@@ -337,6 +341,7 @@ export const VoucherForm = (props: Props) => {
       fields.itemList = filterItems(fields.itemList);
       updateVoucherAction({ id, fields, history });
     } else {
+      fields.itemList = filterItems(fields.itemList);
       createVoucherAction({ fields, history });
     }
   };
@@ -456,15 +461,7 @@ export const VoucherForm = (props: Props) => {
                       label="Fecha de Creación"
                       value={
                         field.value
-                          ? new Date(field.value * 1000).toLocaleDateString(
-                              "es-ES",
-                              {
-                                weekday: "long",
-                                year: "numeric",
-                                month: "long",
-                                day: "numeric",
-                              }
-                            ) || ""
+                          ? getFormattedDate(field.value * 1000) || ""
                           : ""
                       }
                     />

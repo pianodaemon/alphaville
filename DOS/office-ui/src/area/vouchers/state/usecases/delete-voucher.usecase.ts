@@ -29,7 +29,7 @@ function* deleteVoucherWorker(action: any): Generator<any, any, any> {
     yield put(loadVouchersAction());
     yield put(
       notificationAction({
-        message: `¡Voucher ${action.payload} ha sido eliminado!`,
+        message: `¡Vale ${action.payload} ha sido eliminado!`,
       })
     );
   } catch (e: any) {

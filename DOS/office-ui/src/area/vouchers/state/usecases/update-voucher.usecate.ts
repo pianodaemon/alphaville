@@ -27,13 +27,14 @@ function* updateVoucherWorker(action: any): Generator<any, any, any> {
       throw new Error(result.returnMessage);
     }
     yield put(updateVoucherSuccessAction(result));
+    yield window.open(`/voucher/${id}/pdf`, "_blank");
     if (history) {
       yield history.push("/vouchers");
       yield put(loadVouchersAction());
     }
     yield put(
       notificationAction({
-        message: `¡Voucher ${id} ha sido actualizado!`,
+        message: `¡Vale ${id} ha sido actualizado!`,
       })
     );
   } catch (e: any) {

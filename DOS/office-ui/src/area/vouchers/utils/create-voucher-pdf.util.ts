@@ -54,7 +54,7 @@ export const createVoucherPDF = ({ voucher, mountPreviewSelector }: Props) => {
     head: [{ field: "ID", value: "Value" }],
     body: [
       { field: "Unidad", value: voucher.unitCode },
-      { field: "Fecha", value: getFormattedDate(voucher.generationTime) },
+      { field: "Fecha", value: getFormattedDate(voucher.generationTime * 1000) },
     ],
     columnStyles: {
       field: { fillColor: [41, 128, 185], textColor: 255, fontStyle: "bold" },

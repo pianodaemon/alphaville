@@ -26,12 +26,14 @@ function* createVoucherWorker(action: any): Generator<any, any, any> {
     if (result && result.returnCode === errorCodes.GENERIC_ERROR) {
       throw new Error(result.returnMessage);
     }
+    const newVoucherId = result.returnCode;
     yield put(createVoucherSuccessAction(result));
     yield history.push("/vouchers");
+    yield window.open(`/voucher/${newVoucherId}/pdf`, "_blank");
     yield put(loadVouchersAction());
     yield put(
       notificationAction({
-        message: `¡Voucher ${result.returnCode} ha sido creado!`,
+        message: `¡Voucher ${newVoucherId} ha sido creado!`,
         type: "success",
       })
     );

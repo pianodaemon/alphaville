@@ -91,3 +91,4 @@
 # https://stackoverflow.com/questions/24272058/word-wrap-in-generated-pdf-using-jspdf
 # https://stackoverflow.com/questions/33515127/adding-footer-to-pdf-using-jspdf
 # https://github.com/simonbengtsson/jsPDF-AutoTable/tree/master/examples
+# https://docs.google.com/document/d/1uXYF6etyUkBu3eATy9NSII4csJyTgrHf/edit

@@ -139,7 +139,7 @@ export const createVoucherPDF = ({ voucher, mountPreviewSelector }: Props) => {
     body: [
       { field: "Entregó Equipo", value: voucher.deliveredBy },
       { field: "Recibió Equipo", value: voucher.receivedBy },
-      { field: "Operador", value: voucher.patioCode },
+      { field: "Operador", value: "" },
     ],
     columnStyles: {
       field: { fillColor: [41, 128, 185], textColor: 255, fontStyle: "bold" },

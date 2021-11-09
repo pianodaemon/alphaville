@@ -33,7 +33,7 @@ function* createVoucherWorker(action: any): Generator<any, any, any> {
     yield put(loadVouchersAction());
     yield put(
       notificationAction({
-        message: `¡Voucher ${newVoucherId} ha sido creado!`,
+        message: `¡Vale ${newVoucherId} ha sido creado!`,
         type: "success",
       })
     );

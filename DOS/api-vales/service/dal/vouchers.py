@@ -326,6 +326,7 @@ class VouchersPersistence(object):
                     'originUser': 1,
                     'targetUser': 1,
                     'status': 1,
+                    'itemList': 1,
                 }).sort('timestamp', pymongo.ASCENDING)
 
                 eventlog_docs_list = []

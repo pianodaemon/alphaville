@@ -32,6 +32,10 @@ export const voucherSelector = createSelector(
             case voucher &&
               voucher.status === Statuses.ENTRADA &&
               parseInt(quantity.toString(), 10) > 0:
+              return false;
+            case voucher &&
+              voucher.status === Statuses.ENTRADA &&
+              parseInt(quantity.toString(), 10) === 0:
               return true;
             case voucher &&
               [Statuses.ENTRADA, Statuses.CARRETERA].indexOf(voucher.status) >
@@ -86,28 +90,12 @@ export const voucherPdfSelector = createSelector(
             return equip.equipmentCode === equipment.code;
           })?.quantity || 0;
         const { code, regular, unitCost, title } = equipment;
-        const canEditUnit = () => {
-          switch (true) {
-            case voucher &&
-              voucher.status === Statuses.ENTRADA &&
-              parseInt(quantity.toString(), 10) > 0:
-              return true;
-            case voucher &&
-              [Statuses.ENTRADA, Statuses.CARRETERA].indexOf(voucher.status) >
-                -1 &&
-              parseInt(quantity.toString(), 10) === 0:
-              return false;
-            default:
-              return true;
-          }
-        };
         return {
           quantity,
           equipmentCode: code,
           regular,
           unitCost,
           title,
-          canEdit: canEditUnit(),
           maxQuantity: quantity,
         };
       }),

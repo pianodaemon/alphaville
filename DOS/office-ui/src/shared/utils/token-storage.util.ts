@@ -42,5 +42,4 @@ export class TokenStorage {
   public static getTokenClaims(): { [key: string]: string | number } | null {
     return jwt_decode(this.getToken() || '');
   }
-
 }

@@ -4,6 +4,7 @@ export interface Patio {
   id: number;
   code: string;
   title: string;
+  typeCode: string;
 }
 
 export interface PatioSlice {

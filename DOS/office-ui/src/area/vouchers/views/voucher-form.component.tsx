@@ -228,7 +228,7 @@ export const VoucherForm = (props: Props) => {
       } || {}
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [voucher]);
+  }, [patio, username, voucher]);
   const diffVoucherUnits = ({
     pristine,
     dirty,

@@ -214,7 +214,7 @@ export const VoucherForm = (props: Props) => {
       per_page: Number.MAX_SAFE_INTEGER,
     });
     if (id) {
-      readVoucherAction({ id, history });
+      readVoucherAction({ id, history, editMode: action });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

@@ -33,6 +33,7 @@ export interface VoucherSlice {
     loading: boolean,
     error: any,
   } | null,
+  editMode: "create" | "edit" | "forward" | "view" | null,
 }
 
 export type Item = {
@@ -52,6 +53,7 @@ const initialState: VoucherSlice = {
     order: 'desc',
     order_by: 'id',
   },
+  editMode: null,
   filters: null,
   search: null,
 };

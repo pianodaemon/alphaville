@@ -18,7 +18,7 @@ export const voucherSelector = createSelector(
   sliceSelector,
   catalogSelector,
   (slice: VoucherSlice, equipments): any => {
-    const { voucher } = slice;
+    const { voucher, editMode } = slice;
     return {
       ...voucher,
       itemList: equipments?.map((equipment) => {
@@ -31,6 +31,7 @@ export const voucherSelector = createSelector(
           switch (true) {
             case voucher &&
               voucher.status === Statuses.ENTRADA &&
+              editMode !== "forward" &&
               parseInt(quantity.toString(), 10) > 0:
               return false;
             case voucher &&

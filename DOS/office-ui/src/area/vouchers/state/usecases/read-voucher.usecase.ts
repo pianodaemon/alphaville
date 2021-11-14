@@ -20,12 +20,14 @@ export const readVoucherErrorAction: ActionFunctionAny<Action<any>> =
 
 function* readVoucherWorker(action: any): Generator<any, any, any> {
   try {
-    const { id } = action.payload;
+    const { id, editMode } = action.payload;
     const result = yield call(readVoucher, id);
     if (result && result.returnCode === errorCodes.GENERIC_ERROR) {
       throw new Error(result.returnMessage);
     }
-    yield put(readVoucherSuccessAction(result));
+    yield put(
+      readVoucherSuccessAction({ ...result, ...(editMode ? { editMode } : {}) })
+    );
   } catch (e: any) {
     const { history } = action.payload;
     const message: string = resolveError(
@@ -53,6 +55,7 @@ const vouchersReducerHandlers = {
       ...state,
       loading: true,
       voucher: null,
+      editMode: null,
     };
   },
   [READ_VOUCHER_SUCCESS]: (state: any, action: any) => {
@@ -60,6 +63,7 @@ const vouchersReducerHandlers = {
       ...state,
       loading: false,
       voucher: action.payload.voucher,
+      editMode: action.payload.editMode,
     };
   },
   [READ_VOUCHER_ERROR]: (state: any) => {

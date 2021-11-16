@@ -25,8 +25,9 @@ import {
   IncidenceStatuses,
 } from "src/shared/constants/voucher-statuses.constants";
 import { getFormattedDate } from "src/shared/utils/format-date.util";
-import { Voucher } from "../state/vouchers.reducer";
 import Table from "./table.component";
+import { Voucher } from "../state/vouchers.reducer";
+import { resolveVoucherStatusTitle } from "../utils/resolve-voucher-status-title.util";
 
 type Props = {
   loadStatusesAction: Function;
@@ -354,27 +355,15 @@ export const VoucherForm = (props: Props) => {
         )
       : 0;
   };
-  const showTitle: () => string = () => {
-    switch (true) {
-      case action === "create":
-        return "Entrada de Equipo";
-      case viewOnlyModeOn === true:
-        return "Vale de equipo de amarre";
-      case Boolean(
-        id &&
-          [Statuses.ENTRADA, Statuses.PATIO].indexOf(voucher.status) > -1 &&
-          forwardVoucher
-      ):
-        return "Salida de patio a carretera";
-      case Boolean(id && watchStatus === Statuses.ENTRADA && !forwardVoucher):
-      case Boolean(id && watchStatus === Statuses.CARRETERA && !forwardVoucher):
-        return "Entrada de Equipo (edición)";
-      case Boolean(id && watchStatus === Statuses.CARRETERA && forwardVoucher):
-        return "Entrada de carretera a patio";
-      default:
-        return "Entrada a patio";
-    }
-  };
+  const showTitle: () => string = () =>
+    resolveVoucherStatusTitle({
+      action,
+      forwardVoucher,
+      id,
+      viewOnlyModeOn,
+      voucher,
+      watchStatus,
+    });
   const showAlert: () => React.ReactNode = () => {
     if (!voucher || !voucher.itemList) {
       return;

@@ -36,6 +36,7 @@ type Props = {
   isLoggedIn: boolean;
   checked: boolean;
   // refreshing: boolean,
+  patioFull: string;
   username: string,
 };
 
@@ -135,6 +136,13 @@ const useStyles = makeStyles((theme: Theme) =>
     nested: {
       paddingLeft: theme.spacing(4),
     },
+    chip: {
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      maxWidth: '20rem',
+      fontSize: theme.typography.pxToRem(11),
+    },
   })
 );
 
@@ -147,6 +155,7 @@ export function AppBarComponent(props: Props) {
     refreshing,
     refreshTokenAuthAction,
     */
+    patioFull,
     username,
   } = props;
   const classes = useStyles();
@@ -354,7 +363,13 @@ export function AppBarComponent(props: Props) {
             {isLoggedIn && checked && (
               <>
                 <Chip
-                  label={username}
+                  className={classes.chip}
+                  label={(
+                    <section>
+                      <div className={classes.chip}>{username}</div>
+                      <div className={classes.chip}>Patio: {patioFull}</div>
+                    </section>
+                  )}
                   color="default"
                   icon={<AccountCircle />}
                   onClick={handleMenu}

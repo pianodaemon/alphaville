@@ -5,6 +5,7 @@ import {
   // refreshingSelector,
   usernameLoginSelector,
 } from "src/area/auth/state/auth.selectors";
+import { patioFullSelector } from "src/area/auth/state/auth.selectors";
 import { logoutAction } from "src/area/auth/state/usecases/logout.usecase";
 // import { refreshTokenAuthAction } from 'src/area/auth/state/usecases/refresh-token-auth.usecase';
 import { AppBarComponent } from "./appbar.component";
@@ -20,6 +21,7 @@ function mapStateToProps(state: any) {
     isLoggedIn: isLoggedInSelector(state),
     // refreshing: refreshingSelector(state),
     username: usernameLoginSelector(state),
+    patioFull: patioFullSelector(state),
   };
 }
 

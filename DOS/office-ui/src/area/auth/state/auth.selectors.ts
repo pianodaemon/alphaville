@@ -65,3 +65,12 @@ export const patioSelector = createSelector(
       ?.code || "";
   }
 );
+
+export const patioFullSelector = createSelector(
+  sliceSelector,
+  catalogSelector,
+  (slice: any, patios) => {
+    const patio = patios?.find((patio) => patio.id === slice.profile?.user?.patioId);
+    return `${patio?.title} (${patio?.code})`;
+  }
+);

@@ -1,8 +1,9 @@
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import PDFObject from "pdfobject";
-import { getFormattedDate } from "src/shared/utils/format-date.util";
+import { getFormattedDate, getFormattedHour } from "src/shared/utils/format-date.util";
 import { Voucher } from "../state/vouchers.reducer";
+import { resolveVoucherStatusTitle } from "./resolve-voucher-status-title.util";
 
 type Props = {
   voucher: Voucher;
@@ -26,7 +27,7 @@ const PDFObjectOptions = {
 const copies = {
   MATERIALS_DISCLAIMER:
     "* Si el material prestado en este vale no es regresado en un plazo de 48 hrs. se procedera a cobro",
-  NOTE: "Nota: Alguien ajeno al depto. de control de equipo no tiene autoridad de pedirles que dejen el equipo en alguna patio",
+  NOTE: "Nota: Alguien ajeno al depto. de control de equipo no tiene autoridad de pedirles que dejen el equipo en algún patio",
 };
 const LOGO_URL = "/images/logo.png";
 
@@ -34,6 +35,7 @@ export const createVoucherPDF = ({ voucher, mountPreviewSelector }: Props) => {
   console.log(voucher.itemList);
   const doc = new jsPDF({ orientation: "portrait", format: "a4" });
   doc.setFontSize(18);
+  doc.text(resolveVoucherStatusTitle({ voucher, isPDF: true }), A4_PAPER_WIDTH - 160, 15);
   doc.text("Vales".toUpperCase(), A4_PAPER_WIDTH - 50, 10);
   doc.text("Equipo de Amarre".toUpperCase(), A4_PAPER_WIDTH - 70, 15);
   doc.text("Nº :".toUpperCase(), A4_PAPER_WIDTH - 70, 25);
@@ -55,6 +57,7 @@ export const createVoucherPDF = ({ voucher, mountPreviewSelector }: Props) => {
     body: [
       { field: "Unidad", value: voucher.unitCode },
       { field: "Fecha", value: getFormattedDate(voucher.generationTime * 1000) },
+      { field: "Hora", value: getFormattedHour(voucher.generationTime * 1000) },
     ],
     columnStyles: {
       field: { fillColor: [41, 128, 185], textColor: 255, fontStyle: "bold" },

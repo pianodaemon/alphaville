@@ -7,8 +7,8 @@ import FormControl from "@material-ui/core/FormControl";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import TextField from "@material-ui/core/TextField";
 import Chip from "@material-ui/core/Chip";
-import { Voucher } from "src/area/vouchers/state/vouchers.reducer";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import { AutoCompleteDropdown } from "src/shared/components/autocomplete-dropdown.component";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -104,70 +104,39 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 type Props = {
-  loading: boolean | undefined;
-  searchVoucherAction: Function;
-  searchVoucherResetAction: Function;
-  voucher: Voucher | null;
+  loadCarriersAction: Function;
+  carriers: any;
 };
 
-export const InNout = (props: Props) => {
+export const Out = (props: Props) => {
   const classes = useStyles();
   const history = useHistory();
-  const { loading, searchVoucherAction, searchVoucherResetAction, voucher } = props;
-  const handleClick = () => {
-    if (voucher) {
-      window.open(`/voucher/${voucher.id}/forward`, "_blank");
-    }
-  };
+  const { carriers, loadCarriersAction } = props;
   useEffect(() => {
-    return searchVoucherResetAction();
+    return loadCarriersAction();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  console.log(carriers);
   return (
     <Paper className={classes.paper}>
-      <h1 style={{ color: "#E31B23", textAlign: "center" }}>Entradas y Salidas</h1>
+      <h1 style={{ color: "#E31B23", textAlign: "center" }}>Salidas de Equipo</h1>
       <hr className={classes.hrDivider} />
       <form>
         <Grid container spacing={3}>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={4}>
             <FormControl className={classes.formControl}>
-              <TextField
-                // disabled={viewOnlyModeOn || isEditing}
-                id="code"
-                label="Ingrese No. de Vale"
-                // value={field.value ? field.value || "" : ""}
-                inputProps={{
-                  autoComplete: "off",
+              <AutoCompleteDropdown
+                fieldLabel="carrierName"
+                fieldValue="code"
+                label="Carrier"
+                name="carrier"
+                onChange={(value: any) => {
+                  // return setValue("receivedBy", value);
                 }}
-                placeholder="Ejemplo: 1, 23, 100"
-                onChange={(event: any) => {
-                  if (event.target.value.length > 0) {
-                    searchVoucherAction({ id: event.target.value, history });
-                  } else {
-                    searchVoucherResetAction();
-                  }
-                }}
+                options={carriers || []}
+                value={""}
               />
-              {false && (
-                <FormHelperText
-                  error
-                  classes={{ error: classes.textErrorHelper }}
-                >
-                  Ingrese una Clave
-                </FormHelperText>
-              )}
             </FormControl>
-            <div>
-              {voucher && (
-                <Chip
-                  label={`ID: ${voucher.id} - Estatus: ${
-                    voucher && voucher.status
-                  }`}
-                  onClick={handleClick}
-                />
-              )}
-              {loading && <CircularProgress className={classes.progress} size={20} /> }
-            </div>
           </Grid>
         </Grid>
       </form>

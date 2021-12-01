@@ -1,8 +1,9 @@
 import React from "react";
-import { CatalogCard } from "src/shared/components/catalog-card.component";
-import { makeStyles } from "@material-ui/core/styles";
 import { useHistory /*, useParams*/ } from "react-router-dom";
-import { Routes } from 'src/shared/constants/routes.contants';
+import { makeStyles } from "@material-ui/core/styles";
+import { CatalogCard } from "src/shared/components/catalog-card.component";
+import { Routes } from "src/shared/constants/routes.contants";
+import { TypeCodes } from "src/shared/constants/patio.constants";
 
 const useStyles = makeStyles({
   root: {
@@ -11,32 +12,49 @@ const useStyles = makeStyles({
     display: "flex",
     flexDirection: "row",
     flexWrap: "wrap",
-    height: 'calc(100vh - 156px)',
+    height: "calc(100vh - 156px)",
     justifyContent: "center",
     overflow: "auto",
   },
 });
 
-export const Process = () => {
+type Props = {
+  userPatioTypeCode: string;
+};
+
+export const Process = (props: Props) => {
   const classes = useStyles();
   const history = useHistory();
+  const { userPatioTypeCode } = props;
   const items = [
     {
-      title: "Vales",
+      title: "Entrada de Equipo",
       imageURL: "/images/carrier.png",
-      onClick: (e: React.MouseEvent<HTMLElement>) => history.push(Routes.PROCESSES.VOUCHERS),
+      onClick: (e: React.MouseEvent<HTMLElement>) =>
+        history.push(Routes.PROCESSES.VOUCHERS),
+      hidden: userPatioTypeCode !== TypeCodes.TRANSFER,
     },
     {
-      title: "Entradas y Salidas",
+      title: "Entradas a Patio y Salidas a Carretera",
       imageURL: "/images/carrier.png",
-      onClick: (e: React.MouseEvent<HTMLElement>) => history.push(Routes.PROCESSES.INNOUT),
+      onClick: (e: React.MouseEvent<HTMLElement>) =>
+        history.push(Routes.PROCESSES.INNOUT),
+      hidden: false,
+    },
+    {
+      title: "Salidas de Equipo",
+      imageURL: "/images/carrier.png",
+      onClick: (e: React.MouseEvent<HTMLElement>) =>
+        history.push(Routes.PROCESSES.OUT),
+      hidden: userPatioTypeCode !== TypeCodes.TRANSFER,
     },
   ];
   return (
     <div className={classes.root}>
-      {items.map((item, index) => (
-        <CatalogCard {...item} index={index} key={index} />
-      ))}
+      {items.map(
+        (item, index) =>
+          !item.hidden && <CatalogCard {...item} index={index} key={index} />
+      )}
     </div>
   );
 };

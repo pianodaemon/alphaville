@@ -1,30 +1,34 @@
-import { Action, createAction, ActionFunctionAny } from 'redux-actions';
-import { call, put, takeLatest } from 'redux-saga/effects';
-import { mergeSaga } from 'src/redux-utils/merge-saga';
-import { readUser } from 'src/area/users/service/user.service';
-import { TokenStorage } from 'src/shared/utils/token-storage.util';
-import { authReducer } from '../auth.reducer';
+import { Action, createAction, ActionFunctionAny } from "redux-actions";
+import { call, put, takeLatest } from "redux-saga/effects";
+import { mergeSaga } from "src/redux-utils/merge-saga";
+import { readUser } from "src/area/users/service/user.service";
+import { readPatio } from "src/area/patios/service/patio.service";
+import { TokenStorage } from "src/shared/utils/token-storage.util";
+import { authReducer } from "../auth.reducer";
 
-const postfix = '/app';
+const postfix = "/app";
 const LOAD_USER_PROFILE = `LOAD_USER_PROFILE${postfix}`;
 const LOAD_USER_PROFILE_SUCCESS = `LOAD_USER_PROFILE_SUCCESS${postfix}`;
 const LOAD_USER_PROFILE_ERROR = `LOAD_USER_PROFILE_ERROR${postfix}`;
 
-export const loadUserProfileAction: ActionFunctionAny<Action<any>> = createAction(
-    LOAD_USER_PROFILE
-);
-export const loadUserProfileSuccessAction: ActionFunctionAny<
-  Action<any>
-> = createAction(LOAD_USER_PROFILE_SUCCESS);
-export const loadUserProfileErrorAction: ActionFunctionAny<Action<any>> = createAction(
-    LOAD_USER_PROFILE_ERROR
-);
+export const loadUserProfileAction: ActionFunctionAny<Action<any>> =
+  createAction(LOAD_USER_PROFILE);
+export const loadUserProfileSuccessAction: ActionFunctionAny<Action<any>> =
+  createAction(LOAD_USER_PROFILE_SUCCESS);
+export const loadUserProfileErrorAction: ActionFunctionAny<Action<any>> =
+  createAction(LOAD_USER_PROFILE_ERROR);
 
 function* readUserWorker(): Generator<any, any, any> {
   try {
     const { sub: userId } = TokenStorage.getTokenClaims() || {};
     const result = yield call(readUser, userId);
-    yield put(loadUserProfileSuccessAction(result));
+    const patio = yield call(readPatio, result?.user?.patioId);
+    yield put(
+      loadUserProfileSuccessAction({
+        ...result,
+        patioTypeCode: patio.patio.typeCode,
+      })
+    );
   } catch (e) {
     yield put(loadUserProfileErrorAction());
   }

@@ -61,8 +61,10 @@ export const patioSelector = createSelector(
   sliceSelector,
   catalogSelector,
   (slice: any, patios) => {
-    return patios?.find((patio) => patio.id === slice.profile?.user?.patioId)
-      ?.code || "";
+    return (
+      patios?.find((patio) => patio.id === slice.profile?.user?.patioId)
+        ?.code || ""
+    );
   }
 );
 
@@ -70,7 +72,14 @@ export const patioFullSelector = createSelector(
   sliceSelector,
   catalogSelector,
   (slice: any, patios) => {
-    const patio = patios?.find((patio) => patio.id === slice.profile?.user?.patioId);
+    const patio = patios?.find(
+      (patio) => patio.id === slice.profile?.user?.patioId
+    );
     return `${patio?.title} (${patio?.code})`;
   }
+);
+
+export const patioTypeCodeSelector = createSelector(
+  sliceSelector,
+  (slice: any) => slice.profile?.patioTypeCode
 );

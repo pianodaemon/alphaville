@@ -22,6 +22,7 @@ import { VourcherFormContainer } from "src/area/vouchers/views/voucher-form.cont
 import { ProcessContainer } from "src/area/catalogs/views/process.container";
 import { VouchersTableContainer } from "src/area/vouchers/views/vouchers-table.container";
 import { InNoutContainer } from "src/area/in-n-out/views/in-n-out.container";
+import { OutContainer } from "src/area/in-n-out/views/out.container";
 import { VourcherPdfContainer } from "src/area/vouchers/views/voucher-pdf.container";
 
 // import { UsersFormContainer } from 'src/area/patios/views/patios-form.container';
@@ -141,7 +142,10 @@ const routes: Array<CustomRoute> = [
   },
   {
     props: {
-      path: ["/voucher/:action(create)", "/voucher/:id/:action(edit|view|forward)"],
+      path: [
+        "/voucher/:action(create)",
+        "/voucher/:id/:action(edit|view|forward)",
+      ],
       exact: true,
     },
     component: <VourcherFormContainer />,
@@ -190,6 +194,13 @@ const routes: Array<CustomRoute> = [
       exact: true,
     },
     component: <InNoutContainer />,
+  },
+  {
+    props: {
+      path: ["/out/"],
+      exact: true,
+    },
+    component: <OutContainer />,
   },
   {
     props: {

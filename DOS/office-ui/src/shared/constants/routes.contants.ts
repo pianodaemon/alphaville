@@ -10,5 +10,6 @@ export const Routes = {
   PROCESSES: {
     VOUCHERS: "/vouchers",
     INNOUT: "/in-n-out",
+    OUT: "/out",
   },
 };

@@ -15,6 +15,7 @@ message Patio {
   int32 id         = 1;
   string code      = 2;
   string title     = 3;
+  string typeCode  = 4;
 }
 
 message PatioId {

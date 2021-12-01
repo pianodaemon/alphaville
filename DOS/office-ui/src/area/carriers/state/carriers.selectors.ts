@@ -45,3 +45,17 @@ export const filtersSelector = createSelector(
   sliceSelector,
   (slice: CarrierSlice) => slice.filters
 );
+
+export const outSelector = createSelector(
+  sliceSelector,
+  (slice: CarrierSlice) =>
+    slice.carriers &&
+    Array.isArray(slice.carriers) &&
+    slice.carriers.map((carrier: Carrier) => {
+      return {
+        ...carrier,
+        disabled: carrier.disabled ? 'No' : 'Sí',
+        carrierName: `${carrier.title} (${carrier.code})`
+      };
+    })
+);

@@ -203,7 +203,8 @@ proto.dylk.Patio.toObject = function(includeInstance, msg) {
   var f, obj = {
     id: jspb.Message.getFieldWithDefault(msg, 1, 0),
     code: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    title: jspb.Message.getFieldWithDefault(msg, 3, "")
+    title: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    typecode: jspb.Message.getFieldWithDefault(msg, 4, "")
   };
 
   if (includeInstance) {
@@ -252,6 +253,10 @@ proto.dylk.Patio.deserializeBinaryFromReader = function(msg, reader) {
       var value = /** @type {string} */ (reader.readString());
       msg.setTitle(value);
       break;
+    case 4:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setTypecode(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -299,6 +304,13 @@ proto.dylk.Patio.serializeBinaryToWriter = function(message, writer) {
   if (f.length > 0) {
     writer.writeString(
       3,
+      f
+    );
+  }
+  f = message.getTypecode();
+  if (f.length > 0) {
+    writer.writeString(
+      4,
       f
     );
   }
@@ -356,6 +368,24 @@ proto.dylk.Patio.prototype.getTitle = function() {
  */
 proto.dylk.Patio.prototype.setTitle = function(value) {
   return jspb.Message.setProto3StringField(this, 3, value);
+};
+
+
+/**
+ * optional string typeCode = 4;
+ * @return {string}
+ */
+proto.dylk.Patio.prototype.getTypecode = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.dylk.Patio} returns this
+ */
+proto.dylk.Patio.prototype.setTypecode = function(value) {
+  return jspb.Message.setProto3StringField(this, 4, value);
 };
 
 

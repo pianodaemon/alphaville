@@ -8,19 +8,78 @@ import pymongo
 import psycopg2
 import boto3
 
+def manipular_totalizado(vales, equipos, usuarios):
+    s = ''
+    s += ','.join(['Num vale', 'Fecha creacion', 'Carrier', 'Plataforma', 'Unidad', 'Patio', 'Recibio', 'Estatus', 'Monto']) + '\n'
+
+    for v in vales:
+        fecha =  datetime.fromtimestamp(v['generationTime']).strftime('%m/%d/%Y')
+
+        monto = Decimal('0.0')
+        for e in v['itemList']:
+            monto += equipos[e['equipmentCode']]['unit_cost'] * e['quantity']
+
+        s += ','.join([
+            str(v['_id']),
+            '"' + fecha + '"',
+            '"' + v['carrierCode'] + '"',
+            '"' + v['platform'] + '"',
+            '"' + v['unitCode'] + '"',
+            '"' + v['patioCode'] + '"',
+            '"' + usuarios[v['receivedBy']]['name'] + '"',
+            '"' + v['status'] + '"',
+            str(monto)
+        ]) + '\n'
+
+    return s
+
+
+def manipular_detallado(vales, equipos, usuarios):
+    s = ''
+    s += ','.join(['Num vale', 'Fecha creacion', 'Carrier', 'Plataforma', 'Unidad', 'Patio', 'Recibio', 'Estatus', 'Equipo', 'Unidades', 'Costo', 'Monto']) + '\n'
+
+    for v in vales:
+        fecha =  datetime.fromtimestamp(v['generationTime']).strftime('%m/%d/%Y')
+
+        for e in v['itemList']:
+            eq_code = e['equipmentCode']
+            unit_cost = equipos[eq_code]['unit_cost']
+            quantity = e['quantity']
+            monto = unit_cost * quantity
+
+            s += ','.join([
+                str(v['_id']),
+                '"' + fecha + '"',
+                '"' + v['carrierCode'] + '"',
+                '"' + v['platform'] + '"',
+                '"' + v['unitCode'] + '"',
+                '"' + v['patioCode'] + '"',
+                '"' + usuarios[v['receivedBy']]['name'] + '"',
+                '"' + v['status'] + '"',
+                '"' + equipos[eq_code]['title'].replace('"', '""') + '"',
+                str(quantity),
+                str(unit_cost),
+                str(monto)
+            ]) + '\n'
+
+    return s
+
 
 if __name__ == '__main__':
 
+    TOTALIZADO = 'totalizado'
+    DETALLADO  = 'detallado'
+
     # Argumentos de linea de comando
     parser = argparse.ArgumentParser(description='Vales de equipo de amarre por fecha de creacion.')
-    parser.add_argument('-l', '--layout', type=str, default='totalizado', help='Layout de salida (totalizado | detalle)')
+    parser.add_argument('-l', '--layout', type=str, default=TOTALIZADO, help='Layout de salida ({} | {})'.format(TOTALIZADO, DETALLADO))
     parser.add_argument('-p', '--output-prefix', type=str, default='', help='Prefijo para el nombre de archivo')
     parser.add_argument('fecha_ini', help='Limite inferior de Fecha de creacion (mm/dd/yyyy) de vale (inclusivo)')
     parser.add_argument('fecha_fin', help='Limite superior de Fecha de creacion (mm/dd/yyyy) de vale (inclusivo)')
 
     args = parser.parse_args()
-    if args.layout not in {'totalizado', 'detalle'}:
-        print('LAYOUT debe tener uno de los siguientes valores: (totalizado | detalle)')
+    if args.layout not in {TOTALIZADO, DETALLADO}:
+        print('LAYOUT debe tener uno de los siguientes valores: ({} | {})'.format(TOTALIZADO, DETALLADO))
         sys.exit(1)
 
     # Procesamiento de argumentos
@@ -99,36 +158,19 @@ if __name__ == '__main__':
     '''
     cur.execute(sql)
     rows = cur.fetchall()
-    users = {}
+    usuarios = {}
     for r in rows:
-        users[r[0]] = {
+        usuarios[r[0]] = {
             'name': r[1] + ' ' + r[2]
         }
     cur.close()
     conn.close()
 
     # Manipulacion de data para su salida
-    s = ''
-    s += ','.join(['Num vale', 'Fecha creacion', 'Carrier', 'Plataforma', 'Unidad', 'Patio', 'Recibio', 'Estatus', 'Monto']) + '\n'
-
-    for i in vales:
-        fecha =  datetime.fromtimestamp(i['generationTime']).strftime('%m/%d/%Y')
-
-        monto = Decimal('0.0')
-        for e in i['itemList']:
-            monto += equipos[e['equipmentCode']]['unit_cost'] * e['quantity']
-
-        s += ','.join([
-            str(i['_id']),
-            '"' + fecha + '"',
-            '"' + i['carrierCode'] + '"',
-            '"' + i['platform'] + '"',
-            '"' + i['unitCode'] + '"',
-            '"' + i['patioCode'] + '"',
-            '"' + users[i['receivedBy']]['name'] + '"',
-            '"' + i['status'] + '"',
-            str(monto)
-        ]) + '\n'
+    if args.layout == TOTALIZADO:
+        s = manipular_totalizado(vales, equipos, usuarios)
+    elif args.layout == DETALLADO:
+        s = manipular_detallado(vales, equipos, usuarios)
 
     # Closing mongo client
     mongo_client.close()

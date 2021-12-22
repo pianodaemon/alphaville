@@ -1,16 +1,20 @@
-from datetime import datetime
-from decimal import Decimal
 import os
 import sys
 import argparse
+from datetime import datetime
+from decimal import Decimal
+
 import pymongo
 import psycopg2
+import boto3
+
 
 if __name__ == '__main__':
 
     # Argumentos de linea de comando
     parser = argparse.ArgumentParser(description='Vales de equipo de amarre por fecha de creacion.')
     parser.add_argument('-l', '--layout', type=str, default='totalizado', help='Layout de salida (totalizado | detalle)')
+    parser.add_argument('-p', '--output-prefix', type=str, default='', help='Prefijo para el nombre de archivo')
     parser.add_argument('fecha_ini', help='Limite inferior de Fecha de creacion (mm/dd/yyyy) de vale (inclusivo)')
     parser.add_argument('fecha_fin', help='Limite superior de Fecha de creacion (mm/dd/yyyy) de vale (inclusivo)')
 
@@ -24,6 +28,13 @@ if __name__ == '__main__':
     fecha_ini_epoch = datetime(int(fecha_ini_frags[2]), int(fecha_ini_frags[0]), int(fecha_ini_frags[1]), 0, 0, 0).timestamp()
     fecha_fin_frags = args.fecha_fin.split('/')
     fecha_fin_epoch = datetime(int(fecha_fin_frags[2]), int(fecha_fin_frags[0]), int(fecha_fin_frags[1]), 0, 0, 0).timestamp()
+
+    name_parts = []
+    if args.output_prefix:
+        name_parts.append(args.output_prefix)
+    name_parts.append('vales')
+    name_parts.append(args.layout)
+    name_parts.append(datetime.now().strftime('%m-%d-%Y'))
 
     # Recuperacion de datos mongodb
     try:
@@ -97,7 +108,8 @@ if __name__ == '__main__':
     conn.close()
 
     # Manipulacion de data para su salida
-    print(','.join(['Num vale', 'Fecha creacion', 'Carrier', 'Plataforma', 'Unidad', 'Patio', 'Recibio', 'Estatus', 'Monto']))
+    s = ''
+    s += ','.join(['Num vale', 'Fecha creacion', 'Carrier', 'Plataforma', 'Unidad', 'Patio', 'Recibio', 'Estatus', 'Monto']) + '\n'
 
     for i in vales:
         fecha =  datetime.fromtimestamp(i['generationTime']).strftime('%m/%d/%Y')
@@ -106,7 +118,7 @@ if __name__ == '__main__':
         for e in i['itemList']:
             monto += equipos[e['equipmentCode']]['unit_cost'] * e['quantity']
 
-        print(','.join([
+        s += ','.join([
             str(i['_id']),
             '"' + fecha + '"',
             '"' + i['carrierCode'] + '"',
@@ -116,6 +128,20 @@ if __name__ == '__main__':
             '"' + users[i['receivedBy']]['name'] + '"',
             '"' + i['status'] + '"',
             str(monto)
-        ]))
+        ]) + '\n'
 
+    # Closing mongo client
     mongo_client.close()
+
+    # AWS S3 service - data upload
+    try:
+        bucket = os.getenv('S3_BUCKET')
+        if not bucket:
+            bucket = 'vales-dashboards'
+
+        s3 = boto3.resource('s3')
+        s3_obj_name = '_'.join(name_parts) + '.csv'
+        s3.Bucket(bucket).put_object(Key=s3_obj_name, Body=s.encode('utf-8'))
+
+    except Exception as ex:
+        print(ex, '({})'.format(bucket))

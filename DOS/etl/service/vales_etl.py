@@ -2,6 +2,7 @@ import os
 import sys
 import argparse
 from datetime import datetime
+import pytz
 from decimal import Decimal
 
 import pymongo
@@ -69,6 +70,7 @@ if __name__ == '__main__':
 
     TOTALIZADO = 'totalizado'
     DETALLADO  = 'detallado'
+    mex_city_tz = pytz.timezone('America/Mexico_City')
 
     # Argumentos de linea de comando
     parser = argparse.ArgumentParser(description='Vales de equipo de amarre por fecha de creacion.')
@@ -84,16 +86,16 @@ if __name__ == '__main__':
 
     # Procesamiento de argumentos
     fecha_ini_frags = args.fecha_ini.split('/')
-    fecha_ini_epoch = datetime(int(fecha_ini_frags[2]), int(fecha_ini_frags[0]), int(fecha_ini_frags[1]), 0, 0, 0).timestamp()
+    fecha_ini_epoch = datetime(int(fecha_ini_frags[2]), int(fecha_ini_frags[0]), int(fecha_ini_frags[1]), 0, 0, 0, tzinfo=mex_city_tz).timestamp()
     fecha_fin_frags = args.fecha_fin.split('/')
-    fecha_fin_epoch = datetime(int(fecha_fin_frags[2]), int(fecha_fin_frags[0]), int(fecha_fin_frags[1]), 0, 0, 0).timestamp()
+    fecha_fin_epoch = datetime(int(fecha_fin_frags[2]), int(fecha_fin_frags[0]), int(fecha_fin_frags[1]), 0, 0, 0, tzinfo=mex_city_tz).timestamp()
 
     name_parts = []
     if args.output_prefix:
         name_parts.append(args.output_prefix)
     name_parts.append('vales')
     name_parts.append(args.layout)
-    name_parts.append(datetime.now().strftime('%m-%d-%Y_%H-%M-%S'))
+    name_parts.append(datetime.now(mex_city_tz).strftime('%m-%d-%Y_%H-%M-%S'))
 
     # Recuperacion de datos mongodb
     try:

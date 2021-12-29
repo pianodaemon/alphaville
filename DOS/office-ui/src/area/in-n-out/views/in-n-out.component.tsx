@@ -9,6 +9,7 @@ import TextField from "@material-ui/core/TextField";
 import Chip from "@material-ui/core/Chip";
 import { Voucher } from "src/area/vouchers/state/vouchers.reducer";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import { Statuses } from "src/shared/constants/voucher-statuses.constants";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -116,7 +117,11 @@ export const InNout = (props: Props) => {
   const { loading, searchVoucherAction, searchVoucherResetAction, voucher } = props;
   const handleClick = () => {
     if (voucher) {
-      window.open(`/voucher/${voucher.id}/forward`, "_blank");
+      if (voucher.status === Statuses.SALIDA) {
+        window.open(`/voucher/${voucher.id}/view`, "_blank");
+      } else {
+        window.open(`/voucher/${voucher.id}/forward`, "_blank");
+      }
     }
   };
   useEffect(() => {

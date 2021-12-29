@@ -93,7 +93,7 @@ if __name__ == '__main__':
         name_parts.append(args.output_prefix)
     name_parts.append('vales')
     name_parts.append(args.layout)
-    name_parts.append(datetime.now().strftime('%m-%d-%Y'))
+    name_parts.append(datetime.now().strftime('%m-%d-%Y_%H-%M-%S'))
 
     # Recuperacion de datos mongodb
     try:

@@ -170,8 +170,7 @@ class IncidencesPersistence(object):
         incidences_coll = client[IncidencesPersistence.db].incidences
 
         # Count items
-        docs = incidences_coll.find(filter, {'_id': 1})
-        total_items = docs.count()
+        total_items = incidences_coll.count_documents(filter)
 
         # Processing of Pagination params
         d = {}

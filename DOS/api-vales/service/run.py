@@ -432,6 +432,19 @@ class Vouchers(vouchers_pb2_grpc.VouchersServicer):
         )
 
 
+    def DoSalidasEquipoValeCompleto(self, request, context):
+        print(request)
+
+        ret_code, ret_message = VouchersPersistence.do_salidas_equipo_vale_completo(
+            request.ids
+        )
+
+        return vouchers_pb2.VoucherGeneralResponse(
+            returnCode=ret_code,
+            returnMessage=ret_message
+        )
+
+
 class Statuses(statuses_pb2_grpc.StatusesServicer):
 
     def ListStatuses(self, request, context):

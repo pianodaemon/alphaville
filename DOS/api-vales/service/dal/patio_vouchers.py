@@ -164,8 +164,7 @@ class PatioVouchersPersistence(object):
         patio_vouchers_coll = client[PatioVouchersPersistence.db].patioVouchers
 
         # Count items
-        docs = patio_vouchers_coll.find(filter, {'_id': 1})
-        total_items = docs.count()
+        total_items = patio_vouchers_coll.count_documents(filter)
 
         # Processing of Pagination params
         d = {}

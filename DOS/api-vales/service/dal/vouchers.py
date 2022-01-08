@@ -165,8 +165,7 @@ class VouchersPersistence(object):
         vouchers_coll = client[VouchersPersistence.db].vouchers
 
         # Count items
-        docs = vouchers_coll.find(filter, {'_id': 1})
-        total_items = docs.count()
+        total_items = vouchers_coll.count_documents(filter)
 
         # Processing of Pagination params
         d = {}
@@ -361,3 +360,47 @@ class VouchersPersistence(object):
             {'_id' : doc_id},
             {'$set': {'blocked': True}}
         )
+
+
+    def do_salidas_equipo_vale_completo(id_list):
+
+        client = VouchersPersistence.get_mongo_client()
+        vouchers_coll = client[VouchersPersistence.db].vouchers
+        eventlog_coll = client[VouchersPersistence.db].eventLog
+
+        status      = 'SALIDA'
+        error_msg   = ''
+        success_list = []
+
+        for doc_id in id_list:
+            t = time.time()
+            atu = {
+                'status': status,
+                'lastTouchTime': t,
+            }
+            try:
+                vouchers_coll.update_one({'_id': doc_id}, {"$set": atu })
+                success_list.append(str(doc_id))
+
+                eventlog_coll.insert_one({
+                    'voucherId': doc_id,
+                    'timestamp': t,
+                    'document': 'vale',
+                    'documentId': doc_id,
+                    'operation': 'update',
+                    'status': status,
+                })
+
+            except Exception as err:
+                error_msg += '(Id: {}, Error: {}) '.format(doc_id, repr(err))
+
+        if success_list:
+            ret_code = 0
+            ret_msg = 'IDs de vales actualizados => {}'.format(', '.join(success_list))
+            if error_msg:
+                ret_msg += ' ; Errores => {}'.format(error_msg)
+        else:
+            ret_code = -1
+            ret_msg = 'Ningún vale actualizado ; Errores => {}'.format(error_msg)
+
+        return ret_code, ret_msg

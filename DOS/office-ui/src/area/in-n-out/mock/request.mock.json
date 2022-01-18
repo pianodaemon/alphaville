@@ -1,0 +1,45 @@
+{
+  "itemsToReturnList": [
+    {
+      "voucherId": 2,
+      "itemList": [
+        {
+          "quantity": 10,
+          "equipmentCode": "BAND001"
+        },
+        {
+          "equipmentCode": "GATA001",
+          "quantity": 8
+        },
+        {
+          "equipmentCode": "CADE001",
+          "quantity": 8
+        },
+        {
+          "equipmentCode": "ESTACAS001",
+          "quantity": 8
+        }
+      ]
+    },
+    {
+      "voucherId": 3,
+      "itemList": [
+        {
+          "equipmentCode": "BASE001",
+          "quantity": 5
+        },
+        {
+          "equipmentCode": "RATCHET002",
+          "quantity": 3
+        }
+      ]
+    }
+  ],
+  "platform": "F256",
+  "carrierCode": "SUNLINE",
+  "patioCode": "NLD",
+  "observations": "lo que sea observado",
+  "unitCode": "CLOP 1552",
+  "deliveredBy": "francisco02",
+  "receivedBy": "courier01"
+}

@@ -1,0 +1,39 @@
+[
+  {
+    "id": 1,
+    "carrierCode": "SSP",
+    "itemList": [
+      [
+        {
+          "code": "BARR003",
+          "title": "BARROTES 4X4X5",
+          "quantity": 100
+        },
+        {
+          "code": "RATCHET002",
+          "title": "RATCHET 4\"",
+          "quantity": 200
+        },
+        {
+          "code": "RATCHET001",
+          "title": "RATCHET 2\"",
+          "quantity": 300
+        },
+        {
+          "code": "ESTACAS001",
+          "title": "ESTACAS",
+          "quantity": 400
+        },
+        {
+          "code": "HULE001",
+          "title": "HULES",
+          "quantity": 500
+        }
+      ]
+    ],
+    "patioCode": "PATIOCODE",
+    "platform": "PLATFORM",
+    "status": "TRANSFER",
+    "unitCode": "UNITCODE"
+  }
+]

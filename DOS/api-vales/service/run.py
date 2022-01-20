@@ -432,6 +432,35 @@ class Vouchers(vouchers_pb2_grpc.VouchersServicer):
         )
 
 
+    def DoSalidaEquipo(self, request, context):
+        print(request)
+
+        items_to_return_list = []
+        for i in request.itemsToReturnList:
+
+            item_list = []
+            for j in i.itemList:
+                item_list.append({'equipmentCode': j.equipmentCode, 'quantity': j.quantity})
+
+            items_to_return_list.append({'voucherId': i.voucherId, 'itemList': item_list})
+
+        ret_code, ret_message = VouchersPersistence.do_salida_equipo(
+            request.carrierCode,
+            request.patioCode,
+            request.platform,
+            request.observations,
+            request.unitCode,
+            request.deliveredBy,
+            request.receivedBy,
+            items_to_return_list,
+        )
+
+        return vouchers_pb2.VoucherGeneralResponse(
+            returnCode=ret_code,
+            returnMessage=ret_message
+        )
+
+
     def DoSalidasEquipoValeCompleto(self, request, context):
         print(request)
 

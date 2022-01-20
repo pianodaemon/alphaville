@@ -351,6 +351,140 @@ class VouchersPersistence(object):
 
 
     @staticmethod
+    def do_salida_equipo(carrier_code, patio_code, platform, obs, unit_code, delivered_by, received_by, items_to_return_list):
+        """Create voucher with status SALIDA (in order to return equipment to its owner, the carrier)"""
+
+        # Getting next number from Postgres:
+        sql = '''
+            select * from nextval('voucher_number_seq'::regclass);
+        '''
+        try:
+            rows = exec_steady(sql)
+            doc_id = rows[0][0]
+        except:
+            return -1, "No fue posible obtener el consecutivo para el vale de Salida de equipo."
+
+        client = VouchersPersistence.get_mongo_client()
+        vouchers_coll = client[VouchersPersistence.db].vouchers
+        eventlog_coll = client[VouchersPersistence.db].eventLog
+
+        # Crear el vale de Salida de Equipo
+        # ---------------------------------
+
+        # Totalizar piezas de equipo de todos los vales:
+        total_eq_dict = {}
+        for d in items_to_return_list:
+
+            for eq in d['itemList']:
+                eq_code = eq['equipmentCode']
+                eq_qty = eq['quantity']
+                if eq_code in total_eq_dict:
+                    total_eq_dict[eq_code] += eq_qty
+                else:
+                    total_eq_dict[eq_code] = eq_qty
+
+        items = []
+        for k, v in total_eq_dict.items():
+            items.append({'equipmentCode': k, 'quantity': v})
+
+        t = time.time()
+        try:
+            doc = vouchers_coll.insert_one({
+                '_id': doc_id,
+                'platform': platform,
+                'carrierCode': carrier_code,
+                'patioCode': patio_code,
+                'observations': obs,
+                'unitCode': unit_code,
+                'deliveredBy': delivered_by,
+                'receivedBy': received_by,
+                'status': 'SALIDA',
+                'itemList': items,
+                'generationTime': t,
+                'lastTouchTime': t,
+                'blocked': False,
+                'salidaFinal': True,
+            })
+
+            # Registrar el evento en el eventLog
+            eventlog_coll.insert_one({
+                'voucherId': doc_id,
+                'timestamp': t,
+                'document': 'vale',
+                'documentId': doc_id,
+                'operation': 'create',
+                'platform': platform,
+                'patioCode': patio_code,
+                'observations': obs,
+                'unitCode': unit_code,
+                'originUser': delivered_by,
+                'targetUser': received_by,
+                'status': 'SALIDA',
+                'itemList': items,
+            })
+        except:
+            return -1, "Error al registrar el vale de Salida de equipo o su evento en el log."
+
+        # Actualizar estatus y cantidades en los vales de los cuales se toman los equipos para su salida
+        # ----------------------------------------------------------------------------------------------
+        for d in items_to_return_list:
+            eq_to_delete = []
+            doc_to_update = vouchers_coll.find_one({'_id': d['voucherId']})
+
+            for eq in d['itemList']:
+
+                for eq_to_update in doc_to_update['itemList']:
+
+                    if eq_to_update['equipmentCode'] == eq['equipmentCode']:
+
+                        if eq_to_update['quantity'] > eq['quantity']:
+                            eq_to_update['quantity'] -= eq['quantity']
+                        elif eq_to_update['quantity'] == eq['quantity']:
+                            eq_to_delete.append(eq_to_update)
+
+                        break
+
+            for e in eq_to_delete:
+                doc_to_update['itemList'].remove(e)
+
+            if len(doc_to_update['itemList']) == 0:
+                status = 'SALIDA'
+            else:
+                status = doc_to_update['status']
+
+            t = time.time()
+            atu = {
+                'status': status,
+                'itemList': doc_to_update['itemList'],
+                'lastTouchTime': t,
+                'salidaFinal': False,
+                'salidaVoucherId': doc_id
+            }
+            try:
+                vouchers_coll.update_one({'_id': doc_to_update['_id']}, {"$set": atu })
+
+                eventlog_coll.insert_one({
+                    'voucherId': doc_to_update['_id'],
+                    'timestamp': t,
+                    'document': 'vale',
+                    'documentId': doc_to_update['_id'],
+                    'operation': 'update_por_salida',
+                    'platform': doc_to_update['platform'],
+                    'patioCode': doc_to_update['patioCode'],
+                    'observations': doc_to_update['observations'],
+                    'unitCode': doc_to_update['unitCode'],
+                    'originUser': doc_to_update['deliveredBy'],
+                    'targetUser': doc_to_update['receivedBy'],
+                    'status': status,
+                    'itemList': doc_to_update['itemList'],
+                })
+            except:
+                return -1, "Error al actualizar los vales de equipo implicados en la Salida o sus logs respectivos."
+
+        return doc.inserted_id, "Exitosa la creación del vale de Salida de equipo."
+
+
+    @staticmethod
     def delete(collection, doc_id):
         """
         It blocks a voucher as

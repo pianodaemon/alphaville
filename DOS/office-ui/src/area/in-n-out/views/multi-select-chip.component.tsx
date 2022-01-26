@@ -50,7 +50,7 @@ export default function MultipleSelect({ field, options, onChange }) {
           renderValue={(selected) => (
             <div className={classes.chips}>
               {(selected as string[]).map((value) => (
-                <Chip key={value} label={value} className={classes.chip} />
+                <Chip key={value} label={`Vale: #${value}`} className={classes.chip} />
               ))}
             </div>
           )}
@@ -58,10 +58,10 @@ export default function MultipleSelect({ field, options, onChange }) {
           {options.length &&
             options.map((option) => (
               <MenuItem
-                key={option.id}
-                value={option.id}
+                key={option}
+                value={option}
               >
-                {option.id}
+                {`Vale: #${option}`}
               </MenuItem>
             ))}
         </Select>

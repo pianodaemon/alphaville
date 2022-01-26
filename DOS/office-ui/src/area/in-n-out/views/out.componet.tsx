@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-// import { useHistory } from "react-router-dom";
+import React, { useEffect, useMemo } from "react";
+import { useHistory } from "react-router-dom";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -8,13 +8,23 @@ import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import FormControl from "@material-ui/core/FormControl";
 // import FormHelperText from "@material-ui/core/FormHelperText";
-// import TextField from "@material-ui/core/TextField";
+import TextField from "@material-ui/core/TextField";
 // import Chip from "@material-ui/core/Chip";
 // import CircularProgress from "@material-ui/core/CircularProgress";
 import { AutoCompleteDropdown } from "src/shared/components/autocomplete-dropdown.component";
-import { JSONPrettyPrint } from "src/shared/utils/json-pretty-print";
 import MultipleSelect from "./multi-select-chip.component";
 import { BulkEdit } from "./out-voucher-table";
+
+type Props = {
+  loadCarriersCatalogAction: Function;
+  loadVouchersCatalogAction: Function;
+  createOutVoucherAction: Function;
+  readVoucherOutAction: Function;
+  carriers: any;
+  username: string;
+  vouchers: any;
+  vouchersOut: any;
+};
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -41,41 +51,12 @@ const useStyles = makeStyles((theme: Theme) =>
         display: "flex",
       },
     },
-    fieldset: {
-      borderRadius: 3,
-      borderWidth: 0,
-      borderColor: "#DDD",
-      borderStyle: "solid",
-      margin: "20px 0px",
-    },
-    containerLegend: {
-      display: "block",
-      top: "-30px",
-      position: "relative",
-      fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-      width: "128px",
-      margin: "0px auto",
-      textAlign: "center",
-      background: "transparent",
-      [theme.breakpoints.down("sm")]: {
-        margin: "0 auto",
-        width: "auto !important",
-      },
-    },
-    legend: {
-      fontWeight: "bolder",
-      color: "#128aba",
-      fontSize: "1rem",
-      background: "#FFF",
-    },
-    textErrorHelper: { color: theme.palette.error.light },
-    submitInput: {
-      backgroundColor: "#FFFFFF",
-      color: "#008aba",
-      border: "1px solid #008aba",
-      "&:hover": {
-        background: "#008aba",
-        color: "#FFF",
+    formControlFull: {
+      margin: theme.spacing(1),
+      minWidth: 350,
+      [theme.breakpoints.up("xs")]: {
+        minWidth: "100%",
+        display: "flex",
       },
     },
     hrDivider: {
@@ -96,10 +77,6 @@ const useStyles = makeStyles((theme: Theme) =>
       marginInlineEnd: "auto",
       overflow: "hidden",
       marginTop: "27px",
-    },
-    hrSpacer: {
-      height: "25px",
-      border: "none",
     },
     progress: {
       margin: "0 auto",
@@ -125,113 +102,47 @@ const schema = yup.object().shape({
     }),
 });
 
-type Props = {
-  loadCarriersAction: Function;
-  carriers: any;
-};
-
-const VoucherData = [
-  {
-    id: 1,
-    carrierCode: "ABC",
-    itemList: [
-      {
-        code: "BARR003",
-        title: "BARROTES 4X4X5",
-        quantity: 100,
-      },
-      {
-        code: "RATCHET002",
-        title: 'RATCHET 4"',
-        quantity: 200,
-      },
-      {
-        code: "RATCHET001",
-        title: 'RATCHET 2"',
-        quantity: 300,
-      },
-      {
-        code: "ESTACAS001",
-        title: "ESTACAS",
-        quantity: 400,
-      },
-      {
-        code: "HULE001",
-        title: "HULES",
-        quantity: 500,
-      },
-    ],
-    patioCode: "PATIOCODE",
-    platform: "PLATFORM",
-    status: "TRANSFER",
-    unitCode: "UNITCODE",
-  },
-  {
-    id: 2,
-    carrierCode: "ABC",
-    itemList: [
-      {
-        code: "BARR003",
-        title: "BARROTES 4X4X5",
-        quantity: 100,
-      },
-      {
-        code: "RATCHET002",
-        title: 'RATCHET 4"',
-        quantity: 200,
-      },
-      {
-        code: "RATCHET001",
-        title: 'RATCHET 2"',
-        quantity: 300,
-      },
-      {
-        code: "ESTACAS001",
-        title: "ESTACAS",
-        quantity: 400,
-      },
-      {
-        code: "HULE001",
-        title: "HULES",
-        quantity: 500,
-      },
-    ],
-    patioCode: "PATIOCODE",
-    platform: "PLATFORM",
-    status: "TRANSFER",
-    unitCode: "UNITCODE",
-  },
-];
-
 export const Out = (props: Props) => {
   const classes = useStyles();
-  // const history = useHistory();
-  const { carriers, loadCarriersAction } = props;
+  const history = useHistory();
+  const {
+    carriers,
+    loadCarriersCatalogAction,
+    loadVouchersCatalogAction,
+    createOutVoucherAction,
+    readVoucherOutAction,
+    username,
+    vouchers,
+    vouchersOut,
+  } = props;
   const initialValues = {
     carrierCode: "",
     itemsToReturnList: [],
-    // vouchers: VoucherData || [],
+    observations: "",
+    platform: "",
     selectedVouchers: [],
+    vouchers,
   };
   const {
     control,
     // handleSubmit,
     // formState: { errors, isSubmitting },
-    // reset,
-    // getValues,
+    reset,
+    getValues,
     setValue,
     watch,
   } = useForm({
     defaultValues: initialValues,
     resolver: yupResolver(schema),
   });
-  const selectedVouchers = useWatch({control, name: "selectedVouchers"});
-  const carrierCode = useWatch({control, name: "carrierCode"});
+  const carrierCode = useWatch({ control, name: "carrierCode" });
+  const platform = useWatch({ control, name: "platform" });
+  const observations = useWatch({ control, name: "observations" });
   useEffect(() => {
-    return loadCarriersAction();
+    return loadCarriersCatalogAction();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  
+
   return (
     <Paper className={classes.paper}>
       <h1 style={{ color: "#E31B23", textAlign: "center" }}>
@@ -242,11 +153,11 @@ export const Out = (props: Props) => {
         <Grid
           container
           spacing={3}
-          direction="column"
+          direction="row"
           justifyContent="center"
           alignItems="center"
         >
-          <Grid item xs={12} sm={12}>
+          <Grid item xs={4} sm={4}>
             <Controller
               name="carrierCode"
               control={control}
@@ -258,6 +169,14 @@ export const Out = (props: Props) => {
                     label="Carrier"
                     name="carrier"
                     onChange={(value: any) => {
+                      loadVouchersCatalogAction({
+                        carrierCode: value,
+                        patioCode: "NLD",
+                        per_page: Number.MAX_SAFE_INTEGER,
+                        status: "ENTRADA", // @todo change to PATIO
+                      });
+                      // setValue("selectedVouchers", []); // @todo use reset() to clear form
+                      reset();
                       return setValue("carrierCode", value);
                     }}
                     options={carriers || []}
@@ -267,42 +186,117 @@ export const Out = (props: Props) => {
               )}
             />
           </Grid>
-          <Grid item xs={12} sm={12}>
+          <Grid item xs={4} sm={4}>
+            <Controller
+              name="platform"
+              control={control}
+              render={({ field }) => (
+                <FormControl className={classes.formControl}>
+                  <TextField
+                    {...field}
+                    id="platform"
+                    label="Plataforma (opcional)"
+                    InputProps={{
+                      autoComplete: "off",
+                    }}
+                    onChange={(event: any) => {
+                      loadVouchersCatalogAction({
+                        carrierCode,
+                        patioCode: "NLD",
+                        per_page: Number.MAX_SAFE_INTEGER,
+                        platform: event.target.value,
+                        status: "ENTRADA", // @todo change to PATIO
+                      });
+                      // @todo reset form
+                      // reset({ ...getValues(), selectedVouchers: [] });
+                      return setValue("platform", event.target.value);
+                    }}
+                    value={field.value ? field.value || "" : ""}
+                  />
+                </FormControl>
+              )}
+            />
+          </Grid>
+          <Grid item xs={4} sm={4}>
             <Controller
               name="selectedVouchers"
               control={control}
               render={({ field }) => (
                 <MultipleSelect
-                  options={
-                    VoucherData.filter(
-                      (voucher) => voucher.carrierCode === carrierCode
-                    ) || []
-                  }
+                  options={vouchers || []}
                   field={field}
                   onChange={(e: any) => {
-                    return setValue("selectedVouchers", e.target.value);
+                    const selected = e.target.value;
+                    readVoucherOutAction({ selected });
+                    return setValue("selectedVouchers", selected);
                   }}
                 />
               )}
             />
           </Grid>
-          <Grid item xs={12} sm={12}>
-            <BulkEdit
-              onUpdate={(value: any) => {
-                return setValue("itemsToReturnList", value);
-              }}
-              values={
-                VoucherData.filter(
-                  (voucher: any) =>
-                    voucher.carrierCode ===
-                    carrierCode && [...selectedVouchers as any].includes(voucher.id)
-                ) || []
-              }
+          <Grid item xs={12}>
+            <Controller
+              name="observations"
+              control={control}
+              render={({ field }) => (
+                <FormControl className={classes.formControlFull}>
+                  <TextField
+                    {...field}
+                    fullWidth
+                    id="observations"
+                    label="Observaciones"
+                    multiline
+                    minRows={2}
+                    maxRows={2}
+                    value={field.value ? field.value || "" : ""}
+                  />
+                </FormControl>
+              )}
             />
+          </Grid>
+          <Grid item xs={12} sm={12}>
+            {useMemo(
+              () => (
+                <BulkEdit
+                  onUpdate={(value: any) => {
+                    const a = value.reduce((acc, next) => {
+                      const voucher = acc.find(
+                        (v) => v.voucherId === next.voucher
+                      );
+                      const item = {
+                        equipmentCode: next.equipmentCode,
+                        quantity: next.quantity,
+                      };
+                      if (voucher) {
+                        voucher.itemList.push(item);
+                      } else {
+                        acc.push({
+                          voucherId: next.voucher,
+                          itemList: [item],
+                        });
+                      }
+                      return acc;
+                    }, []);
+                    const data = {
+                      carrierCode,
+                      deliveredBy: username,
+                      itemsToReturnList: a,
+                      observations,
+                      patioCode: "NLD",
+                      platform,
+                      receivedBy: "",
+                      unitCode: "",
+                    };
+                    createOutVoucherAction({ data, history });
+                  }}
+                  values={vouchersOut || []}
+                />
+              ),
+              [vouchersOut]
+            )}
           </Grid>
         </Grid>
       </form>
-      <JSONPrettyPrint json={watch()} /> 
     </Paper>
   );
 };

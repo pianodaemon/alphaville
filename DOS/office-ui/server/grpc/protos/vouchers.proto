@@ -8,6 +8,8 @@ service Vouchers {
   rpc AlterVoucher   (Voucher)            returns (VoucherGeneralResponse)  {}
   rpc ListVouchers   (VoucherParams)      returns (VoucherListResponse)     {}
   rpc GetVoucher     (VoucherId)          returns (VoucherResponse)         {}
+  rpc DoSalidaEquipo (SalidaEquipoData)   returns (VoucherGeneralResponse)  {}
+  rpc DoSalidasEquipoValeCompleto (VoucherIdList) returns (VoucherGeneralResponse) {}
 }
 
 message Item {
@@ -77,6 +79,10 @@ message VoucherId {
   int32 id = 1;
 }
 
+message VoucherIdList {
+  repeated int32 ids = 1;
+}
+
 message VoucherParam {
   string name  = 1;
   string value = 2;
@@ -85,6 +91,22 @@ message VoucherParam {
 message VoucherParams {
   repeated VoucherParam paramList     = 1;
   repeated VoucherParam pageParamList = 2;
+}
+
+message ItemsToReturn {
+  int32 voucherId            = 1;
+  repeated Item itemList     = 2;
+}
+
+message SalidaEquipoData {
+  string platform                          = 1;
+  string carrierCode                       = 2;
+  string patioCode                         = 3;
+  string observations                      = 4;
+  string unitCode                          = 5;
+  string deliveredBy                       = 6;
+  string receivedBy                        = 7;
+  repeated ItemsToReturn itemsToReturnList = 8;
 }
 
 message VoucherResponse {

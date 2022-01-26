@@ -18,6 +18,18 @@ export function getVouchers(options: any): Promise<any> {
   );
 }
 
+export function createOutVoucher(fields: Voucher): Promise<any> {
+  return axiosApi(`${getAppSettings().baseUrl}/vouchers/salida`, {
+    method: 'post',
+    headers: {
+      accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    data: fields,
+    withCredentials: true,
+  });
+}
+
 export function createVoucher(fields: Voucher): Promise<any> {
   return axiosApi(`${getAppSettings().baseUrl}/vouchers/`, {
     method: 'post',

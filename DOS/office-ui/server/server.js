@@ -44,6 +44,7 @@ const {
   updateVoucher,
   deleteVoucher,
   listVouchers,
+  doSalidaEquipo,
 } = require("./vouchers");
 const { listStatuses } = require("./statuses");
 const {
@@ -334,6 +335,12 @@ app.options("/vouchers", cors(corsOptionsDelegate));
 
 // enable pre-flight request for DELETE request
 app.options("/vouchers/:id", cors(corsOptionsDelegate));
+
+router.post("/vouchers/salida", cors(corsOptionsDelegate), function (req, res) {
+  doSalidaEquipo(req.query)
+    .then((data) => res.json(data))
+    .catch((err) => res.status(500).json(err));
+});
 
 router.get("/vouchers", cors(corsOptionsDelegate), function (req, res) {
   listVouchers(req.query)

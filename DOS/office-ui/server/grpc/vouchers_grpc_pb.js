@@ -4,6 +4,17 @@
 var grpc = require('@grpc/grpc-js');
 var vouchers_pb = require('./vouchers_pb.js');
 
+function serialize_dylk_SalidaEquipoData(arg) {
+  if (!(arg instanceof vouchers_pb.SalidaEquipoData)) {
+    throw new Error('Expected argument of type dylk.SalidaEquipoData');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_dylk_SalidaEquipoData(buffer_arg) {
+  return vouchers_pb.SalidaEquipoData.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_dylk_Voucher(arg) {
   if (!(arg instanceof vouchers_pb.Voucher)) {
     throw new Error('Expected argument of type dylk.Voucher');
@@ -35,6 +46,17 @@ function serialize_dylk_VoucherId(arg) {
 
 function deserialize_dylk_VoucherId(buffer_arg) {
   return vouchers_pb.VoucherId.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_dylk_VoucherIdList(arg) {
+  if (!(arg instanceof vouchers_pb.VoucherIdList)) {
+    throw new Error('Expected argument of type dylk.VoucherIdList');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_dylk_VoucherIdList(buffer_arg) {
+  return vouchers_pb.VoucherIdList.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
 function serialize_dylk_VoucherListResponse(arg) {
@@ -106,6 +128,28 @@ var VouchersService = exports.VouchersService = {
     requestDeserialize: deserialize_dylk_VoucherId,
     responseSerialize: serialize_dylk_VoucherResponse,
     responseDeserialize: deserialize_dylk_VoucherResponse,
+  },
+  doSalidaEquipo: {
+    path: '/dylk.Vouchers/DoSalidaEquipo',
+    requestStream: false,
+    responseStream: false,
+    requestType: vouchers_pb.SalidaEquipoData,
+    responseType: vouchers_pb.VoucherGeneralResponse,
+    requestSerialize: serialize_dylk_SalidaEquipoData,
+    requestDeserialize: deserialize_dylk_SalidaEquipoData,
+    responseSerialize: serialize_dylk_VoucherGeneralResponse,
+    responseDeserialize: deserialize_dylk_VoucherGeneralResponse,
+  },
+  doSalidasEquipoValeCompleto: {
+    path: '/dylk.Vouchers/DoSalidasEquipoValeCompleto',
+    requestStream: false,
+    responseStream: false,
+    requestType: vouchers_pb.VoucherIdList,
+    responseType: vouchers_pb.VoucherGeneralResponse,
+    requestSerialize: serialize_dylk_VoucherIdList,
+    requestDeserialize: deserialize_dylk_VoucherIdList,
+    responseSerialize: serialize_dylk_VoucherGeneralResponse,
+    responseDeserialize: deserialize_dylk_VoucherGeneralResponse,
   },
 };
 

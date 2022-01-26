@@ -49,9 +49,9 @@ export const filtersSelector = createSelector(
 export const outSelector = createSelector(
   sliceSelector,
   (slice: CarrierSlice) =>
-    slice.carriers &&
-    Array.isArray(slice.carriers) &&
-    slice.carriers.map((carrier: Carrier) => {
+    slice.carriersCatalog &&
+    Array.isArray(slice.carriersCatalog) &&
+    slice.carriersCatalog.map((carrier: Carrier) => {
       return {
         ...carrier,
         disabled: carrier.disabled ? 'No' : 'Sí',

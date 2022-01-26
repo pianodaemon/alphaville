@@ -26,6 +26,24 @@ function setupVoucherClient(method) {
   return (promisifiedClient = promisify(client[method]).bind(client));
 }
 
+async function doSalidaEquipo(payload) {
+  const promisifiedClient = setupVoucherClient("doSalidaEquipo");
+  const call_service = async (req, service_name) => {
+    try {
+      // @todo add SearchParam (filters)
+      // var param = new messages.Param().setName('disabled').setValue(false);
+      const response = await service_name(req);
+      return response;
+    } catch (error) {
+      /* @todo Return HTTP 500 code or something appropied */
+      console.log("error", error);
+    }
+  };
+  var request = { ...payload };
+  const response = await call_service(request, promisifiedClient);
+  return response;
+}
+
 async function listVouchers(query) {
   try {
     const promisifiedClient = setupVoucherClient("listVouchers");
@@ -48,6 +66,30 @@ async function listVouchers(query) {
       paramList.push({
         name: "title",
         value: query.title,
+      });
+    }
+    if (query.status) {
+      paramList.push({
+        name: "status",
+        value: query.status,
+      });
+    }
+    if (query.carrierCode) {
+      paramList.push({
+        name: "carrierCode",
+        value: query.carrierCode,
+      });
+    }
+    if (query.patioCode) {
+      paramList.push({
+        name: "patioCode",
+        value: query.patioCode,
+      });
+    }
+    if (query.platform) {
+      paramList.push({
+        name: "platform",
+        value: query.platform,
       });
     }
     const params = {
@@ -174,6 +216,7 @@ async function deleteVoucher(id) {
 }
 
 module.exports = {
+  doSalidaEquipo,
   listVouchers,
   createVoucher,
   readVoucher,

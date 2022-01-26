@@ -139,7 +139,9 @@ export const Out = (props: Props) => {
   const platform = useWatch({ control, name: "platform" });
   const observations = useWatch({ control, name: "observations" });
   useEffect(() => {
-    return loadCarriersCatalogAction();
+    return loadCarriersCatalogAction({
+      per_page: Number.MAX_SAFE_INTEGER,
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

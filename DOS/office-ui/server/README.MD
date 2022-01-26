@@ -1,4 +1,45 @@
-/**
+## Load DB Dump 
+
+    1) Remuevo la db soa: ./bin/mgmt_rdbms
+        soa=# \c postgres         # cambiar a BD postgres para poder eliminar soa
+        postgres=# drop database soa;
+
+    2) ./bin/init_schema
+
+    3) copio el file .sql dump a docker y lo ejecuto
+        docker cp ~/Downloads/DYLKA/users_patio.sql rdbms_vales:/dump.sql
+        docker cp ~/Downloads/DYLKA/dump-vales_dylk-20220118.sql rdbms_vales:/dump.sql
+    
+    4) ejecuto import db
+        docker exec rdbms_vales psql -U postgres -f dump.sql
+
+        docker run -it --rm --network operational_network --volume /Users/dealersocket/Downloads/DYLKA debezium/postgres:13-alpine bash
+        psql -h rdbms_vales -U postgres vales_dylk < ./users_patio.sql
+        psql -h rdbms_vales -U postgres vales_dylk < /dump/users_patio.sql
+---
+## Load Mongo Dump
+
+    1) Lanzas un container con bash
+    docker run -it --rm --network operational_network --volume /home/user/tu/ruta/mongodb_dumps:/dumps mongo:latest bash
+
+    docker run -it --rm --network operational_network --volume /Users/dealersocket/Downloads/DYLKA/vales_dylk_mongo:/dumps mongo:latest bash
+
+    2) Comando para el restore (si no te deja porque ya existe la db, ver NOTA abajo)
+    mongorestore --host=nosql_mongo --port=27017 --nsInclude='vales_dylk_mongo.*' /dumps/
+
+    NOTA
+    Dentro del container del paso 1, ejecutar:
+    2.1 mongosh mongodb://nosql_mongo:27017/vales_dylk_mongo
+
+    y luego:
+    2.2 db.dropDatabase()
+
+
+
+---
+---
+---
+
 
     dealersocket@CeronPro office-ui % npm install -g grpc-tools
 
@@ -11,26 +52,7 @@
     [grpc-tools] Success: "/usr/local/lib/node_modules/grpc-tools/bin/grpc_tools.node" is installed via remote
     + grpc-tools@1.11.2
 
-*/
-
-/**
-    1) remuevo la db soa: ./bin/mgmt_rdbms
-    soa=# \c postgres         # cambiar a BD postgres para poder eliminar soa
-    postgres=# drop database soa;
-
-    2) ./bin/init_schema
-
-    3) copio el file .sql dump a docker y lo ejecuto
-        docker cp ~/Downloads/DYLKA/users_patio.sql rdbms_vales:/b.sql
-    
-    4) ejecuto import db
-        docker exec rdbms_vales psql -U postgres -f b.sql
-
-        docker run -it --rm --network operational_network --volume /Users/dealersocket/Downloads/DYLKA debezium/postgres:13-alpine bash
-        psql -h rdbms_vales -U postgres vales_dylk < ./users_patio.sql
-        psql -h rdbms_vales -U postgres vales_dylk < /dump/users_patio.sql
-
-*/
+----------------------------------------------
 
     docker rm -f rdbms_vales
     docker volume rm alphaville_serv_vales_pg_data

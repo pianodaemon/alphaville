@@ -159,6 +159,27 @@ export const vouchersCatalogSelector = createSelector(
     })
 );
 
+export const vouchersCatalogIdsSelector = createSelector(
+  sliceSelector,
+  (slice: VoucherSlice) =>
+    slice.vouchersCatalog &&
+    Array.isArray(slice.vouchersCatalog) &&
+    slice.vouchersCatalog.map((voucher: Voucher) => {
+      return voucher.id;
+    })
+);
+
+export const vouchersOutIdsSelector = createSelector(
+  sliceSelector,
+  (slice: VoucherSlice) =>
+    slice.vouchersOut ? Object.keys(slice.vouchersOut) : []
+);
+
+export const vouchersOutSelector = createSelector(
+  sliceSelector,
+  (slice: VoucherSlice) => Object.values(slice.vouchersOut || {})
+);
+
 export const pagingSelector = createSelector(
   sliceSelector,
   (slice: VoucherSlice) => slice.paging

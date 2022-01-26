@@ -13,10 +13,11 @@ export function BulkEdit({ onUpdate, values }: Props) {
       title: "Vale #",
       field: "voucher",
       editable: "never",
+      // defaultGroupOrder: 0,
     },
     {
       title: "Equipo",
-      field: "equipment",
+      field: "equipmentCode",
       // initialEditValue: "initial edit value",
       editable: "never",
     },
@@ -27,11 +28,12 @@ export function BulkEdit({ onUpdate, values }: Props) {
       editable: "never",
     },
     {
-      title: "Cantidad a agregar",
+      title: "Cantidad a Retornar",
       field: "quantity",
       // lookup: { 34: "İstanbul", 63: "Şanlıurfa" },
       type: "numeric",
       max: 12,
+      editable: "always",
       editComponent: (props) => {
         return (
           <TextField
@@ -59,69 +61,70 @@ export function BulkEdit({ onUpdate, values }: Props) {
       },
     },
   ]);
-
+  const tableHeight =(window.innerHeight - 64 - 64 - 52 - 1) / window.innerHeight * 30;
   return (
-    <MaterialTable
-      title="Listado de Vales (carrier: {carrier})"
-      columns={
-        [
-          ...columns.map((c) => {
-            return { ...c };
-          }),
-        ] as any
-      }
-      data={[
-        ...values
-          .map((item) => {
-            return item.itemList.map((i) => {
-              return {
-                voucher: item.id,
-                equipmentCode: i.code,
-                equipment: i.title,
-                units: i.quantity,
-                quantity: 0,
-              };
+    <div>
+      <MaterialTable
+        title="Listado de Equipo/Unidade por Vale"
+        columns={
+          [
+            ...columns.map((c) => {
+              return { ...c };
+            }),
+          ] as any
+        }
+        data={[
+          ...values
+            .map((item) => {
+              return item.itemList.map((i) => {
+                return {
+                  voucher: item.id,
+                  equipmentCode: i.equipmentCode,
+                  equipment: i.title,
+                  units: i.quantity,
+                  quantity: 0,
+                };
+              });
+            })
+            .flat(),
+        ]}
+        editable={{
+          onBulkUpdate: (changes) => {
+            onUpdate(Object.values(changes).map((i) => i.newData));
+            return new Promise((resolve, reject) => {
+              setTimeout(() => {
+                resolve(1);
+              }, 100);
             });
-          })
-          .flat(),
-      ]}
-      editable={{
-        onBulkUpdate: (changes) => {
-          console.log(
-            "changes: ",
-            changes,
-            Object.values(changes).map((i) => i.newData)
-          );
-          onUpdate(Object.values(changes).map((i) => i.newData));
-          return new Promise((resolve, reject) => {
-            setTimeout(() => {
-              resolve(1);
-            }, 100);
-          });
-        },
-        onRowDelete: (oldData) =>
-          new Promise((resolve, reject) => {
-            setTimeout(() => {
-              resolve(1);
-            }, 1000);
-          }),
-      }}
-      options={{
-        search: false,
-        paging: false,
-      }}
-      components={{
-        Actions: (props) => {
-          // @todo send a PR to @material-table repo to document = bulkEditTooltip & bulkEditApprove & bulkEditCancel
-          if (Array.isArray(props.actions) && props.actions.length === 3) {
-            props.actions[0].tooltip = "Editar Unidades";
-            props.actions[1].tooltip = "Salvar cambios";
-            props.actions[2].tooltip = "Descartar cambios";
-          }
+          },
+          // @todo Implement this for custom row removal
+          onRowDelete: (oldData) =>
+            new Promise((resolve, reject) => {
+              setTimeout(() => {
+                resolve(1);
+              }, 1000);
+            }),
+        }}
+        options={{
+          search: false,
+          paging: false,
+          // grouping: true,
+          maxBodyHeight: `${tableHeight}vh`,
+          minBodyHeight: `${tableHeight}vh`,
+        }}
+        components={{
+          Actions: (props) => {
+            // @todo send a PR to @material-table repo to document = bulkEditTooltip & bulkEditApprove & bulkEditCancel
+            if (Array.isArray(props.actions) && props.actions.length === 3) {
+              props.actions[0].tooltip = "Editar Unidades";
+              props.actions[1].tooltip = "Salvar cambios";
+              props.actions[2].tooltip = "Descartar cambios";
+            }
 
-          return <MTableActions {...props} />;
-        },
-      }}
-    />
+            return <MTableActions {...props} />;
+          },
+        }}
+      />
+    </div>
   );
 }

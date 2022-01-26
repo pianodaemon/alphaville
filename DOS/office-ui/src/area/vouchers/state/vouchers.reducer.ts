@@ -18,6 +18,8 @@ export interface Voucher {
 export interface VoucherSlice {
   voucher: Voucher | null;
   vouchers: Array<Voucher> | null;
+  vouchersCatalog: Array<Voucher> | null;
+  vouchersOut: Array<Voucher> | null;
   loading: boolean;
   paging: {
     count: number,
@@ -44,6 +46,8 @@ export type Item = {
 const initialState: VoucherSlice = {
   voucher: null,
   vouchers: null,
+  vouchersCatalog: null,
+  vouchersOut: null,
   loading: false,
   paging: {
     count: 0,

@@ -12,6 +12,7 @@ import TextField from "@material-ui/core/TextField";
 // import Chip from "@material-ui/core/Chip";
 // import CircularProgress from "@material-ui/core/CircularProgress";
 import { AutoCompleteDropdown } from "src/shared/components/autocomplete-dropdown.component";
+import { Statuses } from "src/shared/constants/voucher-statuses.constants";
 import MultipleSelect from "./multi-select-chip.component";
 import { BulkEdit } from "./out-voucher-table";
 
@@ -139,7 +140,9 @@ export const Out = (props: Props) => {
   const platform = useWatch({ control, name: "platform" });
   const observations = useWatch({ control, name: "observations" });
   useEffect(() => {
-    return loadCarriersCatalogAction();
+    return loadCarriersCatalogAction({
+      per_page: Number.MAX_SAFE_INTEGER,
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -173,10 +176,9 @@ export const Out = (props: Props) => {
                         carrierCode: value,
                         patioCode: "NLD",
                         per_page: Number.MAX_SAFE_INTEGER,
-                        status: "ENTRADA", // @todo change to PATIO
+                        status: Statuses.PATIO,
                       });
-                      // setValue("selectedVouchers", []); // @todo use reset() to clear form
-                      reset();
+                      reset({selectedVouchers: [], platform});
                       return setValue("carrierCode", value);
                     }}
                     options={carriers || []}
@@ -205,10 +207,9 @@ export const Out = (props: Props) => {
                         patioCode: "NLD",
                         per_page: Number.MAX_SAFE_INTEGER,
                         platform: event.target.value,
-                        status: "ENTRADA", // @todo change to PATIO
+                        status: Statuses.PATIO,
                       });
-                      // @todo reset form
-                      // reset({ ...getValues(), selectedVouchers: [] });
+                      setValue("selectedVouchers", []);
                       return setValue("platform", event.target.value);
                     }}
                     value={field.value ? field.value || "" : ""}

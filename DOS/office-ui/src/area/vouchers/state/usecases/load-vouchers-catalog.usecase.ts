@@ -19,6 +19,8 @@ export const loadVouchersCatalogSuccessAction: ActionFunctionAny<Action<any>> =
   createAction(LOAD_VOUCHERS_CATALOG_SUCCESS);
 export const loadVouchersCatalogErrorAction: ActionFunctionAny<Action<any>> =
   createAction(LOAD_VOUCHERS_CATALOG_ERROR);
+export const loadVouchersCatalogResetAction: ActionFunctionAny<Action<any>> =
+  createAction(LOAD_VOUCHERS_CATALOG_RESET);
 
 function* loadVouchersCatalogWorker(action?: any): Generator<any, any, any> {
   try {
@@ -35,6 +37,7 @@ function* loadVouchersCatalogWorker(action?: any): Generator<any, any, any> {
       ...filters,
     };
     delete options.filters;
+    yield put(loadVouchersCatalogResetAction());
     const result = yield call(getVouchers, options);
     if (result && result.returnCode === errorCodes.GENERIC_ERROR) {
       throw new Error(result.returnMessage);
@@ -79,6 +82,7 @@ const vouchersReducerHandlers = {
       filters: {},
       paging: {},
       vouchersCatalog: null,
+      vouchersOut: null,
       voucher: null,
     };
   },

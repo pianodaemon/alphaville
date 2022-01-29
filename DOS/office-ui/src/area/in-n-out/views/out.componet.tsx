@@ -140,7 +140,7 @@ export const Out = (props: Props) => {
   const platform = useWatch({ control, name: "platform" });
   const observations = useWatch({ control, name: "observations" });
   useEffect(() => {
-    return loadCarriersCatalogAction({
+    loadCarriersCatalogAction({
       per_page: Number.MAX_SAFE_INTEGER,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -178,7 +178,7 @@ export const Out = (props: Props) => {
                         per_page: Number.MAX_SAFE_INTEGER,
                         status: Statuses.PATIO,
                       });
-                      reset({selectedVouchers: [], platform});
+                      setValue("selectedVouchers", []);
                       return setValue("carrierCode", value);
                     }}
                     options={carriers || []}

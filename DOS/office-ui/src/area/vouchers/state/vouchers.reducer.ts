@@ -43,7 +43,7 @@ export type Item = {
   quantity: number,
 };
 
-const initialState: VoucherSlice = {
+export const initialState: VoucherSlice = {
   voucher: null,
   vouchers: null,
   vouchersCatalog: null,

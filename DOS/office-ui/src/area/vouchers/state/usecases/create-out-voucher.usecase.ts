@@ -20,8 +20,8 @@ export const createOutVoucherErrorAction: ActionFunctionAny<Action<any>> =
 
 function* createOutVoucherWorker(action: any): Generator<any, any, any> {
   try {
-    const { fields, history } = action.payload;
-    const result = yield call(createOutVoucher, fields);
+    const { data, history } = action.payload;
+    const result = yield call(createOutVoucher, data);
     if (result && result.returnCode === errorCodes.GENERIC_ERROR) {
       throw new Error(result.returnMessage);
     }
@@ -67,14 +67,12 @@ const voucherReducerHandlers = {
     return {
       ...state,
       loading: false,
-      voucher: null,
     };
   },
   [CREATE_OUT_VOUCHER_ERROR]: (state: any, action: any) => {
     return {
       ...state,
       error: true,
-      voucher: action.payload.fields,
       loading: false,
     };
   },

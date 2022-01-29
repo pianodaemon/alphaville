@@ -337,7 +337,7 @@ app.options("/vouchers", cors(corsOptionsDelegate));
 app.options("/vouchers/:id", cors(corsOptionsDelegate));
 
 router.post("/vouchers/salida", cors(corsOptionsDelegate), function (req, res) {
-  doSalidaEquipo(req.query)
+  doSalidaEquipo(req.body)
     .then((data) => res.json(data))
     .catch((err) => res.status(500).json(err));
 });

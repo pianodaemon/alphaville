@@ -4,7 +4,7 @@ import { mergeSaga } from "src/redux-utils/merge-saga";
 import { errorCodes, resolveError } from "src/shared/utils/resolve-error.util";
 import { notificationAction } from "src/area/main/state/usecase/notification.usecase";
 import { getVouchers } from "../../service/voucher.service";
-import { vouchersReducer } from "../vouchers.reducer";
+import { vouchersReducer, initialState } from "../vouchers.reducer";
 import { pagingSelector } from "../vouchers.selectors";
 
 const postfix = "/app";
@@ -78,9 +78,11 @@ const vouchersReducerHandlers = {
   [LOAD_VOUCHERS_CATALOG_RESET]: (state: any,) => {
     return {
       ...state,
-      loading: true,
+      loading: false,
       filters: {},
-      paging: {},
+      paging: {
+        ...initialState.paging,
+      },
       vouchersCatalog: null,
       vouchersOut: null,
       voucher: null,

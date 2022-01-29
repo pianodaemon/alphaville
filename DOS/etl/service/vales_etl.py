@@ -88,7 +88,7 @@ if __name__ == '__main__':
     fecha_ini_frags = args.fecha_ini.split('/')
     fecha_ini_epoch = datetime(int(fecha_ini_frags[2]), int(fecha_ini_frags[0]), int(fecha_ini_frags[1]), 0, 0, 0, tzinfo=mex_city_tz).timestamp()
     fecha_fin_frags = args.fecha_fin.split('/')
-    fecha_fin_epoch = datetime(int(fecha_fin_frags[2]), int(fecha_fin_frags[0]), int(fecha_fin_frags[1]), 0, 0, 0, tzinfo=mex_city_tz).timestamp()
+    fecha_fin_epoch = datetime(int(fecha_fin_frags[2]), int(fecha_fin_frags[0]), int(fecha_fin_frags[1]), 23, 59, 59, tzinfo=mex_city_tz).timestamp()
 
     name_parts = []
     if args.output_prefix:

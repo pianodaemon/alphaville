@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from "react";
-import { useHistory } from "react-router-dom";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
@@ -113,7 +112,6 @@ type Props = {
 
 export const InNout = (props: Props) => {
   const classes = useStyles();
-  const history = useHistory();
   const voucherId = useRef(null as any);
   const platform = useRef(null as any);
   const { loading, searchVoucherAction, searchVoucherResetAction, voucher } = props;
@@ -150,7 +148,7 @@ export const InNout = (props: Props) => {
                     platform.current.value = "";
                   }
                   if (event.target.value.length > 0) {
-                    searchVoucherAction({ id: event.target.value, history });
+                    searchVoucherAction({ id: event.target.value });
                   } else {
                     searchVoucherResetAction();
                   }
@@ -171,7 +169,7 @@ export const InNout = (props: Props) => {
                     voucherId.current.value = "";
                   }
                   if (event.target.value.length > 0) {
-                    searchVoucherAction({ platform: event.target.value, history });
+                    searchVoucherAction({ platform: event.target.value });
                   } else {
                     searchVoucherResetAction();
                   }

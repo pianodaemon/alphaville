@@ -34,14 +34,12 @@ function* searchVoucherWorker(action: any): Generator<any, any, any> {
     }
     yield put(searchVoucherSuccessAction({ ...res, type }));
   } catch (e: any) {
-    // const { history } = action.payload;
     const message: string =
       type === "voucher"
         ? e.message
         : resolveError(e.response?.data?.message || e.message);
     console.log(message, e.message);
 
-    // yield history.push("/vouchers/list");
     yield put(searchVoucherErrorAction());
     yield put(
       notificationAction({

@@ -23,6 +23,10 @@ const errorList: Array<ServerErrorMessage> = [
   {
     en: "Failed Log in",
     es: "Usuario o contraseña inexistentes",
+  },
+  {
+    en: "Page 1 does not exist",
+    es: "La Consulta no produjo resultados. Intente con otra búsqueda.",
   }
 ];
 

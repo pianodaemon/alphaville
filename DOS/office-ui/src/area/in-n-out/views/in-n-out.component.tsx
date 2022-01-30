@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useHistory } from "react-router-dom";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
@@ -114,6 +114,8 @@ type Props = {
 export const InNout = (props: Props) => {
   const classes = useStyles();
   const history = useHistory();
+  const voucherId = useRef(null as any);
+  const platform = useRef(null as any);
   const { loading, searchVoucherAction, searchVoucherResetAction, voucher } = props;
   const handleClick = () => {
     if (voucher) {
@@ -137,30 +139,44 @@ export const InNout = (props: Props) => {
           <Grid item xs={12} sm={6}>
             <FormControl className={classes.formControl}>
               <TextField
-                // disabled={viewOnlyModeOn || isEditing}
-                id="code"
-                label="Ingrese No. de Vale"
-                // value={field.value ? field.value || "" : ""}
+                id="voucher"
                 inputProps={{
                   autoComplete: "off",
                 }}
-                placeholder="Ejemplo: 1, 23, 100"
+                inputRef={voucherId}
+                label="Ingrese No. de Vale"
                 onChange={(event: any) => {
+                  if (platform && platform.current) {
+                    platform.current.value = "";
+                  }
                   if (event.target.value.length > 0) {
                     searchVoucherAction({ id: event.target.value, history });
                   } else {
                     searchVoucherResetAction();
                   }
                 }}
+                placeholder="Ejemplo: 1, 23, 100"
               />
-              {false && (
-                <FormHelperText
-                  error
-                  classes={{ error: classes.textErrorHelper }}
-                >
-                  Ingrese una Clave
-                </FormHelperText>
-              )}
+            </FormControl>
+            <FormControl className={classes.formControl}>
+              <TextField
+                id="platform"
+                inputProps={{
+                  autoComplete: "off",
+                }}
+                inputRef={platform}
+                label="Ingrese Plataforma"
+                onChange={(event: any) => {
+                  if (voucherId && voucherId.current) {
+                    voucherId.current.value = "";
+                  }
+                  if (event.target.value.length > 0) {
+                    searchVoucherAction({ platform: event.target.value, history });
+                  } else {
+                    searchVoucherResetAction();
+                  }
+                }}
+              />
             </FormControl>
             <div>
               {voucher && (

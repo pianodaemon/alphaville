@@ -149,13 +149,13 @@ class VouchersPersistence(object):
     def list_vouchers(param_list, page_param_list):
         """Retrieve a list of vouchers"""
 
-        bool_fields = set()
+        bool_fields = {'salidaFinal', 'blocked'}
         float_fields = set()
         # Processing of Search params
-        filter = {}
+        filter = {'blocked': False}
         for i in param_list:
             if i.name in bool_fields:
-                filter[i.name] = bool(i.value)
+                filter[i.name] = False if i.value in ('false', 'False') else True
             elif i.name in float_fields:
                 filter[i.name] = float(i.value)
             else:
@@ -247,7 +247,7 @@ class VouchersPersistence(object):
         eventlog_coll = client[VouchersPersistence.db].eventLog
 
         try:
-            doc = vouchers_coll.find_one({'_id': doc_id}, {
+            doc = vouchers_coll.find_one({'_id': doc_id, 'blocked': False}, {
                 "platform"      : 1,
                 "carrierCode"   : 1,
                 "patioCode"     : 1,

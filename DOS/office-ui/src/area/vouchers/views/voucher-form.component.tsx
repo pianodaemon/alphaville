@@ -468,6 +468,36 @@ export const VoucherForm = (props: Props) => {
             </Grid>
             <Grid item xs={12} sm={4}>
               <Controller
+                name="lastTouchTime"
+                control={control}
+                render={({ field }) => (
+                  <FormControl className={classes.formControl}>
+                    <TextField
+                      {...field}
+                      disabled={viewOnlyModeOn}
+                      id="lastTouchTime"
+                      inputProps={{ readOnly: true }}
+                      label="Fecha de Última Modificación"
+                      value={
+                        field.value
+                          ? getFormattedDate(field.value * 1000) || ""
+                          : ""
+                      }
+                    />
+                    {errors.lastTouchTime && (
+                      <FormHelperText
+                        error
+                        classes={{ error: classes.textErrorHelper }}
+                      >
+                        Ingrese una Fecha
+                      </FormHelperText>
+                    )}
+                  </FormControl>
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <Controller
                 name="platform"
                 control={control}
                 render={({ field }) => (

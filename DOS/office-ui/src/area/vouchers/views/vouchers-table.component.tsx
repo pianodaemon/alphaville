@@ -1,5 +1,5 @@
 /* eslint-disable no-alert */
-import React, { useEffect, useReducer } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import { useHistory } from "react-router-dom";
 import MaterialTable, {
   MTableToolbar,
@@ -8,16 +8,11 @@ import MaterialTable, {
 } from "material-table";
 import TablePagination from "@material-ui/core/TablePagination";
 import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import FormControl from "@material-ui/core/FormControl";
 import PostAddIcon from "@material-ui/icons/PostAdd";
 import { Statuses } from "src/shared/constants/voucher-statuses.constants";
 // import { PERMISSIONS } from 'src/shared/constants/permissions.contants';
-
-/*
-import TextField from "@material-ui/core/TextField";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import Tooltip from "@material-ui/core/Tooltip";
-import FilterListIcon from "@material-ui/icons/FilterList";
-*/
 
 type Props = {
   deleteVoucherAction: Function;
@@ -110,6 +105,7 @@ export const ValesTable = (props: Props) => {
     },
   ];
   const [state, dispatch] = useReducer(reducer, columns);
+  const [search, setSearch] = useState<string |  null>("");
   const getColumnNameByIndex = (columnId: number): string | any =>
     state.map((column) => column.field)[columnId];
   const canEdit = (status): boolean => {
@@ -121,11 +117,21 @@ export const ValesTable = (props: Props) => {
     loadStatusesAction({ per_page: Number.MAX_SAFE_INTEGER });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  useEffect(() => {
+    loadVouchersAction({
+      order,
+      per_page: paging.per_page,
+      platform: search || "",
+    });
+  }, [search]);
   return (
     <MaterialTable
       title="Vales"
       onOrderChange={(orderBy: number, orderDirection: "asc" | "desc") => {
-        dispatch({ type: "reorder", payload: { orderBy, orderDirection } });
+        dispatch({
+          type: "reorder",
+          payload: { orderBy, orderDirection },
+        });
         loadVouchersAction({
           //...paging,
           order: orderDirection,
@@ -153,6 +159,7 @@ export const ValesTable = (props: Props) => {
         rowStyle: (_data: any, index: number, _level: number) => {
           return index % 2 ? { backgroundColor: "rgba(227,27,35,0.1)" } : {};
         },
+        search: false,
       }}
       components={{
         // FilterRow: props => <><MTableFilterRow {...props}  /><div>asassa</div></>,
@@ -187,6 +194,27 @@ export const ValesTable = (props: Props) => {
             <div>
               <MTableToolbar {...componentProps} />
               <div style={{ padding: "0px 10px", textAlign: "right" }}>
+                <FormControl style={{marginRight: "2em"}}>
+                  <TextField
+                    id="outlined-search"
+                    defaultValue={search}
+                    label="Filtrar por Plataforma:"
+                    type="search"
+                    variant="standard"
+                    onKeyUp={(event: any) => {
+                      const searchText = event.target?.value;
+                      if (event.keyCode === 13 || searchText === "") {
+                        setSearch(searchText);
+                      }
+                      return;
+                    }}
+                    onChange={(e) => {
+                      if (!e.target.value) {
+                        setSearch("");
+                      }
+                    }}
+                  />
+                </FormControl>
                 <Button
                   variant="contained"
                   color="primary"

@@ -128,10 +128,10 @@ export const Out = (props: Props) => {
     control,
     // handleSubmit,
     // formState: { errors, isSubmitting },
-    reset,
-    getValues,
+    // reset,
+    // getValues,
     setValue,
-    watch,
+    // watch,
   } = useForm({
     defaultValues: initialValues,
     resolver: yupResolver(schema),
@@ -293,6 +293,7 @@ export const Out = (props: Props) => {
                   values={vouchersOut || []}
                 />
               ),
+              // eslint-disable-next-line react-hooks/exhaustive-deps
               [vouchersOut]
             )}
           </Grid>

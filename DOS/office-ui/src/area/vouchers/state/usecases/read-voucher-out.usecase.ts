@@ -21,7 +21,7 @@ export const readVoucherOutErrorAction: ActionFunctionAny<Action<any>> =
 
 function* readVoucherOutWorker(action: any): Generator<any, any, any> {
   try {
-    const { selected, editMode } = action.payload;
+    const { selected } = action.payload;
     const ids = yield select(vouchersOutIdsSelector);
     const diff1 = selected.filter(x => !ids.includes(x.toString()));
     const diff2 = ids.filter(y => !selected.includes(parseInt(y, 10)));

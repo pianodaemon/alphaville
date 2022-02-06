@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { useHistory } from "react-router-dom";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import * as yup from "yup";
@@ -7,10 +7,8 @@ import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import FormControl from "@material-ui/core/FormControl";
-// import FormHelperText from "@material-ui/core/FormHelperText";
+import FormHelperText from "@material-ui/core/FormHelperText";
 import TextField from "@material-ui/core/TextField";
-// import Chip from "@material-ui/core/Chip";
-// import CircularProgress from "@material-ui/core/CircularProgress";
 import { AutoCompleteDropdown } from "src/shared/components/autocomplete-dropdown.component";
 import { Statuses } from "src/shared/constants/voucher-statuses.constants";
 import MultipleSelect from "./multi-select-chip.component";
@@ -19,6 +17,7 @@ import { BulkEdit } from "./out-voucher-table";
 type Props = {
   loadCarriersCatalogAction: Function;
   loadVouchersCatalogAction: Function;
+  createOutVoucherResetAction: Function;
   createOutVoucherAction: Function;
   readVoucherOutAction: Function;
   carriers: any;
@@ -29,16 +28,6 @@ type Props = {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      alignItems: "center",
-      backgroundColor: "#fff",
-      display: "flex",
-      flexDirection: "row",
-      flexWrap: "wrap",
-      height: "calc(100vh - 156px)",
-      justifyContent: "center",
-      overflow: "auto",
-    },
     paper: {
       padding: "38px",
       // textAlign: 'center',
@@ -79,28 +68,14 @@ const useStyles = makeStyles((theme: Theme) =>
       overflow: "hidden",
       marginTop: "27px",
     },
-    progress: {
-      margin: "0 auto",
-      marginTop: "10px",
-      verticalAlign: "middle",
-    },
   })
 );
 
 const schema = yup.object().shape({
   carrierCode: yup.string().required(),
+  itemsToReturnList: yup.array().required(),
   patioCode: yup.string().required(),
   platform: yup.string().required(),
-  vouchers: yup
-    .array()
-    .test("test", "at least one item with quantity > 0", (value: any) => {
-      return value && value.some((val) => val.quantity > 0);
-    }),
-  itemsToReturnList: yup
-    .array()
-    .test("test", "at least one item with quantity > 0", (value: any) => {
-      return value && value.some((val) => val.quantity > 0);
-    }),
 });
 
 export const Out = (props: Props) => {
@@ -110,6 +85,7 @@ export const Out = (props: Props) => {
     carriers,
     loadCarriersCatalogAction,
     loadVouchersCatalogAction,
+    createOutVoucherResetAction,
     createOutVoucherAction,
     readVoucherOutAction,
     username,
@@ -120,15 +96,16 @@ export const Out = (props: Props) => {
     carrierCode: "",
     itemsToReturnList: [],
     observations: "",
+    patioCode: "NLD",
     platform: "",
     selectedVouchers: [],
     vouchers,
   };
   const {
     control,
-    // handleSubmit,
-    // formState: { errors, isSubmitting },
-    // reset,
+    handleSubmit,
+    formState: { errors /* isSubmitting */ },
+    reset,
     // getValues,
     setValue,
     // watch,
@@ -139,20 +116,39 @@ export const Out = (props: Props) => {
   const carrierCode = useWatch({ control, name: "carrierCode" });
   const platform = useWatch({ control, name: "platform" });
   const observations = useWatch({ control, name: "observations" });
+  const refSubmitButtom = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     loadCarriersCatalogAction({
       per_page: Number.MAX_SAFE_INTEGER,
     });
+    return () => {
+      createOutVoucherResetAction();
+      reset({});
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
+  const onSubmit: (fields: any) => void = (fields: any) => {
+    /* @todo implement const releaseForm: () => void = () => setSubmitting(false); */
+    const data = {
+      carrierCode,
+      deliveredBy: username,
+      itemsToReturnList: fields.itemsToReturnList,
+      observations,
+      patioCode: "NLD",
+      platform,
+      receivedBy: "",
+      unitCode: "",
+    };
+    createOutVoucherAction({ data, history });
+  };
+  console.log('errors', errors);
   return (
     <Paper className={classes.paper}>
       <h1 style={{ color: "#E31B23", textAlign: "center" }}>
         Salidas de Equipo
       </h1>
       <hr className={classes.hrDivider} />
-      <form>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <Grid
           container
           spacing={3}
@@ -184,6 +180,9 @@ export const Out = (props: Props) => {
                     options={carriers || []}
                     value={carriers && field.value ? field.value || "" : ""}
                   />
+                  {errors.carrierCode && (
+                    <FormHelperText error>Ingrese un Carrier</FormHelperText>
+                  )}
                 </FormControl>
               )}
             />
@@ -260,7 +259,7 @@ export const Out = (props: Props) => {
               () => (
                 <BulkEdit
                   onUpdate={(value: any) => {
-                    const a = value.reduce((acc, next) => {
+                    const items = value.reduce((acc, next) => {
                       const voucher = acc.find(
                         (v) => v.voucherId === next.voucher
                       );
@@ -278,17 +277,9 @@ export const Out = (props: Props) => {
                       }
                       return acc;
                     }, []);
-                    const data = {
-                      carrierCode,
-                      deliveredBy: username,
-                      itemsToReturnList: a,
-                      observations,
-                      patioCode: "NLD",
-                      platform,
-                      receivedBy: "",
-                      unitCode: "",
-                    };
-                    createOutVoucherAction({ data, history });
+                    setValue("itemsToReturnList", items);
+                    // @todo add notification if items are empty
+                    return refSubmitButtom?.current?.click();
                   }}
                   values={vouchersOut || []}
                 />
@@ -298,6 +289,7 @@ export const Out = (props: Props) => {
             )}
           </Grid>
         </Grid>
+        <button hidden={true} ref={refSubmitButtom} type={"submit"} />
       </form>
     </Paper>
   );

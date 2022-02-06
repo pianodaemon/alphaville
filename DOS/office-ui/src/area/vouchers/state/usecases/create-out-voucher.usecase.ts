@@ -10,6 +10,7 @@ const postfix = "/app";
 const CREATE_OUT_VOUCHER = `CREATE_OUT_VOUCHER${postfix}`;
 const CREATE_OUT_VOUCHER_SUCCESS = `CREATE_OUT_VOUCHER_SUCCESS${postfix}`;
 const CREATE_OUT_VOUCHER_ERROR = `CREATE_OUT_VOUCHER_ERROR${postfix}`;
+const CREATE_OUT_VOUCHER_RESET = `CREATE_OUT_VOUCHER_RESET${postfix}`;
 
 export const createOutVoucherAction: ActionFunctionAny<Action<any>> =
   createAction(CREATE_OUT_VOUCHER);
@@ -17,6 +18,8 @@ export const createOutVoucherSuccessAction: ActionFunctionAny<Action<any>> =
   createAction(CREATE_OUT_VOUCHER_SUCCESS);
 export const createOutVoucherErrorAction: ActionFunctionAny<Action<any>> =
   createAction(CREATE_OUT_VOUCHER_ERROR);
+export const createOutVoucherResetAction: ActionFunctionAny<Action<any>> =
+  createAction(CREATE_OUT_VOUCHER_RESET);
 
 function* createOutVoucherWorker(action: any): Generator<any, any, any> {
   try {
@@ -57,6 +60,14 @@ function* createOutVoucherWatcher(): Generator<any, any, any> {
 }
 
 const voucherReducerHandlers = {
+  [CREATE_OUT_VOUCHER_RESET]: (state: any) => {
+    return {
+      ...state,
+      loading: false,
+      vouchersCatalog: null,
+      vouchersOut: null,
+    };
+  },
   [CREATE_OUT_VOUCHER]: (state: any) => {
     return {
       ...state,

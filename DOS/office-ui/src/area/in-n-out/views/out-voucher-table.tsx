@@ -42,18 +42,17 @@ export function BulkEdit({ onUpdate, values }: Props) {
               ...props.inputProps,
               min: 0,
               step: 1,
-              // pattern: "[0-9]",
-              max: 12,
+              max: props.rowData.units,
               type: "number",
             }}
             onChange={(event) => {
-              // const value = parseInt(event.target.value, 10);
+              const { value } = event.target;
               if (
-                parseInt(event.target.value, 10) <= 12222 ||
-                event.target.value === "" ||
-                event.target.value === "0"
+                parseInt(value, 10) <= props.rowData.units ||
+                value === "" ||
+                value === "0"
               ) {
-                props.onChange(event.target.value);
+                props.onChange(value);
               }
             }}
           />
@@ -61,7 +60,8 @@ export function BulkEdit({ onUpdate, values }: Props) {
       },
     },
   ]);
-  const tableHeight =(window.innerHeight - 64 - 64 - 52 - 1) / window.innerHeight * 30;
+  const tableHeight =
+    ((window.innerHeight - 64 - 64 - 52 - 1) / window.innerHeight) * 30;
   return (
     <div>
       <MaterialTable

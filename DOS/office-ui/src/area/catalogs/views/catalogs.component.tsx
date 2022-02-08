@@ -37,11 +37,6 @@ export const Catalogs = () => {
       onClick: (e: React.MouseEvent<HTMLElement>) => history.push(Routes.CATALOGS.PATIOS),
     },
     {
-      title: "Puestos",
-      imageURL: "/images/carrier.png",
-      onClick: (e: React.MouseEvent<HTMLElement>) => history.push(Routes.CATALOGS.PUESTOS),
-    },
-    {
       title: "Unidades",
       imageURL: "/images/carrier.png",
       onClick: (e: React.MouseEvent<HTMLElement>) => history.push(Routes.CATALOGS.UNITS),

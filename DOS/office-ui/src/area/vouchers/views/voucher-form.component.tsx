@@ -228,6 +228,15 @@ export const VoucherForm = (props: Props) => {
           : {}),
       } || {}
     );
+    if (
+      id &&
+      voucher &&
+      patio &&
+      action === "forward" &&
+      patio !== voucher.patioCode
+    ) {
+      history.push(`/voucher/${id}/view`);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [patio, username, voucher]);
   const diffVoucherUnits = ({

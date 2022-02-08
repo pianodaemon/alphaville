@@ -104,9 +104,10 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 type Props = {
-  loading: boolean | undefined;
   searchVoucherAction: Function;
   searchVoucherResetAction: Function;
+  loading: boolean | undefined;
+  patio: string | null;
   voucher: Voucher | null;
 };
 
@@ -114,13 +115,21 @@ export const InNout = (props: Props) => {
   const classes = useStyles();
   const voucherId = useRef(null as any);
   const platform = useRef(null as any);
-  const { loading, searchVoucherAction, searchVoucherResetAction, voucher } = props;
+  const {
+    loading,
+    patio,
+    searchVoucherAction,
+    searchVoucherResetAction,
+    voucher,
+  } = props;
   const handleClick = () => {
     if (voucher) {
       if (voucher.status === Statuses.SALIDA) {
         window.open(`/voucher/${voucher.id}/view`, "_blank");
       } else {
-        window.open(`/voucher/${voucher.id}/forward`, "_blank");
+        const canForward: boolean = voucher.patioCode === patio;
+        const action: string = canForward ? "forward" : "view";
+        window.open(`/voucher/${voucher.id}/${action}`, "_blank");
       }
     }
   };
@@ -130,7 +139,9 @@ export const InNout = (props: Props) => {
   }, []);
   return (
     <Paper className={classes.paper}>
-      <h1 style={{ color: "#E31B23", textAlign: "center" }}>Entradas y Salidas</h1>
+      <h1 style={{ color: "#E31B23", textAlign: "center" }}>
+        Entradas y Salidas
+      </h1>
       <hr className={classes.hrDivider} />
       <form>
         <Grid container spacing={3}>
@@ -185,7 +196,9 @@ export const InNout = (props: Props) => {
                   onClick={handleClick}
                 />
               )}
-              {loading && <CircularProgress className={classes.progress} size={20} /> }
+              {loading && (
+                <CircularProgress className={classes.progress} size={20} />
+              )}
             </div>
           </Grid>
         </Grid>

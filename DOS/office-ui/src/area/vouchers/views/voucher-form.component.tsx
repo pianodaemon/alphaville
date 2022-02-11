@@ -228,6 +228,7 @@ export const VoucherForm = (props: Props) => {
           : {}),
       } || {}
     );
+    /* // @todo Add Status validations and wire to viewOnlyModeOn variable
     if (
       id &&
       voucher &&
@@ -237,6 +238,7 @@ export const VoucherForm = (props: Props) => {
     ) {
       history.push(`/voucher/${id}/view`);
     }
+    */
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [patio, username, voucher]);
   const diffVoucherUnits = ({

@@ -126,10 +126,14 @@ export const InNout = (props: Props) => {
     if (voucher) {
       if (voucher.status === Statuses.SALIDA) {
         window.open(`/voucher/${voucher.id}/view`, "_blank");
-      } else {
+      } else if (voucher.status === Statuses.ENTRADA || voucher.status === Statuses.PATIO) {
         const canForward: boolean = voucher.patioCode === patio;
         const action: string = canForward ? "forward" : "view";
         window.open(`/voucher/${voucher.id}/${action}`, "_blank");
+      } else if (voucher.status === Statuses.CARRETERA) {
+        window.open(`/voucher/${voucher.id}/forward`, "_blank");
+      } else {
+        window.open(`/voucher/${voucher.id}/view`, "_blank");
       }
     }
   };

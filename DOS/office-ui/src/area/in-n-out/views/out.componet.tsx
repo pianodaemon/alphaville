@@ -9,6 +9,9 @@ import Grid from "@material-ui/core/Grid";
 import FormControl from "@material-ui/core/FormControl";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import TextField from "@material-ui/core/TextField";
+import Select from "@material-ui/core/Select";
+import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
 import { AutoCompleteDropdown } from "src/shared/components/autocomplete-dropdown.component";
 import { Statuses } from "src/shared/constants/voucher-statuses.constants";
 import MultipleSelect from "./multi-select-chip.component";
@@ -16,12 +19,17 @@ import { BulkEdit } from "./out-voucher-table";
 
 type Props = {
   loadCarriersCatalogAction: Function;
+  loadUnitsCatalogAction: Function;
+  loadUsersAsCatalogAction: Function;
   loadVouchersCatalogAction: Function;
   createOutVoucherResetAction: Function;
   createOutVoucherAction: Function;
   readVoucherOutAction: Function;
+  notificationAction: Function;
   carriers: any;
   username: string;
+  users: any;
+  units: any;
   vouchers: any;
   vouchersOut: any;
 };
@@ -73,9 +81,11 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const schema = yup.object().shape({
   carrierCode: yup.string().required(),
-  itemsToReturnList: yup.array().required(),
+  itemsToReturnList: yup.array().min(1).required(),
   patioCode: yup.string().required(),
-  platform: yup.string().required(),
+  platform: yup.string(),
+  receivedBy: yup.string().required(),
+  unitCode: yup.string().required(),
 });
 
 export const Out = (props: Props) => {
@@ -84,11 +94,16 @@ export const Out = (props: Props) => {
   const {
     carriers,
     loadCarriersCatalogAction,
+    loadUnitsCatalogAction,
+    loadUsersAsCatalogAction,
     loadVouchersCatalogAction,
     createOutVoucherResetAction,
     createOutVoucherAction,
     readVoucherOutAction,
+    notificationAction,
+    units,
     username,
+    users,
     vouchers,
     vouchersOut,
   } = props;
@@ -98,7 +113,9 @@ export const Out = (props: Props) => {
     observations: "",
     patioCode: "NLD",
     platform: "",
+    receivedBy: "",
     selectedVouchers: [],
+    unitCode: "",
     vouchers,
   };
   const {
@@ -116,9 +133,16 @@ export const Out = (props: Props) => {
   const carrierCode = useWatch({ control, name: "carrierCode" });
   const platform = useWatch({ control, name: "platform" });
   const observations = useWatch({ control, name: "observations" });
+  const watchReceivedBy = useWatch({ control, name: "receivedBy" });
   const refSubmitButtom = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     loadCarriersCatalogAction({
+      per_page: Number.MAX_SAFE_INTEGER,
+    });
+    loadUnitsCatalogAction({
+      per_page: Number.MAX_SAFE_INTEGER,
+    });
+    loadUsersAsCatalogAction({
       per_page: Number.MAX_SAFE_INTEGER,
     });
     return () => {
@@ -129,19 +153,19 @@ export const Out = (props: Props) => {
   }, []);
   const onSubmit: (fields: any) => void = (fields: any) => {
     /* @todo implement const releaseForm: () => void = () => setSubmitting(false); */
+    const { itemsToReturnList, receivedBy, unitCode } = fields;
     const data = {
       carrierCode,
       deliveredBy: username,
-      itemsToReturnList: fields.itemsToReturnList,
+      itemsToReturnList,
       observations,
       patioCode: "NLD",
       platform,
-      receivedBy: "",
-      unitCode: "",
+      receivedBy,
+      unitCode,
     };
     createOutVoucherAction({ data, history });
   };
-  console.log('errors', errors);
   return (
     <Paper className={classes.paper}>
       <h1 style={{ color: "#E31B23", textAlign: "center" }}>
@@ -234,6 +258,56 @@ export const Out = (props: Props) => {
               )}
             />
           </Grid>
+          <Grid item xs={4} sm={4}>
+            <Controller
+              name="unitCode"
+              control={control}
+              render={({ field }) => (
+                <FormControl className={classes.formControl}>
+                  <InputLabel>Unidad</InputLabel>
+                  <Select
+                    {...field}
+                    id="unitCode"
+                    labelId="unitCode"
+                    value={units && field.value ? field.value || "" : ""}
+                  >
+                    {units &&
+                      units.map((item) => {
+                        return (
+                          <MenuItem value={item.code} key={`type-${item.id}`}>
+                            {item.code}
+                          </MenuItem>
+                        );
+                      })}
+                  </Select>
+                  {errors.unitCode && (
+                    <FormHelperText error>Seleccione una Unidad</FormHelperText>
+                  )}
+                </FormControl>
+              )}
+            />
+          </Grid>
+          <Grid item xs={4} sm={4}>
+            <FormControl className={classes.formControl}>
+              <AutoCompleteDropdown
+                fieldLabel="displayName"
+                fieldValue="username"
+                label="Recibió Equipo"
+                name="receivedBy"
+                onChange={(value: any) => {
+                  return setValue("receivedBy", value);
+                }}
+                options={users || []}
+                value={users && watchReceivedBy ? watchReceivedBy || "" : ""}
+              />
+              {errors.receivedBy && (
+                <FormHelperText error>
+                  Seleccione quién recibió el equipo
+                </FormHelperText>
+              )}
+            </FormControl>
+          </Grid>
+          <Grid item xs={4} sm={4}></Grid>
           <Grid item xs={12}>
             <Controller
               name="observations"
@@ -277,6 +351,12 @@ export const Out = (props: Props) => {
                       }
                       return acc;
                     }, []);
+                    if (items.length === 0) {
+                      return notificationAction({
+                        message: `Agregue al menos un equipo para la salida.`,
+                        type: "error",
+                      });
+                    }
                     setValue("itemsToReturnList", items);
                     // @todo add notification if items are empty
                     return refSubmitButtom?.current?.click();

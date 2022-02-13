@@ -111,7 +111,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const schema = yup.object().shape({
   username: yup
     .string()
-    .matches(/^[a-zA-Z0-9_\-]*$/, "Format error")
+    .matches(/^[a-zA-Z0-9_-]*$/, "Format error")
     .required(),
   firstName: yup.string().required(),
   lastName: yup.string().required(),

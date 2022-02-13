@@ -123,6 +123,7 @@ export const ValesTable = (props: Props) => {
       per_page: paging.per_page,
       platform: search || "",
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search]);
   return (
     <MaterialTable

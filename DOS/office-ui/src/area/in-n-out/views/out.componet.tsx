@@ -83,7 +83,7 @@ const schema = yup.object().shape({
   carrierCode: yup.string().required(),
   itemsToReturnList: yup.array().min(1).required(),
   patioCode: yup.string().required(),
-  platform: yup.string(),
+  platform: yup.string().required(),
   receivedBy: yup.string().required(),
   unitCode: yup.string().required(),
 });
@@ -164,7 +164,7 @@ export const Out = (props: Props) => {
       receivedBy,
       unitCode,
     };
-    createOutVoucherAction({ data, history });
+    return createOutVoucherAction({ data, history });
   };
   return (
     <Paper className={classes.paper}>
@@ -220,26 +220,39 @@ export const Out = (props: Props) => {
                   <TextField
                     {...field}
                     id="platform"
-                    label="Plataforma (opcional)"
+                    label="Plataforma"
                     InputProps={{
                       autoComplete: "off",
                     }}
-                    onChange={(event: any) => {
-                      loadVouchersCatalogAction({
-                        carrierCode,
-                        patioCode: "NLD",
-                        per_page: Number.MAX_SAFE_INTEGER,
-                        platform: event.target.value,
-                        status: Statuses.PATIO,
-                      });
-                      setValue("selectedVouchers", []);
-                      return setValue("platform", event.target.value);
-                    }}
                     value={field.value ? field.value || "" : ""}
                   />
+                  {errors.platform && (
+                    <FormHelperText error>Ingrese una Plataforma</FormHelperText>
+                  )}
                 </FormControl>
               )}
             />
+          </Grid>
+          <Grid item xs={4} sm={4}>
+            <FormControl className={classes.formControl}>
+              <TextField
+                id="platform-filter"
+                InputProps={{
+                  autoComplete: "off",
+                }}
+                label="Filtrar por Plataforma:"
+                onChange={(event: any) => {
+                  loadVouchersCatalogAction({
+                    carrierCode,
+                    patioCode: "NLD",
+                    per_page: Number.MAX_SAFE_INTEGER,
+                    platform: event.target.value,
+                    status: Statuses.PATIO,
+                  });
+                  return setValue("selectedVouchers", []);
+                }}
+              />
+            </FormControl>
           </Grid>
           <Grid item xs={4} sm={4}>
             <Controller
@@ -351,14 +364,13 @@ export const Out = (props: Props) => {
                       }
                       return acc;
                     }, []);
+                    setValue("itemsToReturnList", items);
                     if (items.length === 0) {
-                      return notificationAction({
+                      notificationAction({
                         message: `Agregue al menos un equipo para la salida.`,
                         type: "error",
                       });
                     }
-                    setValue("itemsToReturnList", items);
-                    // @todo add notification if items are empty
                     return refSubmitButtom?.current?.click();
                   }}
                   values={vouchersOut || []}

@@ -253,7 +253,7 @@ export const UserForm = (props: Props) => {
                       error
                       classes={{ error: classes.textErrorHelper }}
                     >
-                      Ingrese una Contraseña
+                      Ingrese un Nombre
                     </FormHelperText>
                   )}
                 </FormControl>

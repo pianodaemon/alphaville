@@ -110,8 +110,8 @@ async function createUser(fields) {
   const user = {
     userId: 0,
     username: fields.username,
-    passwd: fields.username,
-    roleId: 1, // @todo remove this hardcoded value
+    passwd: fields.passwd,
+    roleId: fields.roleId,
     disabled: fields.disabled,
     firstName: fields.firstName,
     lastName: fields.lastName,
@@ -159,7 +159,7 @@ async function updateUser(id, fields) {
   const user = {
     userId: id,
     username: fields.username,
-    passwd: fields.username,
+    passwd: fields.passwd,
     roleId: fields.roleId,
     disabled: fields.disabled,
     firstName: fields.firstName,

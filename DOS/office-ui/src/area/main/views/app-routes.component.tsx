@@ -70,7 +70,7 @@ const routes: Array<CustomRoute> = [
   },
   {
     props: {
-      path: ["/user/create", "/user/:id/:action(edit)"],
+      path: ["/user/:action(create)", "/user/:id/:action(edit)"],
       exact: true,
     },
     component: <UsersFormContainer />,

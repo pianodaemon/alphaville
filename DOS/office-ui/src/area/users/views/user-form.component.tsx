@@ -108,17 +108,24 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const schema = yup.object().shape({
-  username: yup
-    .string()
-    .matches(/^[a-zA-Z0-9_-]*$/, "Format error")
-    .required(),
-  firstName: yup.string().required(),
-  lastName: yup.string().required(),
-  disabled: yup.boolean(),
-});
+const schema = (action: string) => {
+  return yup.object().shape({
+    disabled: yup.boolean(),
+    firstName: yup.string().required(),
+    lastName: yup.string().required(),
+    passwd: action === "create" ? yup.string().required() : yup.string().notRequired(),
+    username: yup
+      .string()
+      .matches(/^[a-zA-Z0-9_-]*$/, "Format error")
+      .required(),
+  });
+};
 
 export const UserForm = (props: Props) => {
+  const classes = useStyles();
+  const history = useHistory();
+  const { action, id } = useParams<any>();
+  const isEditing = action === "edit";
   const {
     catalog,
     createUserAction,
@@ -145,12 +152,8 @@ export const UserForm = (props: Props) => {
     setValue,
   } = useForm({
     defaultValues: initialValues,
-    resolver: yupResolver(schema),
+    resolver: yupResolver(schema(action)),
   });
-  const classes = useStyles();
-  const history = useHistory();
-  const { action, id } = useParams<any>();
-  const isEditing = action === "edit";
   useEffect(() => {
     loadUsersCatalogAction();
     if (id) {

@@ -152,14 +152,35 @@ class VouchersPersistence(object):
         bool_fields = {'salidaFinal', 'blocked'}
         float_fields = set()
         # Processing of Search params
-        filter = {'blocked': False}
+        filter0 = {'blocked': False}
+        and_needed = False
+
         for i in param_list:
             if i.name in bool_fields:
-                filter[i.name] = False if i.value in ('false', 'False') else True
+                filter0[i.name] = False if i.value in ('false', 'False') else True
             elif i.name in float_fields:
-                filter[i.name] = float(i.value)
+                filter0[i.name] = float(i.value)
             else:
-                filter[i.name] = i.value
+                val_list = i.value.split('||')
+                if len(val_list) > 1:
+                    or_operands = []
+                    for v in val_list:
+                        or_operands.append({i.name: v})
+                    filter0['$or' + i.name] = or_operands
+                    and_needed = True
+                else:
+                    filter0[i.name] = i.value
+
+        if and_needed:
+            and_operands = []
+            for k, v in filter0.items():
+                if k[:3] == '$or':
+                    and_operands.append({k[:3]: v})
+                else:
+                    and_operands.append({k: v})
+            filter = {'$and': and_operands}
+        else:
+            filter = filter0
 
         client = VouchersPersistence.get_mongo_client()
         vouchers_coll = client[VouchersPersistence.db].vouchers

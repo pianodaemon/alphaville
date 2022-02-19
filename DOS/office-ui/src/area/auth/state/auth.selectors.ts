@@ -1,5 +1,7 @@
 import { createSelector } from "reselect";
-import { catalogSelector } from "src/area/patios/state/patios.selectors";
+import { catalogSelector as patioCatalogSelector } from "src/area/patios/state/patios.selectors";
+import { TypeCodes } from "src/shared/constants/patio.constants";
+import { Statuses } from "src/shared/constants/voucher-statuses.constants";
 // import { resolvePermission } from 'src/shared/utils/permissions.util';
 import { authReducer, JWT } from "./auth.reducer";
 
@@ -59,7 +61,7 @@ export const usernameSelector = createSelector(sliceSelector, (slice: any) =>
 
 export const patioSelector = createSelector(
   sliceSelector,
-  catalogSelector,
+  patioCatalogSelector,
   (slice: any, patios) => {
     return (
       patios?.find((patio) => patio.id === slice.profile?.user?.patioId)
@@ -70,7 +72,7 @@ export const patioSelector = createSelector(
 
 export const patioFullSelector = createSelector(
   sliceSelector,
-  catalogSelector,
+  patioCatalogSelector,
   (slice: any, patios) => {
     const patio = patios?.find(
       (patio) => patio.id === slice.profile?.user?.patioId
@@ -82,4 +84,20 @@ export const patioFullSelector = createSelector(
 export const patioTypeCodeSelector = createSelector(
   sliceSelector,
   (slice: any) => slice.profile?.patioTypeCode
+);
+
+export const userIsComunSelector = createSelector(
+  sliceSelector,
+  patioCatalogSelector,
+  (slice: any, patios: any): { [key: string]: string } => {
+    const patio = patios?.find(
+      (patio) => patio.id === slice.profile?.user?.patioId
+    );
+    return slice.profile?.patioTypeCode === TypeCodes.COMUN
+      ? {
+          status: `${Statuses.PATIO}||${Statuses.CARRETERA}`,
+          patioCode: patio.code,
+        }
+      : {};
+  }
 );

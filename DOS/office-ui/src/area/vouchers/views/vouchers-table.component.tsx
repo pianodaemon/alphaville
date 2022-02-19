@@ -24,6 +24,7 @@ type Props = {
   loading: boolean;
   paging: any;
   vouchers: any;
+  userIsComun: {[key: string]: any};
 };
 
 function reducer(state, action) {
@@ -54,6 +55,7 @@ export const ValesTable = (props: Props) => {
     loading,
     paging,
     vouchers,
+    userIsComun,
   } = props;
   const { count, page, per_page, order } = paging;
   const history = useHistory();
@@ -105,10 +107,13 @@ export const ValesTable = (props: Props) => {
     },
   ];
   const [state, dispatch] = useReducer(reducer, columns);
-  const [search, setSearch] = useState<string |  null>("");
+  const [search, setSearch] = useState<string | null>("");
   const getColumnNameByIndex = (columnId: number): string | any =>
     state.map((column) => column.field)[columnId];
   const canEdit = (status): boolean => {
+    if (userIsComun.status) {
+      return false;
+    }
     return ![Statuses.ENTRADA].includes(status);
   };
   useEffect(() => {
@@ -195,7 +200,7 @@ export const ValesTable = (props: Props) => {
             <div>
               <MTableToolbar {...componentProps} />
               <div style={{ padding: "0px 10px", textAlign: "right" }}>
-                <FormControl style={{marginRight: "2em"}}>
+                <FormControl style={{ marginRight: "2em" }}>
                   <TextField
                     id="outlined-search"
                     defaultValue={search}

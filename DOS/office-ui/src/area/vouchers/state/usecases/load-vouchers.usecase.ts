@@ -6,6 +6,7 @@ import { notificationAction } from "src/area/main/state/usecase/notification.use
 import { getVouchers } from "../../service/voucher.service";
 import { vouchersReducer } from "../vouchers.reducer";
 import { pagingSelector } from "../vouchers.selectors";
+import { userIsComunSelector } from "src/area/auth/state/auth.selectors";
 
 const postfix = "/app";
 const LOAD_VOUCHERS = `LOAD_VOUCHERS${postfix}`;
@@ -23,6 +24,7 @@ function* loadVouchersWorker(action?: any): Generator<any, any, any> {
   try {
     const aliases = { id: "id", carrierCode: "code", platform: "platform" };
     const { per_page, page, order, order_by, filters } = action.payload || {};
+    const isComun = yield select(userIsComunSelector);
     const paging = yield select(pagingSelector);
     const options = {
       ...action.payload,
@@ -32,6 +34,7 @@ function* loadVouchersWorker(action?: any): Generator<any, any, any> {
       order: order || paging.order,
       order_by: aliases[order_by] || aliases[paging.order_by] || order_by,
       ...filters,
+      ...isComun
     };
     delete options.filters;
     const result = yield call(getVouchers, options);

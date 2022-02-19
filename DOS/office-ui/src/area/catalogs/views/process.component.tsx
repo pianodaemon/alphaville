@@ -32,7 +32,7 @@ export const Process = (props: Props) => {
       imageURL: "/images/carrier.png",
       onClick: (e: React.MouseEvent<HTMLElement>) =>
         history.push(Routes.PROCESSES.VOUCHERS),
-      hidden: userPatioTypeCode !== TypeCodes.TRANSFER,
+      hidden: false // hidden: userPatioTypeCode !== TypeCodes.TRANSFER,
     },
     {
       title: "Entradas a Patio y Salidas a Carretera",

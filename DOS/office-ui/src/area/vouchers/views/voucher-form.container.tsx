@@ -19,6 +19,7 @@ import { statusesCatalogSelector } from "src/area/statuses/state/statuses.select
 import {
   patioSelector,
   usernameSelector,
+  userIsComunSelector,
 } from "src/area/auth/state/auth.selectors";
 import {
   // catalogSelector,
@@ -49,6 +50,7 @@ function mapStateToProps(state: any) {
     statuses: statusesCatalogSelector(state),
     username: usernameSelector(state),
     patio: patioSelector(state),
+    userIsComun: userIsComunSelector(state),
   };
 }
 

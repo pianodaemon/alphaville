@@ -49,6 +49,7 @@ type Props = {
   units: any;
   username: string;
   users: any;
+  userIsComun: { [key: string]: any };
 };
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -158,6 +159,7 @@ export const VoucherForm = (props: Props) => {
     units,
     users,
     username,
+    userIsComun,
   } = props;
   const initialValues: Voucher = {
     carrierCode: "",
@@ -193,7 +195,7 @@ export const VoucherForm = (props: Props) => {
   const classes = useStyles();
   const history = useHistory();
   const { action, id } = useParams<any>();
-  const viewOnlyModeOn: boolean = action === "view";
+  const viewOnlyModeOn: boolean = action === "view" || userIsComun.status;
   const forwardVoucher: boolean = action === "forward";
   useEffect(() => {
     loadStatusesAction({

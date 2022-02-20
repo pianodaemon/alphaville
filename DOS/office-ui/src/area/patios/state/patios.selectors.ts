@@ -1,5 +1,5 @@
-import { createSelector } from 'reselect';
-import { patiosReducer, Patio, PatioSlice } from './patios.reducer';
+import { createSelector } from "reselect";
+import { patiosReducer, Patio, PatioSlice } from "./patios.reducer";
 
 const sliceSelector = (state: any) => state[patiosReducer.sliceName];
 
@@ -10,7 +10,7 @@ export const patiosSelector = createSelector(
 
 export const patioSelector = createSelector(
   sliceSelector,
-  (slice: PatioSlice): Patio | null => slice.patio,
+  (slice: PatioSlice): Patio | null => slice.patio
 );
 
 export const isLoadingSelector = createSelector(
@@ -32,7 +32,20 @@ export const patiosCatalogSelector = createSelector(
 
 export const catalogSelector = createSelector(
   sliceSelector,
-  (slice: PatioSlice): Patio[] | null => slice.patiosCatalog,
+  (slice: PatioSlice): Patio[] | null => slice.patiosCatalog
+);
+
+export const patiosCatalogOptionSelector = createSelector(
+  catalogSelector,
+  (patios: any) =>
+    patios &&
+    Array.isArray(patios) &&
+    patios.map((patio: Patio) => {
+      return {
+        ...patio,
+        option: `${patio.title} (${patio.code})`,
+      };
+    })
 );
 
 export const pagingSelector = createSelector(

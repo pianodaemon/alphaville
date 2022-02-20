@@ -77,6 +77,12 @@ export const UsersTable = (props: Props) => {
       filtering: false,
     },
     {
+      title: "Patio",
+      field: "patio",
+      sorting: !sorting,
+      filtering: false,
+    },
+    {
       title: "Rol en la Organización",
       field: "roleId_str",
       sorting: !sorting,

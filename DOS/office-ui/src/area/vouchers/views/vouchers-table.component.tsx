@@ -24,7 +24,7 @@ type Props = {
   loading: boolean;
   paging: any;
   vouchers: any;
-  userIsComun: {[key: string]: any};
+  userIsComun: { [key: string]: any };
 };
 
 function reducer(state, action) {
@@ -112,9 +112,12 @@ export const ValesTable = (props: Props) => {
     state.map((column) => column.field)[columnId];
   const canEdit = (status): boolean => {
     if (userIsComun.status) {
-      return false;
+      return true;
     }
     return ![Statuses.ENTRADA].includes(status);
+  };
+  const canDelete = (): boolean => {
+    return !Boolean(userIsComun.status);
   };
   useEffect(() => {
     loadUsersAsCatalogAction({ per_page: Number.MAX_SAFE_INTEGER });
@@ -221,15 +224,17 @@ export const ValesTable = (props: Props) => {
                     }}
                   />
                 </FormControl>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  startIcon={<PostAddIcon />}
-                  size="medium"
-                  onClick={() => history.push("/voucher/create")}
-                >
-                  Agregar Vale
-                </Button>
+                {!userIsComun.status && (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<PostAddIcon />}
+                    size="medium"
+                    onClick={() => history.push("/voucher/create")}
+                  >
+                    Agregar Vale
+                  </Button>
+                )}
               </div>
             </div>
           );
@@ -284,7 +289,7 @@ export const ValesTable = (props: Props) => {
               deleteVoucherAction(rowData.id);
             }
           },
-          // disabled: !isAllowed('USR', PERMISSIONS.DELETE),
+          disabled: !canDelete(),
         },
       ]}
       isLoading={loading}

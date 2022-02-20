@@ -110,6 +110,12 @@ export const ValesTable = (props: Props) => {
   const [search, setSearch] = useState<string | null>("");
   const getColumnNameByIndex = (columnId: number): string | any =>
     state.map((column) => column.field)[columnId];
+  const canCreate = (): boolean => {
+    return !Boolean(userIsComun.status);
+  };
+  const canDelete = (): boolean => {
+    return !Boolean(userIsComun.status);
+  };
   const canEdit = (status): boolean => {
     if (userIsComun.status) {
       return true;
@@ -224,7 +230,7 @@ export const ValesTable = (props: Props) => {
                     }}
                   />
                 </FormControl>
-                {!userIsComun.status && (
+                {canCreate() && (
                   <Button
                     variant="contained"
                     color="primary"
@@ -276,6 +282,7 @@ export const ValesTable = (props: Props) => {
           onClick: () => history.push(`/voucher/${rowData.id}/edit`),
           disabled: canEdit(rowData.stat),
         }),
+        /*
         {
           icon: "delete",
           tooltip: "Eliminar Usuario",
@@ -291,6 +298,7 @@ export const ValesTable = (props: Props) => {
           },
           disabled: !canDelete(),
         },
+        */
       ]}
       isLoading={loading}
     />

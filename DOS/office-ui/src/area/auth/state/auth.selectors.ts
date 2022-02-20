@@ -96,7 +96,7 @@ export const userIsComunSelector = createSelector(
     return slice.profile?.patioTypeCode === TypeCodes.COMUN
       ? {
           status: `${Statuses.PATIO}||${Statuses.CARRETERA}`,
-          patioCode: patio.code,
+          patioCode: patio?.code || "",
         }
       : {};
   }

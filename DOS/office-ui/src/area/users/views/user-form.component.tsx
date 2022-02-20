@@ -25,6 +25,7 @@ type Props = {
   loadUsersCatalogAction: Function;
   catalog: Catalog | null;
   user: User | null;
+  patios: any;
 };
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -113,7 +114,11 @@ const schema = (action: string) => {
     disabled: yup.boolean(),
     firstName: yup.string().required(),
     lastName: yup.string().required(),
-    passwd: action === "create" ? yup.string().required() : yup.string().notRequired(),
+    passwd:
+      action === "create"
+        ? yup.string().required()
+        : yup.string().notRequired(),
+    patioId: yup.string().required(),
     username: yup
       .string()
       .matches(/^[a-zA-Z0-9_-]*$/, "Format error")
@@ -132,16 +137,18 @@ export const UserForm = (props: Props) => {
     readUserAction,
     updateUserAction,
     loadUsersCatalogAction,
+    patios,
     user,
   } = props;
   const initialValues = {
-    username: "",
-    passwd: "",
+    authorities: [],
+    disabled: false,
     firstName: "",
     lastName: "",
-    disabled: false,
+    passwd: "",
+    patioId: 0,
     roleId: 0,
-    authorities: [],
+    username: "",
   };
   const {
     control,
@@ -339,6 +346,40 @@ export const UserForm = (props: Props) => {
                       classes={{ error: classes.textErrorHelper }}
                     >
                       Seleccione un Rol
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              )}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Controller
+              name="patioId"
+              control={control}
+              render={({ field }) => (
+                <FormControl className={classes.formControl}>
+                  <InputLabel>Patio</InputLabel>
+                  <Select
+                    {...field}
+                    labelId="patioId"
+                    id="patioId"
+                    value={patios && field.value ? field.value || "" : ""}
+                  >
+                    {patios &&
+                      patios.map((item) => {
+                        return (
+                          <MenuItem value={item.id} key={`type-${item.id}`}>
+                            {item.option}
+                          </MenuItem>
+                        );
+                      })}
+                  </Select>
+                  {errors.patioId && (
+                    <FormHelperText
+                      error
+                      classes={{ error: classes.textErrorHelper }}
+                    >
+                      Seleccione un Patio
                     </FormHelperText>
                   )}
                 </FormControl>

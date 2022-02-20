@@ -15,7 +15,7 @@ import { Statuses } from "src/shared/constants/voucher-statuses.constants";
 // import { PERMISSIONS } from 'src/shared/constants/permissions.contants';
 
 type Props = {
-  deleteVoucherAction: Function;
+  // deleteVoucherAction: Function;
   filters: any;
   // isAllowed: Function,
   loadStatusesAction: Function;
@@ -46,7 +46,7 @@ function reducer(state, action) {
 
 export const ValesTable = (props: Props) => {
   const {
-    deleteVoucherAction,
+    // deleteVoucherAction,
     filters,
     // isAllowed,
     loadStatusesAction,
@@ -113,9 +113,11 @@ export const ValesTable = (props: Props) => {
   const canCreate = (): boolean => {
     return !Boolean(userIsComun.status);
   };
+  /* @todo restore when delete permission is defined
   const canDelete = (): boolean => {
     return !Boolean(userIsComun.status);
   };
+  */
   const canEdit = (status): boolean => {
     if (userIsComun.status) {
       return true;

@@ -122,9 +122,6 @@ export const ValesTable = (props: Props) => {
     }
     return ![Statuses.ENTRADA].includes(status);
   };
-  const canDelete = (): boolean => {
-    return !Boolean(userIsComun.status);
-  };
   useEffect(() => {
     loadUsersAsCatalogAction({ per_page: Number.MAX_SAFE_INTEGER });
     loadVouchersAction({ per_page: paging.per_page, order });

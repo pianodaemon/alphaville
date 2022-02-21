@@ -24,6 +24,8 @@
 
     docker run -it --rm --network operational_network --volume /Users/dealersocket/Downloads/DYLKA/vales_dylk_mongo:/dumps mongo:latest bash
 
+    // verificar directorio vales_dylk_mongo
+
     2) Comando para el restore (si no te deja porque ya existe la db, ver NOTA abajo)
     mongorestore --host=nosql_mongo --port=27017 --nsInclude='vales_dylk_mongo.*' /dumps/
 

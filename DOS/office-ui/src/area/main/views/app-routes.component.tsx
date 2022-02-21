@@ -222,10 +222,12 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     content: {
       top: 156,
-      position: "relative",
+      position: "fixed",
       // display: 'flex',
       width: "100%",
       justifyContent: "center",
+      height: "calc(100vh - 150px)",
+      overflow: "auto",
     },
   })
 );

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
@@ -26,6 +26,8 @@ import {
 } from "src/shared/constants/voucher-statuses.constants";
 import { getFormattedDate } from "src/shared/utils/format-date.util";
 import Table from "./table.component";
+import { EventListDialog } from "./event-list-dialog.component";
+import { FloatingActionButton } from "./floating-action-button.component";
 import { Voucher } from "../state/vouchers.reducer";
 import { resolveVoucherStatusTitle } from "../utils/resolve-voucher-status-title.util";
 
@@ -194,6 +196,7 @@ export const VoucherForm = (props: Props) => {
   const watchUnitCode = watch("unitCode");
   const classes = useStyles();
   const history = useHistory();
+  const [eventListModalOpen, setEventListModalOpen] = useState<boolean>(false);
   const { action, id } = useParams<any>();
   const viewOnlyModeOn: boolean = action === "view"; // || userIsComun.status;
   const forwardVoucher: boolean = action === "forward";
@@ -838,6 +841,14 @@ export const VoucherForm = (props: Props) => {
             </Grid>
           </Grid>
         </form>
+        {action !== "create" && (
+          <FloatingActionButton onClick={() => setEventListModalOpen(true)} />
+        )}
+        <EventListDialog
+          isOpen={eventListModalOpen}
+          onClose={() => setEventListModalOpen(false)}
+          voucher={voucher}
+        />
       </Paper>
     </MuiPickersUtilsProvider>
   );

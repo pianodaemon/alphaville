@@ -69,51 +69,52 @@ const renderIcon = (status: string) => {
 export const EventListTimeline = (props: Props) => {
   const { eventList } = props;
   const classes = useStyles();
-  console.log("eventList", eventList);
   return (
     <Timeline align="alternate">
-      {eventList.map((event) => (
-        <TimelineItem>
-          <TimelineOppositeContent>
-            <Typography variant="body2" color="textSecondary">
-              {getFormattedDate(event.timestamp * 1000)}
-            </Typography>
-          </TimelineOppositeContent>
-          <TimelineSeparator>
-            {renderIcon(event.status)}
-            <TimelineConnector />
-          </TimelineSeparator>
-          <TimelineContent>
-            <Paper elevation={3} className={classes.paper}>
-              <Typography variant="h6" component="h1">
-                {resolveVoucherStatusTitle({
-                  voucher: { status: event.status } as Voucher,
-                  isPDF: true,
-                })}
+      {eventList
+        .filter((event) => event.document === "vale")
+        .map((event) => (
+          <TimelineItem>
+            <TimelineOppositeContent>
+              <Typography variant="body2" color="textSecondary">
+                {getFormattedDate(event.timestamp * 1000, true)}
               </Typography>
-              <Typography variant="caption">Patio</Typography>
-              <Typography>{event.patioCode}</Typography>
-              <br />
+            </TimelineOppositeContent>
+            <TimelineSeparator>
+              {renderIcon(event.status)}
+              <TimelineConnector />
+            </TimelineSeparator>
+            <TimelineContent>
+              <Paper elevation={3} className={classes.paper}>
+                <Typography variant="h6" component="h1">
+                  {resolveVoucherStatusTitle({
+                    voucher: { status: event.status } as Voucher,
+                    isPDF: true,
+                  })}
+                </Typography>
+                <Typography variant="caption">Patio</Typography>
+                <Typography>{event.patioCode}</Typography>
+                <br />
 
-              <Typography variant="caption">Plataforma</Typography>
-              <Typography>{event.platform}</Typography>
-              <br />
+                <Typography variant="caption">Plataforma</Typography>
+                <Typography>{event.platform}</Typography>
+                <br />
 
-              <Typography variant="caption">Unidad</Typography>
-              <Typography>{event.unitCode}</Typography>
-              <br />
+                <Typography variant="caption">Unidad</Typography>
+                <Typography>{event.unitCode}</Typography>
+                <br />
 
-              <Typography variant="caption">Entregó equipo</Typography>
-              <Typography>{event.originUser}</Typography>
-              <br />
+                <Typography variant="caption">Entregó equipo</Typography>
+                <Typography>{event.originUser}</Typography>
+                <br />
 
-              <Typography variant="caption">Recibió equipo</Typography>
-              <Typography>{event.targetUser}</Typography>
-              <br />
-            </Paper>
-          </TimelineContent>
-        </TimelineItem>
-      ))}
+                <Typography variant="caption">Recibió equipo</Typography>
+                <Typography>{event.targetUser}</Typography>
+                <br />
+              </Paper>
+            </TimelineContent>
+          </TimelineItem>
+        ))}
     </Timeline>
   );
 };

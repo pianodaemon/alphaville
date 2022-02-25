@@ -79,7 +79,7 @@ export const EventListDialog = ({
       >
         <DialogTitle id="customized-dialog-title" onClose={handleClose}>
           Historial del Vale de equipo #{voucher.id} <br />
-          Carrier: {voucher.carrierCode}
+          Carrier: {voucher.carrier}
         </DialogTitle>
         <DialogContent dividers>
           <EventListTimeline eventList={voucher.eventList} />

@@ -3,6 +3,7 @@ import { createAndMergeSliceReducer } from 'src/redux-utils/create-and-merge-sli
 export interface Voucher {
   carrierCode: string;
   deliveredBy: string;
+  eventList: Event[];
   generationTime: number;
   id: string;
   itemList: Item[];
@@ -42,6 +43,21 @@ export type Item = {
   equipmentCode: string,
   quantity: number,
 };
+
+export type Event = {
+  document: string;
+  documentId: number;
+  itemList: Item[],
+  observations: string;
+  operation: string;
+  originUser: string;
+  patioCode: string;
+  platform: string;
+  status: string;
+  targetUser: string;
+  timestamp: number;
+  unitCode: string;
+}
 
 export const initialState: VoucherSlice = {
   voucher: null,

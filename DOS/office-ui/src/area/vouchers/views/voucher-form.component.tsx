@@ -166,6 +166,7 @@ export const VoucherForm = (props: Props) => {
   const initialValues: Voucher = {
     carrierCode: "",
     deliveredBy: "",
+    eventList: [],
     generationTime: 0,
     id: "",
     lastTouchTime: 0,

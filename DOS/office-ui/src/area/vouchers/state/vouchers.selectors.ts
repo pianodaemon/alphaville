@@ -1,5 +1,10 @@
 import { createSelector } from "reselect";
-import { vouchersReducer, Voucher, VoucherSlice } from "./vouchers.reducer";
+import {
+  Event,
+  vouchersReducer,
+  Voucher,
+  VoucherSlice,
+} from "./vouchers.reducer";
 import { userCatalogSelector } from "src/area/users/state/users.selectors";
 import { catalogSelector } from "src/area/equipments/state/equipments.selectors";
 import { statusesSelector } from "src/area/statuses/state/statuses.selectors";
@@ -17,7 +22,9 @@ export const vouchersSelector = createSelector(
 export const voucherSelector = createSelector(
   sliceSelector,
   catalogSelector,
-  (slice: VoucherSlice, equipments): any => {
+  userCatalogSelector,
+  patioCatalogSelector,
+  (slice: VoucherSlice, equipments, users, patios): any => {
     const { voucher, editMode } = slice;
     return {
       ...voucher,
@@ -57,6 +64,36 @@ export const voucherSelector = createSelector(
           maxQuantity: quantity,
         };
       }),
+      eventList:
+        voucher &&
+        voucher.eventList &&
+        Array.isArray(voucher.eventList) &&
+        voucher.eventList.map((event: Event) => {
+          const originUser =
+            voucher &&
+            users &&
+            users.find((user) => user.username === event.originUser);
+          const targetUser =
+            voucher &&
+            users &&
+            users.find((user) => user.username === event.targetUser);
+          const patio =
+            voucher &&
+            patios &&
+            patios.find((pat) => pat.code === event.patioCode);
+          return {
+            ...event,
+            originUser: originUser
+              ? `${originUser.firstName} ${originUser.lastName} (${event.originUser})`
+              : event.originUser,
+            patioCode: patio
+              ? `${patio.title} (${patio.code})`
+              : event.patioCode,
+            targetUser: targetUser
+              ? `${targetUser.firstName} ${targetUser.lastName} (${event.targetUser})`
+              : event.originUser,
+          };
+        }),
     };
   }
 );

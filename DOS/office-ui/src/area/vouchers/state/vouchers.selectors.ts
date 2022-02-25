@@ -24,10 +24,16 @@ export const voucherSelector = createSelector(
   catalogSelector,
   userCatalogSelector,
   patioCatalogSelector,
-  (slice: VoucherSlice, equipments, users, patios): any => {
+  carriersCatalogSelector,
+  (slice: VoucherSlice, equipments, users, patios, carriers): any => {
     const { voucher, editMode } = slice;
+    const carrier =
+      voucher &&
+      carriers &&
+      carriers.find((carr) => carr.code === voucher.carrierCode);
     return {
       ...voucher,
+      carrier: carrier ? `${carrier.title} (${carrier.code})` : "",
       itemList: equipments?.map((equipment) => {
         const quantity =
           voucher?.itemList?.find((equip) => {

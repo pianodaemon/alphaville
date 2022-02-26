@@ -136,7 +136,8 @@ def auth_user(username, passwd):
           FROM users
          WHERE username = '{}'
            AND passwd = '{}'
-           AND NOT blocked;
+           AND NOT blocked
+           AND NOT disabled;
     """.format(
         username.replace("'", "''"),
         passwd.replace("'", "''")

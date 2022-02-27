@@ -89,7 +89,7 @@ export const FilterChips = (props: Props) => {
     }, {});
     loadAction({
       page: 1,
-      ...(Object.keys(f).length ? { ...f, filters: f } : { filters: {} }),
+      ...(Object.keys(f).length ? { ...f, filters: f } : { filters: {}, clearFilters: true }),
     });
   }, [appliedFilters, loadAction]);
 

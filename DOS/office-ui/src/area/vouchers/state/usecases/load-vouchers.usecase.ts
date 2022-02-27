@@ -23,7 +23,8 @@ export const loadVouchersErrorAction: ActionFunctionAny<Action<any>> =
 function* loadVouchersWorker(action?: any): Generator<any, any, any> {
   try {
     const aliases = { id: "id", carrierCode: "code", platform: "platform" };
-    const { per_page, page, order, order_by, filters } = action.payload || {};
+    const { clearFilters, per_page, page, order, order_by, filters } =
+      action.payload || {};
     const appliedFilters = yield select(appliedFiltersSelector);
     const isComun = yield select(userIsComunSelector);
     const paging = yield select(pagingSelector);
@@ -34,8 +35,10 @@ function* loadVouchersWorker(action?: any): Generator<any, any, any> {
       pages: paging.pages,
       order: order || paging.order,
       order_by: aliases[order_by] || aliases[paging.order_by] || order_by,
-      ...(filters && Object.keys(filters).length > 0 ? filters : appliedFilters),
-      ...isComun
+      ...((filters && Object.keys(filters).length > 0) || clearFilters
+        ? filters
+        : appliedFilters),
+      ...isComun,
     };
     delete options.filters;
     const result = yield call(getVouchers, options);
@@ -53,14 +56,18 @@ function* loadVouchersWorker(action?: any): Generator<any, any, any> {
           order: order || paging.order,
           order_by: order_by || paging.order_by,
         },
-        filters: {...(filters && Object.keys(filters).length > 0 ? filters : appliedFilters)},
+        filters: {
+          ...((filters && Object.keys(filters).length > 0) || clearFilters
+            ? filters
+            : appliedFilters),
+        },
       })
     );
   } catch (e: any) {
     const message: string = resolveError(
       e.response?.data?.message || e.message
     );
-    console.log('Error:', e);
+    console.log("Error:", e);
     yield put(loadVouchersErrorAction());
     yield put(
       notificationAction({

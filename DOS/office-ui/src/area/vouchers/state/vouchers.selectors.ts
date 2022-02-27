@@ -15,6 +15,7 @@ import {
 import { catalogSelector as carriersCatalogSelector } from "src/area/carriers/state/carriers.selectors";
 import { catalogSelector as patioCatalogSelector } from "src/area/patios/state/patios.selectors";
 import { catalogSelector as unitCatalogSelector } from "src/area/units/state/units.selectors";
+import { userIsComunSelector } from "src/area/auth/state/auth.selectors";
 
 const sliceSelector = (state: VoucherSlice) => state[vouchersReducer.sliceName];
 
@@ -237,8 +238,9 @@ export const filtersSelector = createSelector(
   patioCatalogSelector,
   unitCatalogSelector,
   userCatalogSelector,
-  (slice: any, patios: any, units: any, users: any) => {
-    return [
+  userIsComunSelector,
+  (slice: any, patios: any, units: any, users: any, isComun) => {
+    const filters = [
       {
         abbr: "ID",
         type: "text",
@@ -252,19 +254,6 @@ export const filtersSelector = createSelector(
         name: "(PLA) Plataforma",
       },
       {
-        abbr: "PAT",
-        type: "dropdown",
-        param: "patioCode",
-        name: "(PAT) Patio",
-        options: patios
-          ? [
-              ...patios.map((item: any) => {
-                return { id: item.code, value: item.title };
-              }),
-            ]
-          : [],
-      },
-      {
         abbr: "UNI",
         type: "dropdown",
         param: "unitCode",
@@ -273,19 +262,6 @@ export const filtersSelector = createSelector(
           ? [
               ...units.map((unit: any) => {
                 return { id: unit.code, value: `${unit.title} (${unit.code})` };
-              }),
-            ]
-          : [],
-      },
-      {
-        abbr: "EST",
-        type: "dropdown",
-        param: "status",
-        name: "(EST) Estatus",
-        options: Statuses
-          ? [
-              ...Object.keys(Statuses).map((status: any) => {
-                return { id: status, value: Status[status] };
               }),
             ]
           : [],
@@ -307,6 +283,35 @@ export const filtersSelector = createSelector(
           : [],
       },
     ];
+    if (!isComun.status) {
+      filters.push({
+        abbr: "PAT",
+        type: "dropdown",
+        param: "patioCode",
+        name: "(PAT) Patio",
+        options: patios
+          ? [
+              ...patios.map((item: any) => {
+                return { id: item.code, value: item.title };
+              }),
+            ]
+          : [],
+      });
+      filters.push({
+        abbr: "EST",
+        type: "dropdown",
+        param: "status",
+        name: "(EST) Estatus",
+        options: Statuses
+          ? [
+              ...Object.keys(Statuses).map((status: any) => {
+                return { id: status, value: Status[status] };
+              }),
+            ]
+          : [],
+      });
+    }
+    return filters;
   }
 );
 

@@ -159,6 +159,7 @@ export const ValesTable = (props: Props) => {
         }
         data={vouchers || []}
         options={{
+          maxBodyHeight: "50vh",
           draggable: false,
           initialPage: 1, // @todo include this settings value in a CONSTANTS file
           paging: true,
@@ -174,6 +175,7 @@ export const ValesTable = (props: Props) => {
           search: false,
         }}
         components={{
+          // Container: (props) => <Paper className={classes.filterTable} {...props}/>,
           // FilterRow: props => <><MTableFilterRow {...props}  /><div>asassa</div></>,
           Pagination: (componentProps) => {
             return (
@@ -195,6 +197,7 @@ export const ValesTable = (props: Props) => {
                 onChangeRowsPerPage={(event: any) => {
                   componentProps.onChangeRowsPerPage(event);
                   loadVouchersAction({
+                    page: 1,
                     per_page: event.target.value,
                   });
                 }}

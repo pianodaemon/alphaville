@@ -4,6 +4,7 @@ import { loadStatusesAction } from "src/area/statuses/state/usecases/load-status
 import { userIsComunSelector } from "src/area/auth/state/auth.selectors";
 import { ValesTable } from "./vouchers-table.component";
 import { loadVouchersAction } from "../state/usecases/load-vouchers.usecase";
+import { loadUnitsCatalogAction } from "src/area/units/state/usecases/load-units-catalog.usecase";
 // import { deleteVoucherAction } from "../state/usecases/delete-voucher.usecase";
 // import { permissionSelector } from 'src/area/auth/state/auth.selectors';
 import {
@@ -18,6 +19,7 @@ const mapDispatchToProps = {
   loadVouchersAction,
   loadUsersAsCatalogAction,
   loadStatusesAction,
+  loadUnitsCatalogAction,
 };
 
 function mapStateToProps(state: any) {

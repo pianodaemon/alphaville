@@ -8,9 +8,13 @@ import {
 import { userCatalogSelector } from "src/area/users/state/users.selectors";
 import { catalogSelector } from "src/area/equipments/state/equipments.selectors";
 import { statusesSelector } from "src/area/statuses/state/statuses.selectors";
-import { Statuses } from "src/shared/constants/voucher-statuses.constants";
+import {
+  Status,
+  Statuses,
+} from "src/shared/constants/voucher-statuses.constants";
 import { catalogSelector as carriersCatalogSelector } from "src/area/carriers/state/carriers.selectors";
 import { catalogSelector as patioCatalogSelector } from "src/area/patios/state/patios.selectors";
+import { catalogSelector as unitCatalogSelector } from "src/area/units/state/units.selectors";
 
 const sliceSelector = (state: VoucherSlice) => state[vouchersReducer.sliceName];
 
@@ -230,7 +234,80 @@ export const pagingSelector = createSelector(
 
 export const filtersSelector = createSelector(
   sliceSelector,
-  (slice: VoucherSlice) => slice.filters
+  patioCatalogSelector,
+  unitCatalogSelector,
+  userCatalogSelector,
+  (slice: any, patios: any, units: any, users: any) => {
+    return [
+      {
+        abbr: "ID",
+        type: "text",
+        param: "id",
+        name: "(ID) Vale #",
+      },
+      {
+        abbr: "PLA",
+        type: "text",
+        param: "platform",
+        name: "(PLA) Plataforma",
+      },
+      {
+        abbr: "PAT",
+        type: "dropdown",
+        param: "patioCode",
+        name: "(PAT) Patio",
+        options: patios
+          ? [
+              ...patios.map((item: any) => {
+                return { id: item.code, value: item.title };
+              }),
+            ]
+          : [],
+      },
+      {
+        abbr: "UNI",
+        type: "dropdown",
+        param: "unitCode",
+        name: "(UNI) Unidad",
+        options: units
+          ? [
+              ...units.map((unit: any) => {
+                return { id: unit.code, value: `${unit.title} (${unit.code})` };
+              }),
+            ]
+          : [],
+      },
+      {
+        abbr: "EST",
+        type: "dropdown",
+        param: "status",
+        name: "(EST) Estatus",
+        options: Statuses
+          ? [
+              ...Object.keys(Statuses).map((status: any) => {
+                return { id: status, value: Status[status] };
+              }),
+            ]
+          : [],
+      },
+      {
+        abbr: "REC",
+        type: "dropdown",
+        param: "receivedBy",
+        name: "(REC) Recibió equipo",
+        options: users
+          ? [
+              ...users.map((user: any) => {
+                return {
+                  id: user.username,
+                  value: `${user.firstName} ${user.lastName} (${user.username})`,
+                };
+              }),
+            ]
+          : [],
+      },
+    ];
+  }
 );
 
 export const searchSelector = createSelector(

@@ -15,14 +15,14 @@ import { useEffect, EffectCallback, DependencyList, useRef } from "react";
  * ```
  *
  */
-export const useNonInitialEffect = (effect: EffectCallback, deps?: DependencyList) => {
+ export const useNonInitialEffect = (effect: EffectCallback, deps?: DependencyList) => {
   const initialRender = useRef(true);
   useEffect(() => {
-    let effectReturns: void | (() => void | undefined) = () => {};
+    let effectReturns: void | (() => void | undefined) | any = () => {} ;
     if (initialRender.current) {
 	  initialRender.current = false;
 	} else {
-	  // effectReturns = effect();
+	  effectReturns = effect();
 	}
 
     if (effectReturns && typeof effectReturns === "function") {

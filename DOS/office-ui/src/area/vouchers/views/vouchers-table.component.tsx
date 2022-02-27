@@ -191,7 +191,7 @@ export const ValesTable = (props: Props) => {
                     page: currentPage + 1,
                     order,
                     // offset: nextPage * 1,
-                    filters,
+                    // filters,
                   });
                 }}
                 onChangeRowsPerPage={(event: any) => {

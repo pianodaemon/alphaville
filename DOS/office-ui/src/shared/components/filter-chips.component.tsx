@@ -87,7 +87,10 @@ export const FilterChips = (props: Props) => {
       const filterValue = acc[next.filter] ? `${acc[next.filter]}||${next.value}` : next.value;
       return { ...acc, [next.filter]: filterValue };
     }, {});
-    loadAction(Object.keys(f).length ? { ...f, filters: f } : { filters: {} });
+    loadAction({
+      page: 1,
+      ...(Object.keys(f).length ? { ...f, filters: f } : { filters: {} }),
+    });
   }, [appliedFilters, loadAction]);
 
   return (

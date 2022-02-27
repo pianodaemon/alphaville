@@ -30,7 +30,7 @@ export interface VoucherSlice {
     order: string,
     order_by: string,
   };
-  filters: {[key: string]: string} | null,
+  filters: {[key: string]: string},
   search: {
     voucher: Voucher | null,
     loading: boolean,
@@ -74,7 +74,7 @@ export const initialState: VoucherSlice = {
     order_by: 'id',
   },
   editMode: null,
-  filters: null,
+  filters: {},
   search: null,
 };
 

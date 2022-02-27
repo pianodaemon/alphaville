@@ -233,6 +233,11 @@ export const pagingSelector = createSelector(
   (slice: VoucherSlice) => slice.paging
 );
 
+export const appliedFiltersSelector = createSelector(
+  sliceSelector,
+  (slice: VoucherSlice) => slice.filters
+);
+
 export const filtersSelector = createSelector(
   sliceSelector,
   patioCatalogSelector,

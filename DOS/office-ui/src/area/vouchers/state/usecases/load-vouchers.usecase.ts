@@ -5,7 +5,7 @@ import { errorCodes, resolveError } from "src/shared/utils/resolve-error.util";
 import { notificationAction } from "src/area/main/state/usecase/notification.usecase";
 import { getVouchers } from "../../service/voucher.service";
 import { vouchersReducer } from "../vouchers.reducer";
-import { pagingSelector } from "../vouchers.selectors";
+import { appliedFiltersSelector, pagingSelector } from "../vouchers.selectors";
 import { userIsComunSelector } from "src/area/auth/state/auth.selectors";
 
 const postfix = "/app";
@@ -24,6 +24,7 @@ function* loadVouchersWorker(action?: any): Generator<any, any, any> {
   try {
     const aliases = { id: "id", carrierCode: "code", platform: "platform" };
     const { per_page, page, order, order_by, filters } = action.payload || {};
+    const appliedFilters = yield select(appliedFiltersSelector);
     const isComun = yield select(userIsComunSelector);
     const paging = yield select(pagingSelector);
     const options = {
@@ -33,7 +34,7 @@ function* loadVouchersWorker(action?: any): Generator<any, any, any> {
       pages: paging.pages,
       order: order || paging.order,
       order_by: aliases[order_by] || aliases[paging.order_by] || order_by,
-      ...filters,
+      ...(filters && Object.keys(filters).length > 0 ? filters : appliedFilters),
       ...isComun
     };
     delete options.filters;
@@ -52,13 +53,14 @@ function* loadVouchersWorker(action?: any): Generator<any, any, any> {
           order: order || paging.order,
           order_by: order_by || paging.order_by,
         },
-        filters,
+        filters: {...(filters && Object.keys(filters).length > 0 ? filters : appliedFilters)},
       })
     );
   } catch (e: any) {
     const message: string = resolveError(
       e.response?.data?.message || e.message
     );
+    console.log('Error:', e);
     yield put(loadVouchersErrorAction());
     yield put(
       notificationAction({
@@ -75,12 +77,12 @@ function* loadVouchersWatcher(): Generator<any, any, any> {
 
 const vouchersReducerHandlers = {
   [LOAD_VOUCHERS]: (state: any, action) => {
-    const { payload } = action || {};
-    const { filters } = payload || {};
+    // const { payload } = action || {};
+    // const { filters } = payload || {};
     return {
       ...state,
       loading: true,
-      filters: filters || {},
+      // filters: filters || {},
       voucher: null,
     };
   },

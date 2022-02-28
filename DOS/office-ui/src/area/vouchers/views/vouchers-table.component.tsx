@@ -10,6 +10,7 @@ import TablePagination from "@material-ui/core/TablePagination";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
 import PostAddIcon from "@material-ui/icons/PostAdd";
+import GetAppIcon from '@material-ui/icons/GetApp';
 import { FilterChips } from "src/shared/components/filter-chips.component";
 import { Statuses } from "src/shared/constants/voucher-statuses.constants";
 // import { PERMISSIONS } from 'src/shared/constants/permissions.contants';
@@ -229,7 +230,7 @@ export const ValesTable = (props: Props) => {
                   <Button
                     variant="contained"
                     color="secondary"
-                    startIcon={<PostAddIcon />}
+                    startIcon={<GetAppIcon />}
                     size="medium"
                     onClick={() => downloadVouchersAction()}
                     style={{ marginLeft: "1em" }}

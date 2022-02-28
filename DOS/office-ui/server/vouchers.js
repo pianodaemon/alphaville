@@ -92,6 +92,24 @@ async function listVouchers(query) {
         value: query.platform,
       });
     }
+    if (query.unitCode) {
+      paramList.push({
+        name: "unitCode",
+        value: query.unitCode,
+      });
+    }
+    if (query.receivedBy) {
+      paramList.push({
+        name: "receivedBy",
+        value: query.receivedBy,
+      });
+    }
+    if (query.id) {
+      paramList.push({
+        name: "id",
+        value: query.id,
+      });
+    }
     const params = {
       paramList,
       pageParamList: [

@@ -116,3 +116,10 @@
 # https://stackoverflow.com/questions/33515127/adding-footer-to-pdf-using-jspdf
 # https://github.com/simonbengtsson/jsPDF-AutoTable/tree/master/examples
 # https://docs.google.com/document/d/1uXYF6etyUkBu3eATy9NSII4csJyTgrHf/edit
+
+
+# CONVERT Buffer to Blob Client-side
+- https://stackoverflow.com/questions/27120757/failed-to-execute-createobjecturl-on-url
+- https://github.com/SheetJS/sheetjs/issues/610
+- https://stackoverflow.com/questions/64390676/sheetjs-how-to-create-sheet-from-json-and-save-it-as-buffer
+- https://stackoverflow.com/questions/61731218/conversion-of-buffer-data-to-blob-in-nodejs

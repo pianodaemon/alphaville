@@ -4,9 +4,13 @@ import { loadStatusesAction } from "src/area/statuses/state/usecases/load-status
 import { userIsComunSelector } from "src/area/auth/state/auth.selectors";
 import { ValesTable } from "./vouchers-table.component";
 import { loadVouchersAction } from "../state/usecases/load-vouchers.usecase";
+import { downloadVouchersAction } from "../state/usecases/download-vouchers.usecase";
+import { loadUnitsCatalogAction } from "src/area/units/state/usecases/load-units-catalog.usecase";
+import { loadCarriersCatalogAction } from "src/area/carriers/state/usecases/load-carriers-catalog.usecase";
 // import { deleteVoucherAction } from "../state/usecases/delete-voucher.usecase";
 // import { permissionSelector } from 'src/area/auth/state/auth.selectors';
 import {
+  downloadingSelector,
   isLoadingSelector,
   vouchersCatalogSelector,
   pagingSelector,
@@ -15,9 +19,12 @@ import {
 
 const mapDispatchToProps = {
   // deleteVoucherAction,
+  downloadVouchersAction,
   loadVouchersAction,
   loadUsersAsCatalogAction,
   loadStatusesAction,
+  loadUnitsCatalogAction,
+  loadCarriersCatalogAction,
 };
 
 function mapStateToProps(state: any) {
@@ -28,6 +35,7 @@ function mapStateToProps(state: any) {
     // isAllowed: permissionSelector(state),
     filters: filtersSelector(state),
     userIsComun: userIsComunSelector(state),
+    downloading: downloadingSelector(state),
   };
 }
 

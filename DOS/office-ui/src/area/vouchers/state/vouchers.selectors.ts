@@ -8,9 +8,14 @@ import {
 import { userCatalogSelector } from "src/area/users/state/users.selectors";
 import { catalogSelector } from "src/area/equipments/state/equipments.selectors";
 import { statusesSelector } from "src/area/statuses/state/statuses.selectors";
-import { Statuses } from "src/shared/constants/voucher-statuses.constants";
+import {
+  Status,
+  Statuses,
+} from "src/shared/constants/voucher-statuses.constants";
 import { catalogSelector as carriersCatalogSelector } from "src/area/carriers/state/carriers.selectors";
 import { catalogSelector as patioCatalogSelector } from "src/area/patios/state/patios.selectors";
+import { catalogSelector as unitCatalogSelector } from "src/area/units/state/units.selectors";
+import { userIsComunSelector } from "src/area/auth/state/auth.selectors";
 
 const sliceSelector = (state: VoucherSlice) => state[vouchersReducer.sliceName];
 
@@ -228,9 +233,91 @@ export const pagingSelector = createSelector(
   (slice: VoucherSlice) => slice.paging
 );
 
-export const filtersSelector = createSelector(
+export const appliedFiltersSelector = createSelector(
   sliceSelector,
   (slice: VoucherSlice) => slice.filters
+);
+
+export const filtersSelector = createSelector(
+  sliceSelector,
+  patioCatalogSelector,
+  unitCatalogSelector,
+  userCatalogSelector,
+  userIsComunSelector,
+  (slice: any, patios: any, units: any, users: any, isComun) => {
+    const filters = [
+      {
+        abbr: "ID",
+        type: "text",
+        param: "id",
+        name: "(ID) Vale #",
+      },
+      {
+        abbr: "PLA",
+        type: "text",
+        param: "platform",
+        name: "(PLA) Plataforma",
+      },
+      {
+        abbr: "UNI",
+        type: "dropdown",
+        param: "unitCode",
+        name: "(UNI) Unidad",
+        options: units
+          ? [
+              ...units.map((unit: any) => {
+                return { id: unit.code, value: `${unit.title} (${unit.code})` };
+              }),
+            ]
+          : [],
+      },
+      {
+        abbr: "REC",
+        type: "dropdown",
+        param: "receivedBy",
+        name: "(REC) Recibió equipo",
+        options: users
+          ? [
+              ...users.map((user: any) => {
+                return {
+                  id: user.username,
+                  value: `${user.firstName} ${user.lastName} (${user.username})`,
+                };
+              }),
+            ]
+          : [],
+      },
+    ];
+    if (!isComun.status) {
+      filters.push({
+        abbr: "PAT",
+        type: "dropdown",
+        param: "patioCode",
+        name: "(PAT) Patio",
+        options: patios
+          ? [
+              ...patios.map((item: any) => {
+                return { id: item.code, value: item.title };
+              }),
+            ]
+          : [],
+      });
+      filters.push({
+        abbr: "EST",
+        type: "dropdown",
+        param: "status",
+        name: "(EST) Estatus",
+        options: Statuses
+          ? [
+              ...Object.keys(Statuses).map((status: any) => {
+                return { id: status, value: Status[status] };
+              }),
+            ]
+          : [],
+      });
+    }
+    return filters;
+  }
 );
 
 export const searchSelector = createSelector(
@@ -242,4 +329,53 @@ export const searchSelector = createSelector(
 export const searchLoadingSelector = createSelector(
   sliceSelector,
   (slice: VoucherSlice): boolean | undefined => slice.search?.loading
+);
+
+export const downloadingSelector = createSelector(
+  sliceSelector,
+  (slice: VoucherSlice): boolean => slice.downloading
+);
+
+export const downloadedVouchersSelector = createSelector(
+  sliceSelector,
+  carriersCatalogSelector,
+  patioCatalogSelector,
+  unitCatalogSelector,
+  userCatalogSelector,
+  (
+    slice: VoucherSlice,
+    carriers: any,
+    patios: any,
+    units: any,
+    users: any
+  ): Array<any> | null =>
+    Array.isArray(slice.downloadedVouchers)
+      ? slice.downloadedVouchers.map((voucher: Voucher) => {
+          const carrier =
+            carriers &&
+            carriers.find((carr) => carr.code === voucher.carrierCode);
+          const unit =
+            units && units.find((unit) => unit.code === voucher.unitCode);
+          const patio =
+            patios && patios.find((patio) => patio.code === voucher.patioCode);
+          const deliveredBy =
+            users &&
+            users.find((user) => user.username === voucher.deliveredBy);
+          const receivedBy =
+            users && users.find((user) => user.username === voucher.receivedBy);
+          return {
+            ID: voucher.id,
+            Compañía: carrier ? `${carrier.title} (${carrier.code})` : "",
+            Plataforma: voucher.platform,
+            Unidad: unit ? `${unit.title} (${unit.code})` : "",
+            Patio: patio ? `${patio.title} (${patio.code})` : "",
+            "Entregó equipo": deliveredBy
+              ? `${deliveredBy.firstName} ${deliveredBy.lastName} (${deliveredBy.username})`
+              : "",
+            "Recibió equipo": receivedBy
+              ? `${receivedBy.firstName} ${receivedBy.lastName} (${receivedBy.username})`
+              : "",
+          };
+        })
+      : []
 );

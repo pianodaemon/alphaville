@@ -30,13 +30,15 @@ export interface VoucherSlice {
     order: string,
     order_by: string,
   };
-  filters: {[key: string]: string} | null,
+  filters: {[key: string]: string},
   search: {
     voucher: Voucher | null,
     loading: boolean,
     error: any,
   } | null,
   editMode: "create" | "edit" | "forward" | "view" | null,
+  downloading: boolean,
+  downloadedVouchers: Array<Voucher> | null;
 }
 
 export type Item = {
@@ -74,8 +76,10 @@ export const initialState: VoucherSlice = {
     order_by: 'id',
   },
   editMode: null,
-  filters: null,
+  filters: {},
   search: null,
+  downloading: false,
+  downloadedVouchers: null,
 };
 
 export const sliceName = 'vouchersSlice';

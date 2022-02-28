@@ -18,14 +18,17 @@ type Props = {
   // deleteVoucherAction: Function;
   filters: any;
   // isAllowed: Function,
+  downloadVouchersAction: Function;
   loadStatusesAction: Function;
   loadUsersAsCatalogAction: Function;
   loadVouchersAction: Function;
   loadUnitsCatalogAction: Function;
+  loadCarriersCatalogAction: Function;
   loading: boolean;
   paging: any;
   vouchers: any;
   userIsComun: { [key: string]: any };
+  downloading: boolean;
 };
 
 function reducer(state, action) {
@@ -50,10 +53,12 @@ export const ValesTable = (props: Props) => {
     // deleteVoucherAction,
     filters,
     // isAllowed,
+    downloadVouchersAction,
     loadStatusesAction,
     loadUsersAsCatalogAction,
     loadVouchersAction,
     loadUnitsCatalogAction,
+    loadCarriersCatalogAction,
     loading,
     paging,
     vouchers,
@@ -130,6 +135,7 @@ export const ValesTable = (props: Props) => {
     loadVouchersAction({ per_page: paging.per_page, order });
     loadStatusesAction({ per_page: Number.MAX_SAFE_INTEGER });
     loadUnitsCatalogAction({ per_page: Number.MAX_SAFE_INTEGER });
+    loadCarriersCatalogAction({ per_page: Number.MAX_SAFE_INTEGER });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
@@ -220,6 +226,16 @@ export const ValesTable = (props: Props) => {
                       Agregar Vale
                     </Button>
                   )}
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    startIcon={<PostAddIcon />}
+                    size="medium"
+                    onClick={() => downloadVouchersAction()}
+                    style={{ marginLeft: "1em" }}
+                  >
+                    Descargar Vales
+                  </Button>
                 </div>
               </div>
             );

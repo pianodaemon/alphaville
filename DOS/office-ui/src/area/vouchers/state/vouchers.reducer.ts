@@ -37,6 +37,8 @@ export interface VoucherSlice {
     error: any,
   } | null,
   editMode: "create" | "edit" | "forward" | "view" | null,
+  downloading: boolean,
+  downloadedVouchers: Array<Voucher> | null;
 }
 
 export type Item = {
@@ -76,6 +78,8 @@ export const initialState: VoucherSlice = {
   editMode: null,
   filters: {},
   search: null,
+  downloading: false,
+  downloadedVouchers: null,
 };
 
 export const sliceName = 'vouchersSlice';

@@ -52,10 +52,11 @@ export const FilterChips = (props: Props) => {
   const classes = useStyles();
   const applyFilter = () => {
     if (
-      !filterValue ||
+      !filterValue.trim() ||
       appliedFilters.some(
         (f) =>
-          f.abbr === filters[selectedFilter].abbr && f.value === filterValue
+          f.abbr === filters[selectedFilter].abbr &&
+          f.value.trim() === filterValue.trim()
       )
     ) {
       return false;
@@ -72,7 +73,7 @@ export const FilterChips = (props: Props) => {
         abbr: filters[selectedFilter].abbr,
         type: filters[selectedFilter].type,
         filter: filters[selectedFilter].param,
-        value: filterValue,
+        value: filterValue.trim(),
       },
     ]);
   };
@@ -84,12 +85,16 @@ export const FilterChips = (props: Props) => {
 
   useNonInitialEffect(() => {
     const f = appliedFilters.reduce((acc: any, next: any) => {
-      const filterValue = acc[next.filter] ? `${acc[next.filter]}||${next.value}` : next.value;
+      const filterValue = acc[next.filter]
+        ? `${acc[next.filter]}||${next.value}`
+        : next.value;
       return { ...acc, [next.filter]: filterValue };
     }, {});
     loadAction({
       page: 1,
-      ...(Object.keys(f).length ? { ...f, filters: f } : { filters: {}, clearFilters: true }),
+      ...(Object.keys(f).length
+        ? { ...f, filters: f }
+        : { filters: {}, clearFilters: true }),
     });
   }, [appliedFilters, loadAction]);
 

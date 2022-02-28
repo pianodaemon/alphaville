@@ -240,11 +240,12 @@ export const appliedFiltersSelector = createSelector(
 
 export const filtersSelector = createSelector(
   sliceSelector,
+  carriersCatalogSelector,
   patioCatalogSelector,
   unitCatalogSelector,
   userCatalogSelector,
   userIsComunSelector,
-  (slice: any, patios: any, units: any, users: any, isComun) => {
+  (slice: any, carriers: any, patios: any, units: any, users: any, isComun) => {
     const filters = [
       {
         abbr: "ID",
@@ -260,32 +261,31 @@ export const filtersSelector = createSelector(
       },
       {
         abbr: "UNI",
-        type: "dropdown",
+        type: "text",
         param: "unitCode",
         name: "(UNI) Unidad",
-        options: units
+      },
+      {
+        abbr: "CAR",
+        type: "dropdown",
+        param: "carrierCode",
+        name: "(CAR) Compañía",
+        options: carriers
           ? [
-              ...units.map((unit: any) => {
-                return { id: unit.code, value: `${unit.title} (${unit.code})` };
+              ...carriers.map((carrier: any) => {
+                return {
+                  id: carrier.code,
+                  value: `${carrier.title} (${carrier.code})`,
+                };
               }),
             ]
           : [],
       },
       {
         abbr: "REC",
-        type: "dropdown",
+        type: "text",
         param: "receivedBy",
         name: "(REC) Recibió equipo",
-        options: users
-          ? [
-              ...users.map((user: any) => {
-                return {
-                  id: user.username,
-                  value: `${user.firstName} ${user.lastName} (${user.username})`,
-                };
-              }),
-            ]
-          : [],
       },
     ];
     if (!isComun.status) {

@@ -15,6 +15,7 @@ import {
   vouchersCatalogSelector,
   pagingSelector,
   filtersSelector,
+  appliedFiltersSelector,
 } from "../state/vouchers.selectors";
 
 const mapDispatchToProps = {
@@ -34,6 +35,7 @@ function mapStateToProps(state: any) {
     paging: pagingSelector(state),
     // isAllowed: permissionSelector(state),
     filters: filtersSelector(state),
+    appliedFilters: appliedFiltersSelector(state),
     userIsComun: userIsComunSelector(state),
     downloading: downloadingSelector(state),
   };

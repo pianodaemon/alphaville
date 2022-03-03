@@ -10,7 +10,7 @@ import TablePagination from "@material-ui/core/TablePagination";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
 import PostAddIcon from "@material-ui/icons/PostAdd";
-import GetAppIcon from '@material-ui/icons/GetApp';
+import GetAppIcon from "@material-ui/icons/GetApp";
 import { FilterChips } from "src/shared/components/filter-chips.component";
 import { Statuses } from "src/shared/constants/voucher-statuses.constants";
 // import { PERMISSIONS } from 'src/shared/constants/permissions.contants';
@@ -18,6 +18,7 @@ import { Statuses } from "src/shared/constants/voucher-statuses.constants";
 type Props = {
   // deleteVoucherAction: Function;
   filters: any;
+  appliedFilters: any;
   // isAllowed: Function,
   downloadVouchersAction: Function;
   loadStatusesAction: Function;
@@ -52,6 +53,7 @@ function reducer(state, action) {
 export const ValesTable = (props: Props) => {
   const {
     // deleteVoucherAction,
+    appliedFilters,
     filters,
     // isAllowed,
     downloadVouchersAction,
@@ -142,7 +144,11 @@ export const ValesTable = (props: Props) => {
   return (
     <>
       <Paper elevation={0}>
-        <FilterChips filters={filters} loadAction={loadVouchersAction} />
+        <FilterChips
+          filters={filters}
+          initialAppliedFilters={appliedFilters}
+          loadAction={loadVouchersAction}
+        />
       </Paper>
       <MaterialTable
         title="Vales"

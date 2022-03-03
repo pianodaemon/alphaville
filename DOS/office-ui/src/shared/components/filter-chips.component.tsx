@@ -11,14 +11,17 @@ import Button from "@material-ui/core/Button";
 import { useNonInitialEffect } from "src/shared/hooks/use-non-initial-effect.hook";
 
 type Props = {
-  filters: Array<{
-    abbr: string;
-    type: "dropdown" | "text";
-    param: string;
-    name: string;
-    options: Array<{ [key: string]: string }>;
-  }>;
+  initialAppliedFilters: any;
+  filters: Array<Filter>;
   loadAction: Function;
+};
+
+type Filter = {
+  abbr: string;
+  type: "dropdown" | "text";
+  param: string;
+  name: string;
+  options: Array<{ [key: string]: string }>;
 };
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -45,10 +48,24 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export const FilterChips = (props: Props) => {
-  const { filters, loadAction } = props;
+  const { filters, initialAppliedFilters, loadAction } = props;
+  const getInitFilters = (): Array<Partial<Filter>> => {
+    return Object.keys(initialAppliedFilters).map((filter) => {
+      const filt = filters.find((f) => f.param === filter);
+      const { abbr, param, type } = filt || {};
+      return {
+        abbr,
+        type,
+        filter: param,
+        value: initialAppliedFilters[filter],
+      };
+    });
+  };
   const [selectedFilter, setSelectedFilter] = useState<number>(0);
   const [filterValue, setFilterValue] = useState<any>(null);
-  const [appliedFilters, setAppliedFilters] = useState<Array<any>>([]);
+  const [appliedFilters, setAppliedFilters] = useState<Array<any>>([
+    ...getInitFilters(),
+  ]);
   const classes = useStyles();
   const applyFilter = () => {
     if (

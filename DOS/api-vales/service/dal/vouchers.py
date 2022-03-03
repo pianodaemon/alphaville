@@ -160,6 +160,8 @@ class VouchersPersistence(object):
         for i in param_list:
             if i.name in bool_fields:
                 filter0[i.name] = False if i.value in ('false', 'False') else True
+            elif i.name == 'id':
+                filter0['_id'] = int(i.value)
             elif i.name in float_fields:
                 filter0[i.name] = float(i.value)
             else:

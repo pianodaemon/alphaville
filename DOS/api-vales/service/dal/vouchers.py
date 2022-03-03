@@ -151,6 +151,8 @@ class VouchersPersistence(object):
 
         bool_fields = {'salidaFinal', 'blocked'}
         float_fields = set()
+        get_usernames_via_lastname(param_list, 'receivedBy')
+
         # Processing of Search params
         filter0 = {'blocked': False}
         and_needed = False
@@ -559,3 +561,33 @@ class VouchersPersistence(object):
             ret_msg = 'Ningún vale actualizado ; Errores => {}'.format(error_msg)
 
         return ret_code, ret_msg
+
+
+def get_usernames_via_lastname(param_list, received_by_field):
+
+    last_name_str = ''
+    for i in param_list:
+        if i.name == received_by_field:
+            last_name_str = i.value
+            break
+
+    if not last_name_str:
+        return
+
+    # from Postgres
+    sql = '''
+        select username from users where not blocked and last_name ilike '%{}%';
+    '''
+    l = []
+    try:
+        rows = exec_steady(sql.format(last_name_str))
+        for row in rows:
+            l.append(row[0])
+        new_value = '||'.join(l)
+
+        for i in param_list:
+            if i.name == received_by_field:
+                i.value = new_value
+                break
+    except:
+        return

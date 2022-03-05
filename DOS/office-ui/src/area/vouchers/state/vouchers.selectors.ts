@@ -16,6 +16,7 @@ import { catalogSelector as carriersCatalogSelector } from "src/area/carriers/st
 import { catalogSelector as patioCatalogSelector } from "src/area/patios/state/patios.selectors";
 import { catalogSelector as unitCatalogSelector } from "src/area/units/state/units.selectors";
 import { userIsComunSelector } from "src/area/auth/state/auth.selectors";
+import { resolveVoucherStatusTitle } from "../utils/resolve-voucher-status-title.util";
 
 const sliceSelector = (state: VoucherSlice) => state[vouchersReducer.sliceName];
 
@@ -375,6 +376,7 @@ export const downloadedVouchersSelector = createSelector(
             "Recibió equipo": receivedBy
               ? `${receivedBy.firstName} ${receivedBy.lastName} (${receivedBy.username})`
               : "",
+            Estatus: resolveVoucherStatusTitle({ voucher, isPDF: true }),
           };
         })
       : []

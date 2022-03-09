@@ -95,7 +95,7 @@ if __name__ == '__main__':
         name_parts.append(args.output_prefix)
     name_parts.append('vales')
     name_parts.append(args.layout)
-    name_parts.append(datetime.now(mex_city_tz).strftime('%m-%d-%Y_%H-%M-%S'))
+    # name_parts.append(datetime.now(mex_city_tz).strftime('%m-%d-%Y_%H-%M-%S'))
 
     # Recuperacion de datos mongodb
     try:

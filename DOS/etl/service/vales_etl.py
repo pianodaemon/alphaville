@@ -11,7 +11,7 @@ import boto3
 
 def manipular_totalizado(vales, equipos, usuarios):
     s = ''
-    s += ','.join(['Num vale', 'Fecha creacion', 'Carrier', 'Plataforma', 'Unidad', 'Patio', 'Recibio', 'Estatus', 'Monto']) + '\n'
+    s += ','.join(['Vale', 'Fecha', 'Carrier', 'Plataforma', 'Unidad', 'Patio', 'Recibió', 'Estatus', 'Monto']) + '\n'
 
     for v in vales:
         fecha =  datetime.fromtimestamp(v['generationTime']).strftime('%m/%d/%Y')
@@ -37,7 +37,7 @@ def manipular_totalizado(vales, equipos, usuarios):
 
 def manipular_detallado(vales, equipos, usuarios):
     s = ''
-    s += ','.join(['Num vale', 'Fecha creacion', 'Carrier', 'Plataforma', 'Unidad', 'Patio', 'Recibio', 'Estatus', 'Equipo', 'Unidades', 'Costo', 'Monto']) + '\n'
+    s += ','.join(['Vale', 'Fecha', 'Carrier', 'Plataforma', 'Unidad', 'Patio', 'Recibió', 'Estatus', 'Equipo', 'Unidades', 'Costo', 'Monto']) + '\n'
 
     for v in vales:
         fecha =  datetime.fromtimestamp(v['generationTime']).strftime('%m/%d/%Y')
@@ -95,7 +95,6 @@ if __name__ == '__main__':
         name_parts.append(args.output_prefix)
     name_parts.append('vales')
     name_parts.append(args.layout)
-    # name_parts.append(datetime.now(mex_city_tz).strftime('%m-%d-%Y_%H-%M-%S'))
 
     # Recuperacion de datos mongodb
     try:

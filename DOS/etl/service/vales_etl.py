@@ -154,8 +154,7 @@ if __name__ == '__main__':
     # Datos de usuarios
     sql = '''
         select username, first_name, last_name
-          from users
-         where not blocked;
+          from users;
     '''
     cur.execute(sql)
     rows = cur.fetchall()
